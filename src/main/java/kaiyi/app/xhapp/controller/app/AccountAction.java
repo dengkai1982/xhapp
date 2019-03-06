@@ -20,6 +20,15 @@ public class AccountAction extends SuperAction {
 
     @Resource
     private AccountService accountService;
+
+    /**
+     * 用户注册
+     * phone 手机号码
+     * password 密码
+     * @param interactive
+     * @param response
+     * @throws IOException
+     */
     @PostMapping("/register")
     public void register(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
         String phone=interactive.getStringParameter("phone","");
@@ -34,7 +43,10 @@ public class AccountAction extends SuperAction {
     }
 
     /**
-     *
+     * 修改密码
+     * phone 手机号码
+     * oldPassword 旧密码
+     * newPassword 新密码
      * @param interactive
      * @param response
      * @throws IOException
