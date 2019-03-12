@@ -150,7 +150,12 @@
     </dependency>
     <dependency>
       <groupId>kaiyi.puer</groupId>
-      <artifactId>puer-commons</artifactId>
+      <artifactId>commons</artifactId>
+      <version>${kaiyi.puer.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>kaiyi.puer</groupId>
+      <artifactId>http</artifactId>
       <version>${kaiyi.puer.version}</version>
     </dependency>
     <dependency>

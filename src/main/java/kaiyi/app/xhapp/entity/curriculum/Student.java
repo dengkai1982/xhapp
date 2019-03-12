@@ -1,10 +1,7 @@
-package kaiyi.app.xhapp.entity.access;
+package kaiyi.app.xhapp.entity.curriculum;
 
 import kaiyi.app.xhapp.entity.AbstractEntity;
-import kaiyi.puer.h5ui.annotations.FieldDocument;
-import kaiyi.puer.h5ui.annotations.FieldType;
-import kaiyi.puer.h5ui.annotations.PageEntity;
-import kaiyi.puer.h5ui.annotations.PageField;
+import kaiyi.puer.h5ui.annotations.*;
 
 import javax.persistence.Entity;
 
@@ -15,18 +12,19 @@ public class Student extends AbstractEntity {
     private static final long serialVersionUID = 3789753547078130618L;
     @PageField(label = "讲师姓名")
     private String name;
-    @PageField(label = "讲师照片",type = FieldType.DOCUMENT)
-    @FieldDocument
-    private String photo;
     @PageField(label = "联系电话")
     private String phone;
     @PageField(label = "职务")
     private String duty;
-    @PageField(label = "讲师简介")
-    private String detail;
-    @PageField(label = "主讲课程")
+    @PageField(label = "讲师照片",type = FieldType.DOCUMENT,showSearch = false,showTable = false,showQuery = false,formColumnLength = 3)
+    @FieldDocument
+    private String photo;
+    @PageField(label = "主讲课程",type = FieldType.AREATEXT,showSearch = false,showTable = false,showQuery = false,formColumnLength = 3)
+    @FieldArea
     private String primaryCourse;
-
+    @PageField(label = "讲师简介",type = FieldType.AREATEXT,showSearch = false,showTable = false,showQuery = false,formColumnLength = 3)
+    @FieldArea
+    private String detail;
     public String getName() {
         return name;
     }

@@ -14,7 +14,9 @@
                 <c:if test="${requestScope.hasData}">
                 <a href="#" class="btn btn-link querybox-toggle" id="show_or_hide_search"><i class="icon-search icon"></i> 搜索</a>
                 </c:if>
-                <a href="${contextPath}${webPage.newEntityPage}${suffix}?${paginationCurrentPage}=1" class="btn btn-primary"><i class="icon icon-plus"></i> 新增${requestScope.entityShowName}</a>
+                <visit:auth url="${webPage.newEntityPage}">
+                    <a href="${contextPath}${webPage.newEntityPage}${suffix}?${paginationCurrentPage}=1" class="btn btn-primary"><i class="icon icon-plus"></i> 新增${requestScope.entityShowName}</a>
+                </visit:auth>
             </div>
         </div>
         <c:if test="${requestScope.hasData}">
@@ -82,6 +84,7 @@
             }
         }
         ]
+        checkPrivilege(items);
         return items;
     };
 </script>

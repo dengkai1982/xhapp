@@ -23,6 +23,19 @@ function getTemplateHtml(templateId,jsonData,Dom){
     }
     return compiledTemplate(jsonData).trim();
 }
+//检查菜单是否具备权限
+function checkPrivilege(items){
+    var i = items.length;
+    while(i--){
+        var item=items[i];
+        if(item.className=="privilege"){
+            var visit=$(".subAuthors[data-value='"+item.access+"']").attr("visit");
+            if(visit!="true"){
+                items.splice(i,1);
+            }
+        }
+    }
+}
 //尝试对表格字段进行值转换
 function tryConvertCell(valueType,dataValue,cell, dataGrid){
     if(functionExist("customDataConvertCell")){

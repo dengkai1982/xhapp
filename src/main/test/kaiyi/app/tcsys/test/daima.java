@@ -1,9 +1,13 @@
 package kaiyi.app.tcsys.test;
 
+import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.app.xhapp.entity.access.VisitorMenu;
+import kaiyi.app.xhapp.entity.curriculum.Course;
+import kaiyi.app.xhapp.entity.log.ShortMessageSenderNote;
+import kaiyi.app.xhapp.entity.pages.ContentText;
+import kaiyi.app.xhapp.entity.pub.Configure;
 import kaiyi.puer.commons.bean.BeanSyntacticSugar;
 import kaiyi.puer.json.parse.ArrayJsonParser;
-import kaiyi.puer.json.parse.SimpleJsonParser;
 import org.junit.Test;
 
 public class daima {
@@ -23,5 +27,14 @@ public class daima {
         String json="[{'field':'phone','condition':'1','value':'1333889982'}]";
         ArrayJsonParser jsonParser=new ArrayJsonParser(json);
         System.out.println(jsonParser);
+    }
+    @Test
+    public void printEntity(){
+        BeanSyntacticSugar.printEntity(Account.class);
+        BeanSyntacticSugar.printEntity(Course.class);
+        BeanSyntacticSugar.printEntity(Configure.class);
+        BeanSyntacticSugar.printEntity(ShortMessageSenderNote.class);
+        BeanSyntacticSugar.printEntity(ContentText.class);
+        BeanSyntacticSugar.printEntity(ShortMessageSenderNote.class);
     }
 }

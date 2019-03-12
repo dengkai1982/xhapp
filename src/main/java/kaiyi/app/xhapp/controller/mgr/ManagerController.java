@@ -6,6 +6,7 @@ import kaiyi.app.xhapp.entity.access.VisitorUser;
 import kaiyi.app.xhapp.service.access.VisitorMenuService;
 import kaiyi.puer.commons.collection.Cascadeable;
 import kaiyi.puer.commons.collection.ProcessCascadeEachHandler;
+import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.h5ui.bean.DynamicGridInfo;
 import kaiyi.puer.h5ui.bean.PageFieldData;
@@ -211,5 +212,25 @@ public abstract class ManagerController extends H5Controller {
     protected String getSearchTemplate(String className, StreamCollection<PageFieldData> searchableFieldData, DynamicGridInfo dynamicGridInfo) {
         filterSearchFieldData(className,searchableFieldData);
         return "searchPage.ftlh";
+    }
+    //判断用户是否具备权限
+    public static boolean hasAuthor(HttpServletRequest request, String url) {
+        Set<RoleAuthorizationMenu>  authors= (Set<RoleAuthorizationMenu>) request.getSession(true).getAttribute(NAME_SESSION_AUTHORS);
+        if(StreamCollection.assertNotEmpty(authors)){
+            RoleAuthorizationMenu pam=new StreamCollection<RoleAuthorizationMenu>(authors).find(m->{
+                return url.equals(m.getMenu().getActionFlag());
+            });
+            return pam!=null&&pam.isVisit();
+        }
+        return false;
+    }
+    /**********含有上下级***********/
+    protected StreamArray<Integer> getPageNumberStack(WebInteractive interactive){
+        StreamArray<Integer> pageNumbers=interactive.getIntegerArrayParameter("pageNumber",",");
+        boolean isback=interactive.getBoolean("isback","true",false);
+        if(!isback){
+            pageNumbers.insertToLast(interactive.getInteger(WebInteractive.PAGINATION_PARAMETER_CURRENT_PAGE));
+        }
+        return pageNumbers;
     }
 }

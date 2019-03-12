@@ -1,15 +1,19 @@
 //该数据表格必须和paginationPage配合使用
 $('#remoteDataGrid').datagrid({
     onRender: function(d) {
-        var height = 0;
-        $(".datagrid-container .datagrid-row").each(function() {
-            height += $(this).height();
-        })
-        $(".datagrid-container").height(height);
-        //拉伸高度
-        //$(".datagrid-container").height($("body").height()-$(".datagrid-container").offset().top-80);
-        //console.log($("body").height());
-        //console.log($(".datagrid-container").offset().top);
+        if(functionExist("changeGridHeight")){
+            changeGridHeight();
+        }else{
+            var height = 0;
+            $(".datagrid-container .datagrid-row").each(function() {
+                height += $(this).height();
+            })
+            $(".datagrid-container").height(height);
+            //拉伸高度
+            //$(".datagrid-container").height($("body").height()-$(".datagrid-container").offset().top-80);
+            //console.log($("body").height());
+            //console.log($(".datagrid-container").offset().top);
+        }
     },
     dataSource: {
         cols:[
@@ -90,6 +94,11 @@ $('#remoteDataGrid').datagrid({
         reference:{
             getter: function(dataValue, cell, dataGrid) {
                 return tryConvertCell("reference",dataValue,cell, dataGrid);
+            }
+        },
+        collection:{
+            getter: function(dataValue, cell, dataGrid) {
+                return tryConvertCell("collection",dataValue,cell, dataGrid);
             }
         }
     },

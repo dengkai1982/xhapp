@@ -1,8 +1,10 @@
 package kaiyi.app.xhapp.controller.mgr;
-
+import kaiyi.app.xhapp.controller.mgr.ManagerController;
 import kaiyi.app.xhapp.entity.access.VisitorMenu;
 import kaiyi.app.xhapp.entity.access.VisitorUser;
+import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
 import kaiyi.app.xhapp.service.access.VisitorUserService;
+import kaiyi.app.xhapp.service.pub.ConfigureService;
 import kaiyi.puer.commons.collection.Cascadeable;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.StringEditor;
@@ -16,6 +18,7 @@ import kaiyi.puer.json.creator.JsonMessageCreator;
 import kaiyi.puer.json.creator.MutilJsonCreator;
 import kaiyi.puer.web.elements.FormElementHidden;
 import kaiyi.puer.web.service.EntityQueryService;
+import kaiyi.puer.web.servlet.ServletUtils;
 import kaiyi.puer.web.servlet.WebInteractive;
 import kaiyi.puer.web.springmvc.IWebInteractive;
 import org.springframework.stereotype.Controller;
@@ -35,9 +38,17 @@ public class AccessController extends ManagerController {
     public static final String rootPath=prefix+"/access";
     @Resource
     private VisitorUserService visitorUserService;
+    @Resource
+    private ConfigureService configureService;
+
+    public static final String getAccessTempFilePathPrefix(WebInteractive interactive){
+        String contextPath=interactive.getHttpServletRequest().getContextPath();
+        return contextPath+rootPath+"/accessTempFile"+ServletUtils.getRequestSuffix(interactive.getHttpServletRequest())
+                +"?hex=";
+    }
     @RequestMapping("/tempUpload")
     public void tempUpload(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
-        String hex=DocumentService.tempFileUpload(interactive,response,"/Users/dengkai/HBuilderProjects/H5Demo/images/temp",
+        String hex=DocumentService.tempFileUpload(interactive,response,configureService.getStringValue(ConfigureItem.DOC_TEMP_PATH),
                 applicationService);
         JsonMessageCreator msg = getSuccessMessage();
         msg.setBody(hex);
@@ -45,13 +56,13 @@ public class AccessController extends ManagerController {
     }
     @RequestMapping("/accessTempFile")
     public void accessTempFile(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
-        DocumentService.accessStorageFile(interactive,response,"/Users/dengkai/HBuilderProjects/H5Demo/images",
-                "http://127.0.0.1:8020/H5Demo/images","hex");
+        DocumentService.accessStorageFile(interactive,response,configureService.getStringValue(ConfigureItem.DOC_TEMP_PATH),
+                configureService.getStringValue(ConfigureItem.DOC_SERVER_PREFIX),"hex");
     }
     @RequestMapping("/accessStorageFile")
     public void accessStorageFile(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
-        DocumentService.accessStorageFile(interactive,response,"/Users/dengkai/HBuilderProjects/H5Demo/images",
-                "http://127.0.0.1:8020/H5Demo/images","hex");
+        DocumentService.accessStorageFile(interactive,response,configureService.getStringValue(ConfigureItem.DOC_SAVE_PATH),
+                configureService.getStringValue(ConfigureItem.DOC_SERVER_PREFIX),"hex");
     }
     //获取菜单跳转
     @RequestMapping("/chooseFirstMenu")

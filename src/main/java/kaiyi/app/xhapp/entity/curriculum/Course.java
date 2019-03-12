@@ -1,7 +1,6 @@
 package kaiyi.app.xhapp.entity.curriculum;
 
 import kaiyi.app.xhapp.entity.AbstractEntity;
-import kaiyi.app.xhapp.entity.access.Student;
 import kaiyi.app.xhapp.entity.access.enums.MemberShip;
 import kaiyi.app.xhapp.entity.curriculum.enums.Difficulty;
 import kaiyi.puer.commons.data.ICurrency;
@@ -24,9 +23,6 @@ public class Course extends AbstractEntity {
     @PageField(label = "课程类别",type = FieldType.REFERENCE)
     @FieldReference(fieldName = "name")
     private Category category;
-    @PageField(label = "课程栏目",type = FieldType.REFERENCE)
-    @FieldReference(fieldName = "name")
-    private CourseColumn courseColumn;
     @PageField(label = "课程难度",type = FieldType.CHOSEN)
     @FieldChosen
     private Difficulty difficulty;
@@ -132,16 +128,6 @@ public class Course extends AbstractEntity {
 
     public void setBuyVolume(long buyVolume) {
         this.buyVolume = buyVolume;
-    }
-
-    @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
-    @JoinColumn(name="courseColumn")
-    public CourseColumn getCourseColumn() {
-        return courseColumn;
-    }
-
-    public void setCourseColumn(CourseColumn courseColumn) {
-        this.courseColumn = courseColumn;
     }
 
     public Student getStudent() {

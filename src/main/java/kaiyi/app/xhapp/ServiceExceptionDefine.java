@@ -33,6 +33,7 @@ public class ServiceExceptionDefine {
 
     public static final ServiceException loginNameExist=new ServiceException(
             ServiceException.CODE_FAIL,"登录名称重复");
-
+    public static final ServiceException messageSenderError=new ServiceException(
+            ServiceException.CODE_FAIL,"短信发送错误");
 
 }

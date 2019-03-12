@@ -2,7 +2,6 @@ package kaiyi.app.xhapp.entity.curriculum;
 
 import kaiyi.app.xhapp.entity.AbstractEntity;
 import kaiyi.app.xhapp.entity.access.Account;
-import kaiyi.app.xhapp.entity.access.Student;
 import kaiyi.puer.commons.data.IDate;
 import kaiyi.puer.h5ui.annotations.FieldReference;
 import kaiyi.puer.h5ui.annotations.FieldType;

@@ -25,7 +25,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 @Transactional(propagation=Propagation.REQUIRED)
-public abstract class InjectDao<T extends Identify> extends JpaDataOperImpl<T> implements DatabaseFastOper<T>,
+public abstract class InjectDao<T> extends JpaDataOperImpl<T> implements DatabaseFastOper<T>,
 		CustomQueryExpress,EntityQueryService,DataChangeNotify {
 	private static final long serialVersionUID = -7804767008062125327L;
 	@Resource
