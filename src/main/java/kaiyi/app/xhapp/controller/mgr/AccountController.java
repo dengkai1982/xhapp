@@ -4,7 +4,7 @@ import kaiyi.app.xhapp.entity.access.RoleAuthorizationMenu;
 import kaiyi.app.xhapp.entity.access.VisitorMenu;
 import kaiyi.app.xhapp.entity.access.VisitorRole;
 import kaiyi.app.xhapp.service.access.RoleAuthorizationMenuService;
-import kaiyi.app.xhapp.service.curriculum.StudentService;
+import kaiyi.app.xhapp.service.curriculum.TeacherService;
 import kaiyi.app.xhapp.service.access.VisitorRoleService;
 import kaiyi.app.xhapp.service.access.VisitorUserService;
 import kaiyi.puer.commons.access.AccessControl;
@@ -42,7 +42,7 @@ public class AccountController extends ManagerController {
     @Resource
     private VisitorUserService visitorUserService;
     @Resource
-    private StudentService studentService;
+    private TeacherService studentService;
     @RequestMapping("/visitorRole")
     @AccessControl(name = "角色管理", weight = 1.1f, detail = "管理系统中的访问角色", code = rootPath+ "/visitorRole", parent = rootPath)
     public String visitorRole(@IWebInteractive WebInteractive interactive, HttpServletResponse response){

@@ -1,6 +1,7 @@
 package kaiyi.app.xhapp.controller.app;
 
 import kaiyi.app.xhapp.service.access.AccountService;
+import kaiyi.app.xhapp.service.log.ShortMessageSenderNoteService;
 import kaiyi.puer.db.orm.ServiceException;
 import kaiyi.puer.json.creator.JsonMessageCreator;
 import kaiyi.puer.web.servlet.WebInteractive;
@@ -20,7 +21,8 @@ public class AccountAction extends SuperAction {
 
     @Resource
     private AccountService accountService;
-
+    @Resource
+    private ShortMessageSenderNoteService shortMessageSenderNoteService;
     /**
      * 用户注册
      * phone 手机号码
@@ -33,13 +35,35 @@ public class AccountAction extends SuperAction {
     public void register(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
         String phone=interactive.getStringParameter("phone","");
         String password=interactive.getStringParameter("password","");
+        //短信验证码
+        String validateCode=interactive.getStringParameter("validateCode","");
         JsonMessageCreator jmc=getSuccessMessage();
         try {
-            accountService.register(phone,password);
+            accountService.register(phone,password,validateCode);
         } catch (ServiceException e) {
             catchServiceException(jmc,e);
         }
         interactive.writeUTF8Text(jmc.build());
+    }
+
+    /**
+     * 发送验证码短信
+     * @param interactive
+     * @param response
+     */
+    @PostMapping("/sendShorMessage")
+    public void sendShorMessage(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        //手机号码
+        String phone=interactive.getStringParameter("phone","");
+        //用途,比如用户注册，找回密码
+        String usage=interactive.getStringParameter("usage","");
+        JsonMessageCreator jmc=getSuccessMessage();
+        try {
+            shortMessageSenderNoteService.sendValidateCode(phone,usage);
+        } catch (ServiceException e) {
+            catchServiceException(jmc,e);
+        }
+        interactive.writeUTF8Json(jmc);
     }
 
     /**

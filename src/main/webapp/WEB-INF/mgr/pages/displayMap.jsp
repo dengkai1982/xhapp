@@ -59,10 +59,6 @@
         <c:if test="${requestScope.hasData}">
         ${requestScope.tableScript}
         </c:if>
-        $("#remoteDataGrid").on("click", ".carouselImage", function(e) {
-            $("#imageModalContainer").attr("src",$(this).attr("src"));
-            $("#imageModal").modal("show");
-        });
     }
     function createMenuItems(dataId,dataRow,data){
         var items = [{

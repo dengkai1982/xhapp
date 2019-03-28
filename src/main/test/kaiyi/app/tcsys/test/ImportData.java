@@ -46,8 +46,8 @@ public class ImportData {
     @Test
     public void registUser() throws ServiceException {
         AccountService accountService=sel.getBean(AccountService.class);
-        accountService.register("13789009900","123456");
-        accountService.register("13890088998","123456");
+        //accountService.register("13789009900","123456");
+        //accountService.register("13890088998","123456");
     }
 
     @Test

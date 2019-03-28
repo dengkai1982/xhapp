@@ -16,19 +16,21 @@ import java.util.Date;
 public class VisitorUser extends AbstractEntity implements Accesser {
     private static final long serialVersionUID = 1986062763273225706L;
     public static final String TABLE_NAME="visitor_user";
-    @PageField(label = "登录名",orderBy = false)
+    @PageField(label = "登录名")
     private String loginName;
-    @PageField(label = "姓名",orderBy = false)
+    @PageField(label = "姓名")
     private String realName;
     @PageField(label = "密码",showSearch = false,showTable = false,showForm = false,showQuery = false,showDetail = false)
     private String password;
     @PageField(label = "所属角色",type = FieldType.REFERENCE)
     @FieldReference(fieldName = "name")
     private VisitorRole visitorRole;
-    @PageField(label = "最后登录时间",tableLength = 160,showQuery = false,showTable = false, showForm = false)
+    @PageField(label = "最后登录时间",tableLength = 160,showQuery = false, showForm = false)
     @IDate
     private Date lastLoginTime;
-    @PageField(label = "登录次数",showQuery = false,showTable = false,showForm = false)
+    @PageField(label = "登录IP地址",tableLength = 160)
+    private String loginAddress;
+    @PageField(label = "登录次数",showQuery = false,showForm = false)
     private long accessNumber;
 
     public String getLoginName() {
@@ -78,5 +80,13 @@ public class VisitorUser extends AbstractEntity implements Accesser {
 
     public void setRealName(String realName) {
         this.realName = realName;
+    }
+
+    public String getLoginAddress() {
+        return loginAddress;
+    }
+
+    public void setLoginAddress(String loginAddress) {
+        this.loginAddress = loginAddress;
     }
 }

@@ -1,26 +1,29 @@
 package kaiyi.app.xhapp.entity.curriculum;
 
 import kaiyi.app.xhapp.entity.AbstractEntity;
-import kaiyi.app.xhapp.entity.access.enums.MemberShip;
 import kaiyi.app.xhapp.entity.curriculum.enums.Difficulty;
 import kaiyi.puer.commons.data.ICurrency;
 import kaiyi.puer.commons.validate.NotEmpty;
 import kaiyi.puer.h5ui.annotations.*;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity(name=Course.TABLE_NAME)
 @PageEntity(showName = "课程",entityName = "course",serviceName = "courseService")
 public class Course extends AbstractEntity {
     private static final long serialVersionUID = -516765397341241977L;
     public static final String TABLE_NAME="course";
+    @PageField(label = "课程封面",type = FieldType.DOCUMENT)
+    @FieldDocument(maxFileSize = "4mb")
+    private String cover;
     @NotEmpty(hint = "课程名称必须填写")
     @PageField(label = "课程名称")
     private String name;
     @PageField(label = "课程讲师",type = FieldType.REFERENCE)
     @FieldReference(fieldName = "name")
-    private Student student;
-    @PageField(label = "课程类别",type = FieldType.REFERENCE)
+    private Teacher teacher;
+    @PageField(label = "课程类别",type = FieldType.REFERENCE,showSearch = false,showForm = false)
     @FieldReference(fieldName = "name")
     private Category category;
     @PageField(label = "课程难度",type = FieldType.CHOSEN)
@@ -37,18 +40,21 @@ public class Course extends AbstractEntity {
     @ICurrency
     @PageField(label = "课程售价",type = FieldType.NUMBER)
     private int price;
-    @PageField(label = "可购买等级",type = FieldType.CHOSEN)
-    @FieldChosen
-    private MemberShip purchase;
-    @PageField(label = "免费观看",type = FieldType.CHOSEN)
-    @FieldChosen
-    private MemberShip freeMember;
+    @PageField(label = "可购买等级",type = FieldType.NUMBER)
+    @FieldNumber(type=FieldNumber.TYPE.INT)
+    private int purchase;
+    @PageField(label = "免费观看",type = FieldType.NUMBER)
+    @FieldNumber(type=FieldNumber.TYPE.INT)
+    private int freeMember;
     @PageField(label = "浏览量",type = FieldType.NUMBER)
     private long browseVolume;
     @PageField(label = "购买量",type = FieldType.NUMBER)
     private long buyVolume;
     //课程上下架
     private boolean sale;
+
+    private Set<Chapter> chapters;
+
     public String getName() {
         return name;
     }
@@ -97,22 +103,7 @@ public class Course extends AbstractEntity {
     public void setPrice(int price) {
         this.price = price;
     }
-    @Enumerated(EnumType.STRING)
-    public MemberShip getPurchase() {
-        return purchase;
-    }
 
-    public void setPurchase(MemberShip purchase) {
-        this.purchase = purchase;
-    }
-    @Enumerated(EnumType.STRING)
-    public MemberShip getFreeMember() {
-        return freeMember;
-    }
-
-    public void setFreeMember(MemberShip freeMember) {
-        this.freeMember = freeMember;
-    }
 
     public long getBrowseVolume() {
         return browseVolume;
@@ -129,13 +120,14 @@ public class Course extends AbstractEntity {
     public void setBuyVolume(long buyVolume) {
         this.buyVolume = buyVolume;
     }
-
-    public Student getStudent() {
-        return student;
+    @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
+    @JoinColumn(name="teacher")
+    public Teacher getTeacher() {
+        return teacher;
     }
 
-    public void setStudent(Student student) {
-        this.student = student;
+    public void setTeacher(Teacher teacher) {
+        this.teacher = teacher;
     }
 
     public boolean isSale() {
@@ -145,4 +137,38 @@ public class Course extends AbstractEntity {
     public void setSale(boolean sale) {
         this.sale = sale;
     }
+    @Lob
+    public String getCover() {
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
+    }
+
+    public int getPurchase() {
+        return purchase;
+    }
+
+    public void setPurchase(int purchase) {
+        this.purchase = purchase;
+    }
+
+    public int getFreeMember() {
+        return freeMember;
+    }
+
+    public void setFreeMember(int freeMember) {
+        this.freeMember = freeMember;
+    }
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,mappedBy = "course")
+    public Set<Chapter> getChapters() {
+        return chapters;
+    }
+
+    public void setChapters(Set<Chapter> chapters) {
+        this.chapters = chapters;
+    }
+
+
 }

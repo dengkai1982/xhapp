@@ -107,5 +107,29 @@ public enum ConfigureItem {
 		public String toString() {
 			return "日志写入目录";
 		}
+	},
+	ALIYUN_USER_ID{
+		@Override
+		public String toString() {
+			return "阿里云USERID";
+		}
+	},
+	ALIYUN_VOD_ACCESS_KEY_ID{
+		@Override
+		public String toString() {
+			return "阿里云AccessId";
+		}
+	},
+	ALIYUN_VOD_ACCESS_KEY_SECRET(){
+		@Override
+		public String toString() {
+			return "阿里云Secret";
+		}
+	},
+	VOD_UPLOAD_TEMPLATE_ID{
+		@Override
+		public String toString() {
+			return "上传模板号";
+		}
 	}
 }

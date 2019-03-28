@@ -47,11 +47,6 @@
         <c:if test="${requestScope.hasData}">
         ${requestScope.tableScript}
         </c:if>
-        $("#generatorSecurityCode").click(function(){
-            var datas=$("#remoteDataGrid").data('zui.datagrid').getData();
-            console.log(datas);
-        });
-
     }
     function createMenuItems(dataId,dataRow,data){
         var items = [{

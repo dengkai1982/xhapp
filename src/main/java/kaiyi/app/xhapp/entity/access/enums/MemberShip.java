@@ -14,6 +14,11 @@ public enum MemberShip implements H5ChosenInterface {
         public String getHexColor() {
             return "#ea644a";
         }
+        @Override
+        public int getItemNumber() {
+            return 1;
+        }
+
     },
     gold{
         @Override
@@ -23,6 +28,10 @@ public enum MemberShip implements H5ChosenInterface {
         @Override
         public String getHexColor() {
             return "#3280fc";
+        }
+        @Override
+        public int getItemNumber() {
+            return 2;
         }
     },
     vip{
@@ -34,6 +43,10 @@ public enum MemberShip implements H5ChosenInterface {
         public String getHexColor() {
             return "#38b03f";
         }
+        @Override
+        public int getItemNumber() {
+            return 4;
+        }
     },
     supreme{
         @Override
@@ -44,6 +57,10 @@ public enum MemberShip implements H5ChosenInterface {
         public String getHexColor() {
             return "#8666b8";
         }
+        @Override
+        public int getItemNumber() {
+            return 8;
+        }
     }
     ;
     @Override
@@ -52,11 +69,6 @@ public enum MemberShip implements H5ChosenInterface {
                 toString(),PinyinUtils.getStringPinYin(toString())
         };
     }
-    @Override
-    public int getItemNumber() {
-        return ordinal();
-    }
-
     @Override
     public String getValue() {
         return toString();
@@ -72,5 +84,7 @@ public enum MemberShip implements H5ChosenInterface {
     public String getDataKeys() {
         return getSearchValues().toString();
     }
+
+
 
 }

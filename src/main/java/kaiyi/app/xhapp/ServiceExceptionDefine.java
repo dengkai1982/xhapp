@@ -16,7 +16,8 @@ public class ServiceExceptionDefine {
             ServiceException.CODE_FAIL,"手机号码已注册");
     public static final ServiceException phoneFormatError=new ServiceException(
             ServiceException.CODE_FAIL,"手机号码格式错误");
-
+    public static final ServiceException validateCodeError=new ServiceException(
+            ServiceException.CODE_FAIL,"短信验证码错误");
     public static final ServiceException passwordNotEmpty=new ServiceException(
             ServiceException.CODE_FAIL,"密码不能为空");
     public static final ServiceException passwordError=new ServiceException(

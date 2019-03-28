@@ -14,7 +14,7 @@ public interface VisitorUserService extends DatabaseQuery<VisitorUser>,DatabaseF
      * @param password
      * @throws ServiceException
      */
-    VisitorUser doLogin(String loginName, String password)throws ServiceException;
+    VisitorUser doLogin(String loginName, String password,String ipaddr)throws ServiceException;
     /**
      * 修改密码
      * @param userId

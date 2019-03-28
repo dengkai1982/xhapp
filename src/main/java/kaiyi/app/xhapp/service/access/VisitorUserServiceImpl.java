@@ -52,7 +52,7 @@ public class VisitorUserServiceImpl extends InjectDao<VisitorUser> implements Vi
         visitorUser.setPassword(password);
     }
     @Override
-    public VisitorUser doLogin(String loginName, String password) throws ServiceException {
+    public VisitorUser doLogin(String loginName, String password,String ipaddr) throws ServiceException {
         VisitorUser user=signleQuery("loginName",loginName);
         /*if(Objects.isNull(user)||!user.isEnable()){
             throw ServiceExceptionDefine.userNotExist;
@@ -62,6 +62,7 @@ public class VisitorUserServiceImpl extends InjectDao<VisitorUser> implements Vi
         }
         user.setLastLoginTime(new Date());
         user.setAccessNumber(user.getAccessNumber()+1);
+        user.setLoginAddress(ipaddr);
         updateObject(user);
         return user;
     }

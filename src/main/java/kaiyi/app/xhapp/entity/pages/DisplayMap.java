@@ -13,7 +13,7 @@ import java.util.Objects;
 public class DisplayMap extends AbstractEntity implements ContentText {
     private static final long serialVersionUID = 2252891380977738148L;
     public static final String TABLE_NAME="display_map";
-    @PageField(label = "展示图片",showForm = false)
+    @PageField(label = "展示图片",showForm = false,orderBy = false)
     private String imagePath;
     @PageField(label = "展示位置",type = FieldType.CHOSEN,placeholder="请选择图片展示位置")
     @FieldChosen

@@ -13,7 +13,7 @@
 	  <class>kaiyi.app.xhapp.entity.curriculum.Course</class>
 	  <class>kaiyi.app.xhapp.entity.curriculum.CourseComment</class>
 	  <class>kaiyi.app.xhapp.entity.curriculum.Category</class>
-	  <class>kaiyi.app.xhapp.entity.curriculum.Student</class>
+	  <class>kaiyi.app.xhapp.entity.curriculum.Teacher</class>
 	  <class>kaiyi.app.xhapp.entity.curriculum.CourseProblem</class>
 	  <class>kaiyi.app.xhapp.entity.pub.Configure</class>
 	  <class>kaiyi.app.xhapp.entity.log.ShortMessageSenderNote</class>

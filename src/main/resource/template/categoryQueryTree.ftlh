@@ -1,0 +1,1 @@
+<span data-id='${id}' data-name='${name}'" class="categoryChoose">${name}</span>

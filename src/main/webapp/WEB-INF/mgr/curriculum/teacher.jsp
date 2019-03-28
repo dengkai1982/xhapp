@@ -12,7 +12,7 @@
         <div id="mainMenu" class="clearfix">
             <div class="btn-toolbar pull-right">
                 <c:if test="${requestScope.hasData}">
-                <a href="#" class="btn btn-link querybox-toggle" id="show_or_hide_search"><i class="icon-search icon"></i> 搜索</a>
+                    <a href="#" class="btn btn-link querybox-toggle" id="show_or_hide_search"><i class="icon-search icon"></i> 搜索</a>
                 </c:if>
                 <visit:auth url="${webPage.newEntityPage}">
                     <a href="${contextPath}${webPage.newEntityPage}${suffix}?${paginationCurrentPage}=1" class="btn btn-primary"><i class="icon icon-plus"></i> 新增${requestScope.entityShowName}</a>
@@ -57,28 +57,7 @@
         },{
             url:"${contextPath}${webPage.detailEntityPage}${suffix}?entityId="+dataId+"&${paginationCurrentPage}="+getPaginationCurrentPage(),
             label:"查看详情"
-        },{
-            label:"修改权限",
-            url:"#"+dataId,
-            className:"privilege",
-            access:"/mgr/account/visitorRole/privilegeDatas",
-            onClick:function(e){
-                var time=new Date().getTime();
-                var modalTrigger = new $.zui.ModalTrigger({
-                    url:'${contextPath}/mgr/account/visitorRole/privilegeDatas${suffix}?entityId='+dataId+"&t="+time,
-                    size:'sm',
-                    title:'权限设置',
-                    backdrop:'static',
-                    type:'iframe',
-                    width:400,
-                    height:280
-                });
-                modalTrigger.show({hidden: function() {
-                        $("#triggerModal").remove();
-                    }});
-            }
-        }
-        ]
+        }]
         checkPrivilege(items);
         return items;
     };

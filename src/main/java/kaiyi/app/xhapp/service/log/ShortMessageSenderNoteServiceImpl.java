@@ -35,35 +35,35 @@ public class ShortMessageSenderNoteServiceImpl extends InjectDao<ShortMessageSen
         if(!VariableVerifyUtils.mobileValidate(phone)){
             throw ServiceExceptionDefine.phoneFormatError;
         }
-        if(!accountService.exist(new CompareQueryExpress("phone",Compare.EQUAL,phone))){
+        /*if(!accountService.exist(new CompareQueryExpress("phone",Compare.EQUAL,phone))){
             throw ServiceExceptionDefine.userNotExist;
-        }
+        }*/
         QueryExpress query=new CompareQueryExpress("phone",Compare.EQUAL,phone);
         query=new LinkQueryExpress(query,LINK.AND,new CompareQueryExpress("invalide",Compare.EQUAL,Boolean.FALSE));
         StreamCollection<ShortMessageSenderNote> noteList=getEntitys(query);
+        String code=null;
+        String userName=configureService.getStringValue(ConfigureItem.SMS_USER_NAME);
+        String url=configureService.getStringValue(ConfigureItem.SMS_SEND_URL);
+        String passwd=configureService.getStringValue(ConfigureItem.SMS_PASSWORD);
+        String sender=configureService.getStringValue(ConfigureItem.BUSINESS_NAME);
         if(noteList.assertEmpty()){
-            String code=RandomUtils.getNumber(6);
-            String userName=configureService.getStringValue(ConfigureItem.SMS_USER_NAME);
-            String url=configureService.getStringValue(ConfigureItem.SMS_SEND_URL);
-            String passwd=configureService.getStringValue(ConfigureItem.SMS_PASSWORD);
-            String sender=configureService.getStringValue(ConfigureItem.BUSINESS_NAME);
-            String cp=configureService.getStringValue(ConfigureItem.CUSTOMER_PHONE);
-            SMSSender smsSender=new SMSSender(url,userName,passwd);
-            try {
-                boolean result=smsSender.send(phone,"【"+sender+"】您的验证码为"+code+"请在5分钟内输入。感谢您对鑫鸿教育的支持，祝您生活愉快");
-                if(result){
-                    ShortMessageSenderNote note=new ShortMessageSenderNote(phone, false, false,code);
-                    note.setCodeUsage(usage);
-                    saveObject(note);
-                    return code;
-                }
-            } catch (HttpException e) {
-                throw ServiceExceptionDefine.messageSenderError;
-            }
+            code=RandomUtils.getNumber(6);
         }else{
-            return noteList.get(0).getCode();
+            code = noteList.get(0).getCode();
         }
-        return null;
+        SMSSender smsSender=new SMSSender(url,userName,passwd);
+        try {
+            boolean result=smsSender.send(phone,"【"+sender+"】您的验证码为"+code+"请在5分钟内输入。感谢您对鑫鸿教育的支持，祝您生活愉快");
+            if(result){
+                ShortMessageSenderNote note=new ShortMessageSenderNote(phone, false, false,code);
+                note.setCodeUsage(usage);
+                saveObject(note);
+                return code;
+            }
+        } catch (HttpException e) {
+            throw ServiceExceptionDefine.messageSenderError;
+        }
+        return code;
     }
 
     @Override
@@ -88,7 +88,7 @@ public class ShortMessageSenderNoteServiceImpl extends InjectDao<ShortMessageSen
 
     //清除短信验证码状态
     private void clearCodeStatus(){
-        long millis=System.currentTimeMillis()-DateTimeUtil.getMinutesMillisecond();
+        long millis=System.currentTimeMillis()-(DateTimeUtil.getMinutesMillisecond()*5);
         em.createQuery("update "+getEntityName(entityClass)+" o set o.invalide=:invalide,o.updateTime=:updateTime "
                 + "where o.createTime<=:createTime")
                 .setParameter("invalide", Boolean.TRUE)

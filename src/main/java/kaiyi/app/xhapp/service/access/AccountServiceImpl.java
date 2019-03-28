@@ -3,6 +3,7 @@ package kaiyi.app.xhapp.service.access;
 import kaiyi.app.xhapp.ServiceExceptionDefine;
 import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.app.xhapp.service.InjectDao;
+import kaiyi.app.xhapp.service.log.ShortMessageSenderNoteService;
 import kaiyi.puer.commons.data.StringEditor;
 import kaiyi.puer.commons.validate.VariableVerifyUtils;
 import kaiyi.puer.db.orm.ServiceException;
@@ -17,8 +18,13 @@ import java.util.Objects;
 public class AccountServiceImpl extends InjectDao<Account> implements AccountService {
     @Resource
     private ApplicationService applicationService;
+    @Resource
+    private ShortMessageSenderNoteService shortMessageSenderNoteService;
     @Override
-    public void register(String phone, String password) throws ServiceException {
+    public void register(String phone, String password,String validateCode) throws ServiceException {
+        if(!shortMessageSenderNoteService.validateCode(phone,validateCode)){
+            throw ServiceExceptionDefine.validateCodeError;
+        }
         if(!VariableVerifyUtils.mobileValidate(phone)){
             throw ServiceExceptionDefine.phoneFormatError;
         }

@@ -90,7 +90,8 @@ public class AccessController extends ManagerController {
         String username=interactive.getStringParameter("username","");
         String password=interactive.getStringParameter("password","");
         try {
-            VisitorUser user=visitorUserService.doLogin(username,password);
+            VisitorUser user=visitorUserService.doLogin(username,password,
+                    ServletUtils.getRequestIpaddr(interactive.getHttpServletRequest()));
             addUserToSession(interactive,user);
             VisitorMenu visitorMenu=addMenuToSession(interactive);
             String actionFlalg=visitorMenu.getActionFlag();

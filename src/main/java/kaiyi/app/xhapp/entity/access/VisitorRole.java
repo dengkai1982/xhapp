@@ -16,7 +16,7 @@ import java.util.Set;
 public class VisitorRole extends AbstractEntity {
     private static final long serialVersionUID = 8060707675770443708L;
     public static final String TABLE_NAME="visitor_role";
-    @PageField(label = "角色名称",orderBy = false)
+    @PageField(label = "角色名称")
     private String name;
     @PageField(label = "角色描述",type = FieldType.AREATEXT,orderBy = false,showSearch = false,formColumnLength = 3)
     private String descript;

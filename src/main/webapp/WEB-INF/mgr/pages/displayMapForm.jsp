@@ -162,13 +162,6 @@
             limitFilesCount:false,
             flash_swf_url:"${contextPath}/zui/lib/uploader/Moxie.swf",
             silverlight_xap_url:"${contextPath}/zui/lib/uploader/Moxie.xap",
-            resize:{
-                width: 520,
-                height: 280,
-                crop: true,
-                quuality: 90,
-                preserve_headers: false
-            },
             responseHandler:function(resp, file){
                 var result=$.parseJSON(resp.response);
                 if(result.msg=="success"){

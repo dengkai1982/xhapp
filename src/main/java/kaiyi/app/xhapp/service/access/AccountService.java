@@ -9,9 +9,10 @@ public interface AccountService extends DatabaseQuery<Account>{
      * 账户注册
      * @param phone
      * @param password
+     * @param validateCode
      * @throws ServiceException
      */
-    void register(String phone,String password)throws ServiceException;
+    void register(String phone,String password,String validateCode)throws ServiceException;
 
     /**
      * 账户登录
