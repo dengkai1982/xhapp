@@ -249,6 +249,11 @@ function getJson(url,data,sfn){
 
     });
 }
+function postJson(url,data,sfn){
+    jsonAjax(url,"post",data,"正在加载,请稍后",5000,sfn,function(xhr,textStatus){
+
+    });
+}
 /**
  * post请求,返回json数据
  * 统一Ajax后的json返回格式
@@ -335,6 +340,13 @@ $(document).ready(function(){
         pageReady($(this));
     }
 });
+function getDataGridHeight(){
+    var bodyHeight=$("body").height()
+    var dataGridTop=$("#remoteDataGrid").offset().top
+    var height=  bodyHeight-dataGridTop-80;
+    console.log(height);
+    return height;
+}
 //初始化主题
 function initTheme(){
     var theme=$.zui.store.get("theme");
@@ -410,8 +422,7 @@ function setInputContol() {
     //清除查找框
     $(".clear_query_search_input").click(function () {
         var $group = $(this).parent(".input-group");
-        $group.find("input[name='query_value']").val("");
-        $(this).prev("input").val("");
+        $group.find("input").val("");
     });
     //清除表单中的查找框
     $(".clear_form_query_input").click(function () {
@@ -586,6 +597,12 @@ function initApplication() {
         var uploadUrl=$this.attr("data-upload-url");
         var accessTempUrl=$this.attr("data-access-temp-url");
         var storageUrl=$this.attr("data-access-storage-url");
+        var limitFilesCount;
+        if(multielection){
+            limitFilesCount=false;
+        }else{
+            limitFilesCount=1;
+        }
         var uploader=$this.uploader({
             autoUpload:!rename,            // 当选择文件后立即自动进行上传操作
             url:uploadUrl,  // 文件上传提交地址
@@ -614,7 +631,7 @@ function initApplication() {
             unique_names:true,
             multi_selection:multielection,
             chunk_size:0,//不执行分片
-            limitFilesCount:false,
+            limitFilesCount:limitFilesCount,
             flash_swf_url:contextPath+"/zui/lib/uploader/Moxie.swf",
             silverlight_xap_url:contextPath+"/zui/lib/uploader/Moxie.xap",
             responseHandler:function(resp, file){
@@ -707,6 +724,9 @@ function initApplication() {
         if(functionExist("customFormValidate")){
             //自定义表单校验
             flag=customFormValidate($this,$formData);
+        }
+        if(functionExist("beforeEditFormCommit")){
+            beforeEditFormCommit($formData);
         }
         if(flag){
             postJSON($form.attr("action"),$formData,"正在处理请稍后",function(result){

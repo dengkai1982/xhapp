@@ -4,21 +4,15 @@ $('#remoteDataGrid').datagrid({
         if(functionExist("changeGridHeight")){
             changeGridHeight();
         }else{
-            var height = 0;
-            $(".datagrid-container .datagrid-row").each(function() {
-                height += $(this).height();
-            })
-            $(".datagrid-container").height(height);
-            //拉伸高度
-            //$(".datagrid-container").height($("body").height()-$(".datagrid-container").offset().top-80);
-            //console.log($("body").height());
-            //console.log($(".datagrid-container").offset().top);
+            if(functionExist("dataLoadSuccess")){
+                dataLoadSuccess($("#query_search_from input[name='queryCondition']").val());
+            }
         }
     },
     dataSource: {
         cols:[
         <#list tableFieldDatas as columnData>
-            <#if (tableFieldDatas?size>10)>
+            <#if (tableFieldDatas?size>8)>
                 <#if columnData.field??>
                     {name:"${columnData.field.name}",html:true,valueType:"${columnData.tableColumnType}",sort:${columnData.orderBy?c},label:"${columnData.label}",width:${columnData.tableLength}},
                 </#if>
@@ -107,6 +101,7 @@ $('#remoteDataGrid').datagrid({
     hoverCell: false,
     hoverCol: false,
     width: '100%',
+    height:getDataGridHeight(),
     rowDefaultHeight:34,
     <#if tableMutilChosen?c=="true">
     checkable: true,
@@ -119,7 +114,7 @@ $('#remoteDataGrid').datagrid({
             page: getPaginationCurrentPage(),
             recPerPage: parseInt('${pageMaxResult}')
         },
-        <#if (tableFieldDatas?size>10)>
+        <#if (tableFieldDatas?size>8)>
         fixedLeftUntil: 1, // 固定左侧第一列
         fixedRightFrom: ${columnDataSize}
         </#if>

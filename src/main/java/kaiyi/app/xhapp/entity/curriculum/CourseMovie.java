@@ -2,13 +2,15 @@ package kaiyi.app.xhapp.entity.curriculum;
 
 import kaiyi.app.xhapp.entity.AbstractEntity;
 import kaiyi.puer.commons.validate.NotEmpty;
+import kaiyi.puer.h5ui.annotations.FieldReference;
+import kaiyi.puer.h5ui.annotations.FieldType;
 import kaiyi.puer.h5ui.annotations.PageEntity;
 import kaiyi.puer.h5ui.annotations.PageField;
 
 import javax.persistence.*;
 
 @Entity(name=CourseMovie.TABLE_NAME)
-@PageEntity(showName = "课程视频",entityName = "courseMovie",serviceName = "courseMovieService")
+@PageEntity(showName = "章节视频",entityName = "courseMovie",serviceName = "courseMovieService")
 public class CourseMovie extends AbstractEntity {
     private static final long serialVersionUID = 1945441403633625378L;
     public static final String TABLE_NAME="course_movie";
@@ -17,8 +19,9 @@ public class CourseMovie extends AbstractEntity {
     private String name;
     @PageField(label = "播放时长")
     private String longTime;
-    @PageField(label = "播放地址")
-    private String playerAddress;
+    @PageField(label = "媒体库",type = FieldType.REFERENCE)
+    @FieldReference(fieldName = "name")
+    private MediaLibrary mediaLibrary;
     @PageField(label = "显示权重")
     private int weight;
     private Chapter chapter;
@@ -39,13 +42,16 @@ public class CourseMovie extends AbstractEntity {
         this.longTime = longTime;
     }
 
-    public String getPlayerAddress() {
-        return playerAddress;
+    @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
+    @JoinColumn(name="mediaLibrary")
+    public MediaLibrary getMediaLibrary() {
+        return mediaLibrary;
     }
 
-    public void setPlayerAddress(String playerAddress) {
-        this.playerAddress = playerAddress;
+    public void setMediaLibrary(MediaLibrary mediaLibrary) {
+        this.mediaLibrary = mediaLibrary;
     }
+
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.LAZY)
     @JoinColumn(name="chapter")
     public Chapter getChapter() {

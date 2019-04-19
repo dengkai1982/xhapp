@@ -14,6 +14,7 @@
 <link rel="stylesheet" href="${contextPath}/zui/lib/uploader/zui.uploader.min.css">
 <link rel="stylesheet" href="${contextPath}/zui/lib/bootbox/bootbox.min.css">
 <link rel="stylesheet" href="${contextPath}/zui/lib/dashboard/zui.dashboard.min.css">
+<link rel="stylesheet" href="${contextPath}/iconfont/iconfont.css" />
 <link rel="stylesheet" href="${contextPath}/css/adapter.css" />
 <script type="text/javascript" charset="utf-8" src="${contextPath}/js/jquery-3.3.1.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="${contextPath}/zui/js/zui.min.js"></script>

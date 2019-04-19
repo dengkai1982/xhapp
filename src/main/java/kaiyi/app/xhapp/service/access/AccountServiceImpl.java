@@ -66,4 +66,14 @@ public class AccountServiceImpl extends InjectDao<Account> implements AccountSer
         account.setPassword(applicationService.cipherToString(newPassword));
         updateObject(account);
     }
+
+    @Override
+    public void resetPassword(String phone, String newPassword)throws ServiceException {
+        Account account=signleQuery("phone",phone);
+        if(Objects.isNull(account)){
+            throw ServiceExceptionDefine.userNotExist;
+        }
+        account.setPassword(applicationService.cipherToString(newPassword));
+        updateObject(account);
+    }
 }

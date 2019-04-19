@@ -387,3 +387,6 @@
 .chosen-container-single.chosen-container-single-nosearch .chosen-search{
 	left:0;
 }
+html,body{
+	height:100%;
+}

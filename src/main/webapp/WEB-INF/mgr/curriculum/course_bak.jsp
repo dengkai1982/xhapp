@@ -14,13 +14,17 @@
                 <a href="#" id="newTopCategory" class="btn btn-primary">新增类别</a>
             </div>
             <div class="btn-toolbar pull-right">
-                <a href="#" class="btn btn-link querybox-toggle" id="show_or_hide_search"><i class="icon-search icon"></i> 搜索</a>
+                <c:if test="${requestScope.hasData}">
+                    <a href="#" class="btn btn-link querybox-toggle" id="show_or_hide_search"><i class="icon-search icon"></i> 搜索</a>
+                </c:if>
                 <visit:auth url="${webPage.newEntityPage}">
                     <a href="#" id="newCourse" url="${contextPath}${webPage.newEntityPage}${suffix}?${paginationCurrentPage}=1" class="btn btn-primary"><i class="icon icon-plus"></i> 新增${requestScope.entityShowName}</a>
                 </visit:auth>
             </div>
         </div>
-        ${requestScope.searchHtml}
+        <c:if test="${requestScope.hasData}">
+            ${requestScope.searchHtml}
+        </c:if>
         <div id="mainContent" class="main-row">
             <div class="side-col" id="sidebar" style="width: 280px;">
                 <div class="cell left_cell" style="width: 260px;overflow: visible; max-height: initial;">
@@ -37,8 +41,19 @@
                 </div>
             </div>
             <div class="main-col main-table">
-                <div id="remoteDataGrid" class="datagrid-borderless datagrid-striped" style="background:#efefef;width:100%;table-layout:fixed;display:table;"></div>
-                <%@ include file="/WEB-INF/paginationPage.jsp"%>
+                <c:choose>
+                    <c:when test="${requestScope.hasData}">
+                        <div id="remoteDataGrid" class="datagrid-borderless datagrid-striped" style="background:#efefef;width:100%;table-layout:fixed;display:table;"></div>
+                        <%@ include file="/WEB-INF/paginationPage.jsp"%>
+                    </c:when>
+                    <c:otherwise>
+                        <div class="table-empty-tip">
+                            <p>
+                                <span class="text-muted">抱歉,展示没有任何数据。</span>
+                            </p>
+                        </div>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </div>
     </div>
@@ -87,10 +102,11 @@
 </div>
 <%@include file="/WEB-INF/footerPage.jsp"%>
 <script type="text/javascript">
-    var chooseCategoryId="";
-    var expandId="${requestScope.expandId}";
+    var chooseCategoryId=""
     function pageReady(doc){
+        <c:if test="${requestScope.hasData}">
         ${requestScope.tableScript}
+        </c:if>
         /***** 类别管理 ******/
         var data=${requestScope.treeData};
         if(data.category){
@@ -113,7 +129,6 @@
             }else{
                 chooseCategoryId=category.attr("data-id");
             }
-            loadCourseData(chooseCategoryId);
         });
         $("#categoryTree").on("click",".oper",function(e){
             var $this=$(this);
@@ -226,14 +241,9 @@
             if(chooseCategoryId==""){
                 toast("请选择需要新增课程的二级类别");
             }else{
-                window.location.href=$(this).attr("url")+"&categoryId="+chooseCategoryId;
+                window.location.href=$$(this).attr("url")+"?categoryId="+chooseCategoryId;
             }
         });
-        if(expandId!=""){
-            expandTreeNode(expandId);
-            chooseCategoryId=expandId;
-            loadCourseData(chooseCategoryId);
-        }
     }
     function createMenuItems(dataId,dataRow,data){
         var items = [{
@@ -242,51 +252,12 @@
             className:"privilege",
             access:"${webPage.modifyEntityPage}"
         },{
-            url:"${managerPath}/curriculum/course/chapter/editor${suffix}?entityId="+dataId+"&${paginationCurrentPage}="+getPaginationCurrentPage(),
-            label:"章节管理",
-            className:"privilege",
-            access:"${webPage.modifyEntityPage}"
-        },{
             url:"${contextPath}${webPage.detailEntityPage}${suffix}?entityId="+dataId+"&${paginationCurrentPage}="+getPaginationCurrentPage(),
             label:"查看详情"
-        },{
-            label:"课程上/下架",
-            onClick:function(){
-                var sale=data.sale.name=="true"?"下架":"上架";
-                confirmOper("消息","确实要对该课程进行"+sale+"处理?",function(){
-                    postJSON("${managerPath}/curriculum/course/chapter/changeSale${suffix}",{
-                        entityId:dataId
-                    },"正在执行,请稍后...",function(result){
-                        if(result.code==SUCCESS){
-                            bootbox.alert({
-                                title:"消息",
-                                message: "处理课程"+sale+"成功,点击确认返回",
-                                callback: function () {
-                                    reflashPageData();
-                                }
-                            })
-                        }else{
-                            showMessage(result.msg,1500);
-                        }
-                    });
-                })
-            }
         }];
         checkPrivilege(items);
         return items;
     };
-    function expandTreeNode(entityId){
-        var category=$("span[data-id='"+entityId+"']");
-        var $li=category.parents("li");
-        var tree=$("#categoryTree").data('zui.tree');
-        tree.expand($li);
-        category.find(".menu_title").addClass("text-red");
-        loadCourseData(chooseCategoryId);
-    }
-    function loadCourseData(entityId){
-        $("#query_search_from input[name='currentCategory']").val(entityId);
-        reflashPageData();
-    }
 </script>
 </body>
 </html>

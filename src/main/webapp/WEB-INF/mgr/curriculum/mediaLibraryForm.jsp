@@ -20,24 +20,27 @@
                   action="${contextPath}${webPage.commitEntityAction}${suffix}">
                 <c:set var="entity" value="${requestScope.entity}"/>
                 <input type="hidden" name="entityId" value="${entity.entityId}">
-                <input type="hidden" name="popupSelectValueResult">
                 <div class="form-group">
-                    <label for="name" class="col-sm-1">视频名称</label>
+                    <label for="name" class="col-sm-1 required">视频名称</label>
                     <div data-column-type="TEXT" class="col-sm-3">
                         <input type="text" value="${entity.name}" name="name" class="form-control" id="name" placeholder="请输入视频名称">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="name" class="col-sm-1">视频文件</label>
-                    <div class="col-sm-7">
+                    <div class="col-sm-3">
+                        <input type="text" id="fileName" class="form-control" readonly style="margin-bottom: 10px"/>
+                        <label id="upload_progress" style="display: none;">视频上传中,当前进度<span id="progress_value">0</span>%</label>
                         <div id='mediaUploader' class="mediaUploader">
                             <button type="button" class="btn btn-primary uploader-btn-browse">选择文件</button>
-                            <button type="button" id="deleteImage" class="btn btn-danger">删除文件</button>
                         </div>
                     </div>
                 </div>
-                <input type="file" id="fileUpload" style="display: none;">
-                <%@include file="/WEB-INF/mgr/access/formCommitButton.jsp"%>
+                <input type="file" id="fileUpload" style="display: none;" accept=".flv,.mp4,.mp3">
+                <div style="text-align: center;">
+                    <button type="button" id="commitToMediaLibrary" class="btn btn-wide btn-primary">确认提交</button>
+                    <a href="${webPage.backPage}"  class="btn btn-back btn-wide">返回</a>
+                </div>
             </form>
         </div>
     </div>
@@ -45,29 +48,52 @@
 <%@include file="/WEB-INF/footerPage.jsp"%>
 <script type="text/javascript">
     var uploader;
+    var chooseFile;
+    var fileTitle;
+    var fileName;
     function pageReady(doc) {
         $(".mediaUploader .uploader-btn-browse").click(function(){
             $("#fileUpload").click();
-        })
+        });
         $("#fileUpload").change(function(e){
-            var file = e.target.files[0]
-            if (!file) {
+            chooseFile = e.target.files[0];
+            if(chooseFile){
+                $("#fileName").val(chooseFile.name)
+            }
+        })
+        $("#commitToMediaLibrary").click(function(){
+            $(this).addClass("disabled");
+            var $form=$("#editor_form").formToJson();
+            if($form.title==""){
+                toast("视频名称必须填写");
+                return;
+            }
+            fileTitle=$form.name;
+            if($form.entityId==""&&!chooseFile){
                 toast("请先选择需要上传的文件!")
                 return
             }
-            var title = file.name
+            fileName = chooseFile.name
             var userData = '{"Vod":{}}'
             if (uploader) {
                 uploader.stopUpload()
                 $('#auth-progress').text('0')
                 $('#status').text("")
             }
-            uploader = createUploader()
-            // 首先调用 uploader.addFile(event.target.files[i], null, null, null, userData)
-            console.log(uploader)
-            uploader.addFile(file, null, null, null, userData);
+            uploader = createUploader();
+            uploader.addFile(chooseFile, null, null, null, userData);
+            $("#upload_progress").show();
             uploader.startUpload();
         })
+    }
+    function resetUpload(){
+        uploader=undefined;
+        chooseFile=undefined;
+        fileTitle=undefined;
+        fileName=undefined;
+        $("#upload_progress").hide();
+        $("#progress_value").html("");
+        $("#commitToMediaLibrary").removeClass("disabled");
     }
     function createUploader () {
         var uploader = new AliyunUpload.Vod({
@@ -89,11 +115,21 @@
             onUploadstarted: function (uploadInfo) {
                 if (uploadInfo.videoId) {
                     // 如果 uploadInfo.videoId 存在, 调用 刷新视频上传凭证接口(https://help.aliyun.com/document_detail/55408.html)
+                    postJson("${managerPath}/curriculum/refreshUploadVideoRequest${suffix}",{
+                        videoId:uploadInfo.videoId
+                    },function(data){
+                        console.log(data);
+                        var uploadAuth = data.UploadAuth
+                        var uploadAddress = data.UploadAddress
+                        var videoId = data.VideoId
+                        uploader.setUploadAuthAndAddress(uploadInfo, uploadAuth, uploadAddress,videoId)
+                    });
                 }
                 else{
                     // 如果 uploadInfo.videoId 不存在,调用 获取视频上传地址和凭证接口(https://help.aliyun.com/document_detail/55407.html)
-                    getJson("${managerPath}/curriculum/uploadVideoRequest${suffix}",{
-
+                    postJson("${managerPath}/curriculum/uploadVideoRequest${suffix}",{
+                        fileName:fileName,
+                        title:fileTitle
                     },function(data){
                         console.log(data);
                         var uploadAuth = data.UploadAuth
@@ -108,23 +144,41 @@
                 console.log("upload success");
                 console.log(uploadInfo)
                 //获取访问ID
-                uploadInfo.videoId;
+                var $form=$("#editor_form").formToJson();
+                postJson("${managerPath}/curriculum/commitMediaLibrary${suffix}",{
+                    title:$form.name,
+                    videoId:uploadInfo.videoId
+                },function(data){
+                    if(data.code==SUCCESS){
+                        bootbox.alert({
+                            title:'消息',
+                            message: "新增媒体库成功,点击确认返回",
+                            size: 'small',
+                            callback: function () {
+                                window.location.href="${webPage.backPage}";
+                            }
+                        });
+                    }
+                });
             },
             // 文件上传失败
             'onUploadFailed': function (uploadInfo, code, message) {
-                console.log("onUploadFailed: file:" + uploadInfo.file.name + ",code:" + code + ", message:" + message);
+                toast("文件上传失败: file:" + uploadInfo.file.name + ",code:" + code + ", message:" + message);
+                resetUpload();
             },
             // 文件上传进度，单位：字节
             'onUploadProgress': function (uploadInfo, totalSize, loadedPercent) {
-                console.log("onUploadProgress:file:" + uploadInfo.file.name + ", fileSize:" + totalSize + ", percent:" + Math.ceil(loadedPercent * 100) + "%");
+                $("#progress_value").html(Math.ceil(loadedPercent * 100));
+                //console.log("onUploadProgress:file:" + uploadInfo.file.name + ", fileSize:" + totalSize + ", percent:" + Math.ceil(loadedPercent * 100) + "%");
             },
             // 上传凭证超时
             'onUploadTokenExpired': function (uploadInfo) {
-                console.log("onUploadTokenExpired");
+                toast("上传凭证超时");
+                resetUpload();
                 //实现时，根据uploadInfo.videoId调用刷新视频上传凭证接口重新获取UploadAuth
                 //https://help.aliyun.com/document_detail/55408.html
                 //从点播服务刷新的uploadAuth,设置到SDK里
-                uploader.resumeUploadWithAuth(uploadAuth);
+                //uploader.resumeUploadWithAuth(uploadAuth);
             },
             //全部文件上传结束
             'onUploadEnd':function(uploadInfo){

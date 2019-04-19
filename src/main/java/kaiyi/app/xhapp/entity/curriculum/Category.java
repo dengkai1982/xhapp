@@ -21,6 +21,9 @@ public class Category extends LogicDeleteEntity implements Cascadeable,Comparabl
     @PageField(label = "显示权重",type = FieldType.NUMBER)
     @FieldNumber(type = FieldNumber.TYPE.FLOAT)
     private Float weight;
+    @PageField(label = "启用/停用",type = FieldType.BOOLEAN)
+    @FieldBoolean(values = {"启用","停用"})
+    private boolean enable;
     @PageField(label = "上级类别",type = FieldType.REFERENCE)
     @FieldReference(fieldName = "name")
     private Category parent;
@@ -114,5 +117,15 @@ public class Category extends LogicDeleteEntity implements Cascadeable,Comparabl
 
     public void setLevel(int level) {
         this.level = level;
+    }
+
+    @Override
+    public boolean isEnable() {
+        return enable;
+    }
+
+    @Override
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
 }

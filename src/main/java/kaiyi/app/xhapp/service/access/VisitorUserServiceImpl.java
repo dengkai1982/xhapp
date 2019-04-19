@@ -37,7 +37,6 @@ public class VisitorUserServiceImpl extends InjectDao<VisitorUser> implements Vi
                 throw new ORMException("角色已被用户引用,不能删除");
             }
         }
-
     }
 
     @Override
@@ -54,9 +53,9 @@ public class VisitorUserServiceImpl extends InjectDao<VisitorUser> implements Vi
     @Override
     public VisitorUser doLogin(String loginName, String password,String ipaddr) throws ServiceException {
         VisitorUser user=signleQuery("loginName",loginName);
-        /*if(Objects.isNull(user)||!user.isEnable()){
+        if(Objects.isNull(user)){
             throw ServiceExceptionDefine.userNotExist;
-        }*/
+        }
         if(!applicationService.checkChiper(password,user.getPassword())){
             throw ServiceExceptionDefine.passwordError;
         }

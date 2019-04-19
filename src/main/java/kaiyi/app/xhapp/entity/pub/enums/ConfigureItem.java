@@ -131,5 +131,11 @@ public enum ConfigureItem {
 		public String toString() {
 			return "上传模板号";
 		}
+	},
+	VOD_UPLOAD_CATE_ID{
+		@Override
+		public String toString() {
+			return "视频分类ID号";
+		}
 	}
 }

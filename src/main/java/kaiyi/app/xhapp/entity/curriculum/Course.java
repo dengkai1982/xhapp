@@ -1,12 +1,17 @@
 package kaiyi.app.xhapp.entity.curriculum;
 
 import kaiyi.app.xhapp.entity.AbstractEntity;
+import kaiyi.app.xhapp.entity.access.enums.MemberShip;
 import kaiyi.app.xhapp.entity.curriculum.enums.Difficulty;
+import kaiyi.puer.commons.collection.StreamArray;
+import kaiyi.puer.commons.collection.StreamCollection;
+import kaiyi.puer.commons.data.Currency;
 import kaiyi.puer.commons.data.ICurrency;
 import kaiyi.puer.commons.validate.NotEmpty;
 import kaiyi.puer.h5ui.annotations.*;
 
 import javax.persistence.*;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity(name=Course.TABLE_NAME)
@@ -14,21 +19,29 @@ import java.util.Set;
 public class Course extends AbstractEntity {
     private static final long serialVersionUID = -516765397341241977L;
     public static final String TABLE_NAME="course";
-    @PageField(label = "课程封面",type = FieldType.DOCUMENT)
-    @FieldDocument(maxFileSize = "4mb")
-    private String cover;
     @NotEmpty(hint = "课程名称必须填写")
-    @PageField(label = "课程名称")
+    @PageField(label = "课程名称",tableLength =200)
     private String name;
-    @PageField(label = "课程讲师",type = FieldType.REFERENCE)
+    @NotEmpty(hint = "课程讲师必须选择")
+    @PageField(label = "课程讲师",type = FieldType.REFERENCE,tableLength =100)
     @FieldReference(fieldName = "name")
     private Teacher teacher;
-    @PageField(label = "课程类别",type = FieldType.REFERENCE,showSearch = false,showForm = false)
+    @PageField(label = "课程类别",type = FieldType.REFERENCE,showSearch = false,showForm = false,tableLength =120)
     @FieldReference(fieldName = "name")
     private Category category;
+    @NotEmpty(hint = "课程难度必须选择")
     @PageField(label = "课程难度",type = FieldType.CHOSEN)
     @FieldChosen
     private Difficulty difficulty;
+    @PageField(label = "课程上架/下架",type = FieldType.BOOLEAN,showForm = false,tableLength =120)
+    @FieldBoolean(values = {"上架","下架"})
+    private boolean sale;
+
+    @NotEmpty(hint = "课程封面必须选择")
+    @PageField(label = "课程封面",type = FieldType.DOCUMENT,formColumnLength = 3,showQuery = false,showSearch = false,
+    showDetail = false,showTable = false)
+    @FieldDocument(maxFileSize = "4mb")
+    private String cover;
     @NotEmpty(hint = "课程摘要必须填写")
     @PageField(label = "课程摘要",type=FieldType.AREATEXT,showSearch = false,showTable = false,showQuery =false,formColumnLength = 3)
     @FieldArea
@@ -37,21 +50,22 @@ public class Course extends AbstractEntity {
     @PageField(label = "课程简介",type=FieldType.AREATEXT,showSearch = false,showTable = false,showQuery =false,formColumnLength = 3)
     @FieldArea(row=5)
     private String detail;
+    @NotEmpty(hint = "课程售价必须填写")
     @ICurrency
     @PageField(label = "课程售价",type = FieldType.NUMBER)
     private int price;
-    @PageField(label = "可购买等级",type = FieldType.NUMBER)
-    @FieldNumber(type=FieldNumber.TYPE.INT)
-    private int purchase;
-    @PageField(label = "免费观看",type = FieldType.NUMBER)
-    @FieldNumber(type=FieldNumber.TYPE.INT)
-    private int freeMember;
-    @PageField(label = "浏览量",type = FieldType.NUMBER)
+    @PageField(label = "浏览量",type = FieldType.NUMBER,showForm = false)
     private long browseVolume;
-    @PageField(label = "购买量",type = FieldType.NUMBER)
+    @PageField(label = "购买量",type = FieldType.NUMBER,showForm = false)
     private long buyVolume;
-    //课程上下架
-    private boolean sale;
+    @PageField(label = "购买权限",tableLength =300,showForm = false,showQuery = false,showSearch = false)
+    private String buyerPrivilege;
+
+    private Set<CourseBuyerPrivilege> privileges;
+    @Override
+    public StreamArray<String> filterField() {
+        return new StreamArray<>(new String[]{"chapters"});
+    }
 
     private Set<Chapter> chapters;
 
@@ -104,7 +118,6 @@ public class Course extends AbstractEntity {
         this.price = price;
     }
 
-
     public long getBrowseVolume() {
         return browseVolume;
     }
@@ -146,21 +159,6 @@ public class Course extends AbstractEntity {
         this.cover = cover;
     }
 
-    public int getPurchase() {
-        return purchase;
-    }
-
-    public void setPurchase(int purchase) {
-        this.purchase = purchase;
-    }
-
-    public int getFreeMember() {
-        return freeMember;
-    }
-
-    public void setFreeMember(int freeMember) {
-        this.freeMember = freeMember;
-    }
     @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,mappedBy = "course")
     public Set<Chapter> getChapters() {
         return chapters;
@@ -169,6 +167,33 @@ public class Course extends AbstractEntity {
     public void setChapters(Set<Chapter> chapters) {
         this.chapters = chapters;
     }
+    @Transient
+    public String getBuyerPrivilege() {
+        StreamCollection<CourseBuyerPrivilege> stream=getPrivilegeStream();
+        return stream.joinString(m->{
+            return "【"+m.getMemberShip().getShowName()+" "+Currency.noDecimalBuild(m.getPrice(),2).toString()+"】";
+        },",");
+    }
 
+    public void setBuyerPrivilege(String buyerPrivilege) {
+        this.buyerPrivilege = buyerPrivilege;
+    }
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER,mappedBy = "course")
+    public Set<CourseBuyerPrivilege> getPrivileges() {
+        return privileges;
+    }
 
+    public void setPrivileges(Set<CourseBuyerPrivilege> privileges) {
+        this.privileges = privileges;
+    }
+    @Transient
+    public StreamCollection<CourseBuyerPrivilege> getPrivilegeStream(){
+        if(Objects.nonNull(privileges)){
+            StreamCollection<CourseBuyerPrivilege> stream=new StreamCollection<>(privileges);
+            stream.sort((p1,p2)->{
+                return p1.getMemberShip().compareTo(p2.getMemberShip());
+            });
+        }
+        return new StreamCollection<>();
+    }
 }

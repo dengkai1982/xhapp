@@ -1,49 +1,37 @@
-package kaiyi.app.xhapp.entity.access.enums;
+package kaiyi.app.xhapp.entity.bus.enums;
 
 import kaiyi.puer.commons.utils.PinyinUtils;
 import kaiyi.puer.h5ui.bean.H5ChosenInterface;
 
-public enum MemberShip implements H5ChosenInterface {
-    normal{
+public enum PayPlatform implements H5ChosenInterface {
+    WEIXIN{
         @Override
         public String toString() {
-            return "普通会员";
-        }
-
-        @Override
-        public String getHexColor() {
-            return "#ea644a";
-        }
-
-    },
-    gold{
-        @Override
-        public String toString() {
-            return "黄金会员";
+            return "微信支付";
         }
         @Override
         public String getHexColor() {
-            return "#3280fc";
+            return "#a1a1a2";
         }
     },
-    vip{
+    ALIPAY{
         @Override
         public String toString() {
-            return "VIP会员";
+            return "支付宝";
+        }
+        @Override
+        public String getHexColor() {
+            return "#f1a325";
+        }
+    },
+    INSIDE{
+        @Override
+        public String toString() {
+            return "站内支付";
         }
         @Override
         public String getHexColor() {
             return "#38b03f";
-        }
-    },
-    supreme{
-        @Override
-        public String toString() {
-            return "至尊会员";
-        }
-        @Override
-        public String getHexColor() {
-            return "#8666b8";
         }
     }
     ;
@@ -53,6 +41,12 @@ public enum MemberShip implements H5ChosenInterface {
                 toString(),PinyinUtils.getStringPinYin(toString())
         };
     }
+
+    @Override
+    public int getItemNumber() {
+        return ordinal();
+    }
+
     @Override
     public String getValue() {
         return toString();
@@ -68,10 +62,4 @@ public enum MemberShip implements H5ChosenInterface {
     public String getDataKeys() {
         return getSearchValues().toString();
     }
-
-    @Override
-    public int getItemNumber() {
-        return ordinal();
-    }
-
 }

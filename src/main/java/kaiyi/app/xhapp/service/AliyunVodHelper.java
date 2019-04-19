@@ -4,12 +4,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.profile.DefaultProfile;
-import com.aliyuncs.vod.model.v20170321.CreateUploadVideoRequest;
-import com.aliyuncs.vod.model.v20170321.CreateUploadVideoResponse;
-import com.aliyuncs.vod.model.v20170321.RefreshUploadVideoRequest;
-import com.aliyuncs.vod.model.v20170321.RefreshUploadVideoResponse;
+import com.aliyuncs.vod.model.v20170321.*;
 import kaiyi.app.xhapp.entity.pojo.CreateUploadVideoRequestInfo;
 import kaiyi.puer.commons.data.StringEditor;
+
+import java.util.List;
 
 /**
  * 阿里云视频
@@ -56,21 +55,31 @@ public class AliyunVodHelper {
         if(StringEditor.notEmpty(info.getCallbackURL())&&StringEditor.notEmpty(info.getCallbackType())){
             JSONObject userData = new JSONObject();
             JSONObject messageCallback = new JSONObject();
-            messageCallback.put("CallbackURL", "http://xxxxx");
-            messageCallback.put("CallbackType", "http");
+            messageCallback.put("CallbackURL", info.getCallbackURL());
+            messageCallback.put("CallbackType",info.getCallbackType());
             userData.put("MessageCallback", messageCallback.toJSONString());
             request.setUserData(userData.toJSONString());
         }
         return client.getAcsResponse(request);
     }
 
+    public static String getPlayUrl(DefaultAcsClient client,String videoId) throws ClientException {
+        GetPlayInfoRequest request = new GetPlayInfoRequest();
+        request.setVideoId(videoId);
+        GetPlayInfoResponse resp=client.getAcsResponse(request);
+        List<GetPlayInfoResponse.PlayInfo> playInfoList=resp.getPlayInfoList();
+        for (GetPlayInfoResponse.PlayInfo playInfo : playInfoList) {
+            return playInfo.getPlayURL();
+        }
+        return null;
+    }
 
     /**
      * 获取视频上传地址和凭证
      * @param client 发送请求客户端
      * @return CreateUploadVideoResponse 获取视频上传地址和凭证响应数据
      * @throws Exception
-     */
+
     public static CreateUploadVideoResponse createUploadVideo(DefaultAcsClient client) throws Exception {
         CreateUploadVideoRequest request = new CreateUploadVideoRequest();
         request.setTitle("this is a sample");
@@ -86,8 +95,7 @@ public class AliyunVodHelper {
         userData.put("Extend", extend.toJSONString());
         request.setUserData(userData.toJSONString());
         return client.getAcsResponse(request);
-    }
-
+    }*/
     /**
      * 使用STS初始化服务,获取
      * @param accessKeyId

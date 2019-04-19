@@ -23,4 +23,10 @@ public interface CategoryService extends DatabaseQuery<Category>,DatabaseFastOpe
      * @return
      */
     String toJsonTree(StreamCollection<Category> categories,String templateName);
+
+    /**
+     * 启用停用类别
+     * @param entityId
+     */
+    void enableOrDisable(String entityId);
 }

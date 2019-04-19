@@ -7,6 +7,7 @@ import kaiyi.puer.h5ui.annotations.PageEntity;
 import kaiyi.puer.h5ui.annotations.PageField;
 
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.util.Date;
@@ -18,12 +19,14 @@ public class MediaLibrary extends AbstractEntity {
     public static final String TABLE_NAME="media_library";
     @PageField(label = "视频名称")
     private String name;
-    @PageField(label = "视频ID")
+
     private String videoId;
+
     @IDate
     @PageField(label = "创建时间",type = FieldType.DATETIME)
     private Date createTime;
-
+    @PageField(label = "访问地址",showQuery = false)
+    private String url;
     public String getName() {
         return name;
     }
@@ -46,5 +49,13 @@ public class MediaLibrary extends AbstractEntity {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+    @Lob
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

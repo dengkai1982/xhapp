@@ -3,56 +3,38 @@ package kaiyi.app.xhapp.entity.access.enums;
 import kaiyi.puer.commons.utils.PinyinUtils;
 import kaiyi.puer.h5ui.bean.H5ChosenInterface;
 
-public enum MemberShip implements H5ChosenInterface {
-    normal{
+public enum CapitalType implements H5ChosenInterface {
+    CASH{
         @Override
         public String toString() {
-            return "普通会员";
-        }
-
-        @Override
-        public String getHexColor() {
-            return "#ea644a";
-        }
-
-    },
-    gold{
-        @Override
-        public String toString() {
-            return "黄金会员";
+            return "现金";
         }
         @Override
         public String getHexColor() {
-            return "#3280fc";
+            return "#a1a1a2";
         }
-    },
-    vip{
+    },GOLD{
         @Override
         public String toString() {
-            return "VIP会员";
+            return "金币";
         }
         @Override
         public String getHexColor() {
-            return "#38b03f";
+            return "#f1a325";
         }
-    },
-    supreme{
-        @Override
-        public String toString() {
-            return "至尊会员";
-        }
-        @Override
-        public String getHexColor() {
-            return "#8666b8";
-        }
-    }
-    ;
+    };
     @Override
     public String[] getSearchValues() {
         return new String[]{
                 toString(),PinyinUtils.getStringPinYin(toString())
         };
     }
+
+    @Override
+    public int getItemNumber() {
+        return ordinal();
+    }
+
     @Override
     public String getValue() {
         return toString();
@@ -68,10 +50,4 @@ public enum MemberShip implements H5ChosenInterface {
     public String getDataKeys() {
         return getSearchValues().toString();
     }
-
-    @Override
-    public int getItemNumber() {
-        return ordinal();
-    }
-
 }

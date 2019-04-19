@@ -4,6 +4,8 @@ import kaiyi.app.xhapp.entity.curriculum.Category;
 import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.puer.commons.collection.Cascadeable;
 import kaiyi.puer.commons.collection.StreamCollection;
+import kaiyi.puer.commons.data.JavaDataTyper;
+import kaiyi.puer.db.orm.ServiceException;
 import kaiyi.puer.db.query.CompareQueryExpress;
 import kaiyi.puer.db.query.NullQueryExpress;
 import kaiyi.puer.db.query.OrderBy;
@@ -15,9 +17,7 @@ import kaiyi.puer.json.creator.CollectionJsonCreator;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Service("categoryService")
 public class CategoryServiceImpl extends InjectDao<Category> implements CategoryService{
@@ -70,4 +70,29 @@ public class CategoryServiceImpl extends InjectDao<Category> implements Category
         return json.build();
     }
 
+    @Override
+    public void enableOrDisable(String entityId) {
+        Category category=findForPrimary(entityId);
+        category.setEnable(!category.isEnable());
+        em.createQuery("update "+getEntityName(Category.class)+" o set o.enable=:enable " +
+                "where o.parent=:parent").setParameter("enable",category.isEnable())
+        .setParameter("parent",category).executeUpdate();
+    }
+
+    @Override
+    protected void objectBeforeUpdateHandler(Category category, Map<String, JavaDataTyper> data) throws ServiceException {
+        if(Objects.nonNull(data.get("parent"))){
+            Category parent=findForPrimary(data.get("parent").stringValue());
+            category.setLevel(parent.getLevel()+1);
+        }
+    }
+
+    @Override
+    protected void objectBeforePersistHandler(Category category, Map<String, JavaDataTyper> params) throws ServiceException {
+        if(Objects.nonNull(params.get("parent"))){
+            Category parent=findForPrimary(params.get("parent").stringValue());
+            category.setLevel(parent.getLevel()+1);
+        }
+        category.setEnable(true);
+    }
 }

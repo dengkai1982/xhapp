@@ -2,7 +2,7 @@
 <%@ include file="/WEB-INF/share.jsp" %>
 <style>
     .table-data tbody>tr>th{
-        width:90px;
+        width:120px;
     }
 </style>
 <table class="table table-data table-condensed table-borderless">

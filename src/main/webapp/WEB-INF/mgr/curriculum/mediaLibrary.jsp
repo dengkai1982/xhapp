@@ -47,6 +47,25 @@
         <c:if test="${requestScope.hasData}">
         ${requestScope.tableScript}
         </c:if>
+        $("#remoteDataGrid").on("click", ".playVideo", function(e) {
+            var entityId=$(this).attr("entity-id");
+            postJson("${managerPath}/curriculum/getPlayAddress${suffix}",{
+                entityId:entityId
+            },function(data){
+                if(data.code=SUCCESS){
+                    window.open(data.body,"_blank");
+                    //window.location.href=data.body;
+                }else{
+                    toast(data.msg);
+                }
+            })
+        })
+    }
+    function customDataConvertCell(valueType,dataValue,cell, dataGrid){
+        if(cell.colIndex==3){
+            return "<a href='#' class='playVideo' entity-id='"+cell.config.data.entityId+"'>点击播放</a>"
+        }
+        return null;
     }
     function createMenuItems(dataId,dataRow,data){
         var items = [{
