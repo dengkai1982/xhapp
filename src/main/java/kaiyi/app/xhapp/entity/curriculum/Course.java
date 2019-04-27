@@ -64,7 +64,7 @@ public class Course extends AbstractEntity {
     private Set<CourseBuyerPrivilege> privileges;
     @Override
     public StreamArray<String> filterField() {
-        return new StreamArray<>(new String[]{"chapters"});
+        return new StreamArray<>(new String[]{"chapters","privileges"});
     }
 
     private Set<Chapter> chapters;
@@ -190,9 +190,11 @@ public class Course extends AbstractEntity {
     public StreamCollection<CourseBuyerPrivilege> getPrivilegeStream(){
         if(Objects.nonNull(privileges)){
             StreamCollection<CourseBuyerPrivilege> stream=new StreamCollection<>(privileges);
+            stream=new StreamCollection<>(stream.toList());
             stream.sort((p1,p2)->{
-                return p1.getMemberShip().compareTo(p2.getMemberShip());
+                return Integer.valueOf(p1.getMemberShip().getItemNumber()).compareTo(p2.getMemberShip().getItemNumber());
             });
+            return stream;
         }
         return new StreamCollection<>();
     }

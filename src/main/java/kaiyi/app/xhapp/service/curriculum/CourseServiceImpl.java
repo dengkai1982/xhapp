@@ -18,6 +18,7 @@ import kaiyi.puer.db.query.QueryExpress;
 import kaiyi.puer.json.JsonParserException;
 import kaiyi.puer.json.JsonUtils;
 import kaiyi.puer.json.parse.ArrayJsonParser;
+import kaiyi.puer.web.html.HtmlConvertUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -61,6 +62,7 @@ public class CourseServiceImpl extends InjectDao<Course> implements CourseServic
                     privilege.setPrice(finder.getPrice());
                 }
             }
+            System.out.println(buyerPrivileges);
         }
 
     }
@@ -69,6 +71,7 @@ public class CourseServiceImpl extends InjectDao<Course> implements CourseServic
         StreamCollection<CourseBuyerPrivilege> privileges=new StreamCollection<>();
         if(Objects.nonNull(params.get("buyerPrivileges"))){
             String buyerPrivilegesJson=params.get("buyerPrivileges").stringValue();
+            buyerPrivilegesJson=HtmlConvertUtils.htmlUnescape(buyerPrivilegesJson);
             if(!JsonUtils.isEmptyJson(buyerPrivilegesJson)){
                 ArrayJsonParser parse=new ArrayJsonParser(buyerPrivilegesJson);
                 try {

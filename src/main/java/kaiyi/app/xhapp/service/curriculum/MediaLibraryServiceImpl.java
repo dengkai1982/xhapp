@@ -38,10 +38,7 @@ public class MediaLibraryServiceImpl extends InjectDao<MediaLibrary> implements 
     }
 
     @Override
-    public void newMediaLibrary(String title, String videoId, String url) throws ServiceException {
-        if(StringEditor.isEmpty(url)){
-            throw ServiceExceptionDefine.addMediaError;
-        }
+    public void newMediaLibrary(String title, String videoId) throws ServiceException {
         MediaLibrary lib=new MediaLibrary();
         lib.setCreateTime(new Date());
         lib.setName(title);

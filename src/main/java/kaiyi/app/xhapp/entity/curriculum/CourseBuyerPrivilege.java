@@ -2,6 +2,7 @@ package kaiyi.app.xhapp.entity.curriculum;
 
 import kaiyi.app.xhapp.entity.AbstractEntity;
 import kaiyi.app.xhapp.entity.access.enums.MemberShip;
+import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.data.ICurrency;
 import kaiyi.puer.commons.validate.NotEmpty;
 import kaiyi.puer.h5ui.annotations.*;
@@ -13,8 +14,7 @@ import javax.persistence.*;
 public class CourseBuyerPrivilege extends AbstractEntity {
     public static final String TABLE_NAME="course_buyer_privilege";
     private static final long serialVersionUID = -611454684637217675L;
-    @PageField(label = "课程名称",type = FieldType.REFERENCE,tableLength =100)
-    @FieldReference(fieldName = "name")
+
     private Course course;
     @PageField(label = "会员类型",type = FieldType.CHOSEN)
     @FieldChosen
@@ -59,12 +59,15 @@ public class CourseBuyerPrivilege extends AbstractEntity {
         this.price = price;
     }
 
+    @Override
+    public StreamArray<String> filterField() {
+        return new StreamArray<>(new String[]{"course"});
+    }
 
     public CourseBuyerPrivilege() {
     }
 
     public CourseBuyerPrivilege(MemberShip memberShip, boolean free, int price) {
-        this.course = course;
         this.memberShip = memberShip;
         this.free = free;
         this.price = price;

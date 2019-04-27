@@ -1,6 +1,7 @@
 package kaiyi.app.xhapp.entity.curriculum;
 
 import kaiyi.app.xhapp.entity.AbstractEntity;
+import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.validate.NotEmpty;
 import kaiyi.puer.h5ui.annotations.FieldReference;
@@ -26,6 +27,11 @@ public class Chapter extends AbstractEntity {
     private String detail;
     @PageField(label = "显示权重")
     private int weight;
+
+    @Override
+    public StreamArray<String> filterField() {
+        return new StreamArray<>(new String[]{"course"});
+    }
 
     private Set<CourseMovie> courseMovies;
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.LAZY)

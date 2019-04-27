@@ -2,6 +2,7 @@ package kaiyi.app.xhapp.service.access;
 
 import kaiyi.app.xhapp.ServiceExceptionDefine;
 import kaiyi.app.xhapp.entity.access.Account;
+import kaiyi.app.xhapp.entity.access.enums.MemberShip;
 import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.app.xhapp.service.log.ShortMessageSenderNoteService;
 import kaiyi.puer.commons.data.StringEditor;
@@ -38,6 +39,7 @@ public class AccountServiceImpl extends InjectDao<Account> implements AccountSer
         account=new Account();
         account.setPhone(phone);
         account.setRegisterTime(new Date());
+        account.setMemberShip(MemberShip.normal);
         account.setPassword(applicationService.cipherToString(password));
         saveObject(account);
     }

@@ -274,7 +274,7 @@ public class CurriculumController extends ManagerController{
         String videoId=interactive.getStringParameter("videoId","");
         JsonMessageCreator jmc=getSuccessMessage();
         try {
-            mediaLibraryService.newMediaLibrary(title,videoId,"");
+            mediaLibraryService.newMediaLibrary(title,videoId);
         } catch (ServiceException e) {
             catchServiceException(jmc,e);
         }

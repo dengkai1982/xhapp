@@ -5,6 +5,6 @@ import kaiyi.puer.db.orm.DatabaseQuery;
 import kaiyi.puer.db.orm.ServiceException;
 public interface MediaLibraryService extends DatabaseQuery<MediaLibrary>{
     //添加媒体库文件
-    void newMediaLibrary(String title,String videoId,String url)throws ServiceException;
+    void newMediaLibrary(String title,String videoId)throws ServiceException;
 
 }

@@ -1,6 +1,7 @@
 package kaiyi.app.xhapp.entity.curriculum;
 
 import kaiyi.app.xhapp.entity.AbstractEntity;
+import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.validate.NotEmpty;
 import kaiyi.puer.h5ui.annotations.FieldReference;
 import kaiyi.puer.h5ui.annotations.FieldType;
@@ -25,6 +26,11 @@ public class CourseMovie extends AbstractEntity {
     @PageField(label = "显示权重")
     private int weight;
     private Chapter chapter;
+
+    @Override
+    public StreamArray<String> filterField() {
+        return new StreamArray<>(new String[]{"chapter"});
+    }
 
     public String getName() {
         return name;

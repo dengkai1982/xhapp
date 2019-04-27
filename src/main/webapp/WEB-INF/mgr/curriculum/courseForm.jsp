@@ -33,7 +33,33 @@
                 <div id="tabContent2" class="tabContent">
                     <c:choose>
                         <c:when test="${empty requestScope.memberShips}">
+                            <c:forEach items="${requestScope.entity.privilegeStream}" var="privilege">
+                                <div class="form-group buyerPrivileges" data-id="${privilege.memberShip.itemNumber}">
+                                    <label class="col-sm-1">${privilege.memberShip.value}</label>
+                                    <div class="col-sm-3">
+                                        <select name="free" data-placeholder="请选择观看类型" class="chosen-select form-control">
+                                            <c:choose>
+                                                <c:when test="${privilege.free}">
+                                                    <option value="false">付费观看</option>
+                                                    <option value="true" selected>免费观看</option>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <option value="false" selected>付费观看</option>
+                                                    <option value="true">免费观看</option>
+                                                </c:otherwise>
+                                            </c:choose>
 
+                                        </select>
+                                    </div>
+                                    <label class="col-sm-1">课程金额</label>
+                                    <div  class="col-sm-2">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">￥</span>
+                                            <input type="number" name="price" value="<currency:convert value='${privilege.price}'/>" class="form-control" placeholder="请输入金额">
+                                        </div>
+                                    </div>
+                                </div>
+                            </c:forEach>
                         </c:when>
                         <c:otherwise>
                             <c:forEach items="${requestScope.memberShips}" var="memberShip">
