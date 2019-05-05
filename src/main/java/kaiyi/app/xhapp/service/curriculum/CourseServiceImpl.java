@@ -1,5 +1,6 @@
 package kaiyi.app.xhapp.service.curriculum;
 
+import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.app.xhapp.entity.access.enums.MemberShip;
 import kaiyi.app.xhapp.entity.curriculum.Category;
 import kaiyi.app.xhapp.entity.curriculum.Course;

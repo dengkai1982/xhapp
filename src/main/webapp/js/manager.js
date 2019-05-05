@@ -341,10 +341,15 @@ $(document).ready(function(){
     }
 });
 function getDataGridHeight(){
-    var bodyHeight=$("body").height()
-    var dataGridTop=$("#remoteDataGrid").offset().top
+    var bodyHeight=$("body").height();
+    var dataGridTop=$("#remoteDataGrid").offset().top;
+    if(bodyHeight<0){
+        var body=$(window.parent.document).find("body");
+        bodyHeight=body.height();
+        dataGridTop=80;
+        //alert(bodyHeight+":"+dataGridTop);
+    }
     var height=  bodyHeight-dataGridTop-80;
-    console.log(height);
     return height;
 }
 //初始化主题

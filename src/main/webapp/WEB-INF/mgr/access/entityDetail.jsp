@@ -4,6 +4,9 @@
     .table-data tbody>tr>th{
         width:120px;
     }
+    .table-data tbody>tr>td{
+        width:25%;
+    }
 </style>
 <table class="table table-data table-condensed table-borderless">
     <tbody>

@@ -390,3 +390,21 @@
 html,body{
 	height:100%;
 }
+.detailLine{
+	display: flex;
+	display: -webkit-flex;
+}
+.detailLine .detailItem{
+	display: flex;
+	display: -webkit-flex;
+	align-items: baseline;
+}
+.detailLine .detailItem .strong{
+	font-weight: 400;
+	color: #838a9d;
+	margin-right: 15px;
+	text-align: left;
+}
+.detailLine .detailItem .text{
+	flex-grow:1;
+}

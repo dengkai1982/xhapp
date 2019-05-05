@@ -107,4 +107,6 @@ public class CourseOrder extends AbstractEntity {
     public void setPlatformOrderId(String platformOrderId) {
         this.platformOrderId = platformOrderId;
     }
+
+
 }

@@ -89,4 +89,6 @@ public class VisitorUser extends AbstractEntity implements Accesser {
     public void setLoginAddress(String loginAddress) {
         this.loginAddress = loginAddress;
     }
+
+
 }

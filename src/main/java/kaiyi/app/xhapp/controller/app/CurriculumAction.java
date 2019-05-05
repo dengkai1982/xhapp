@@ -5,10 +5,8 @@ import com.aliyuncs.exceptions.ClientException;
 import kaiyi.app.xhapp.entity.curriculum.*;
 import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
 import kaiyi.app.xhapp.service.AliyunVodHelper;
-import kaiyi.app.xhapp.service.curriculum.ChapterService;
-import kaiyi.app.xhapp.service.curriculum.CourseService;
-import kaiyi.app.xhapp.service.curriculum.MediaLibraryService;
-import kaiyi.app.xhapp.service.curriculum.ShopCarService;
+import kaiyi.app.xhapp.service.curriculum.*;
+import kaiyi.app.xhapp.service.log.CourseBrowseService;
 import kaiyi.app.xhapp.service.pub.ConfigureService;
 import kaiyi.puer.commons.bean.BeanSyntacticSugar;
 import kaiyi.puer.commons.collection.StreamCollection;
@@ -48,6 +46,14 @@ public class CurriculumAction extends SuperAction {
     private ConfigureService configureService;
     @Resource
     private ShopCarService shopCarService;
+    @Resource
+    private CourseFavoritesService courseFavoritesService;
+    @Resource
+    private CourseBrowseService courseBrowseService;
+    @Resource
+    private CourseCommentService courseCommentService;
+    @Resource
+    private CourseProblemService courseProblemService;
     /**
      * 根据ID获取课程信息
      * @param interactive
@@ -136,6 +142,80 @@ public class CurriculumAction extends SuperAction {
         JsonMessageCreator jmc=getSuccessMessage();
         try {
             shopCarService.joinToShopCar(courseId,accountId);
+        } catch (ServiceException e) {
+            catchServiceException(jmc,e);
+        }
+        interactive.writeUTF8Text(jmc.build());
+    }
+    /**
+     * 课程提问、考试咨询
+     * @param interactive
+     * @param response
+     */
+    @PostMapping("/courseProblem")
+    public void courseProblem(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String accountId=interactive.getStringParameter("accountId","");
+        String courseId=interactive.getStringParameter("courseId","");
+        String content=interactive.getStringParameter("content","");
+        JsonMessageCreator jmc=getSuccessMessage();
+        try {
+            courseProblemService.problem(courseId,accountId,content);
+        } catch (ServiceException e) {
+            catchServiceException(jmc,e);
+        }
+        interactive.writeUTF8Text(jmc.build());
+    }
+    /**
+     * 课程评论
+     * @param interactive
+     * @param response
+     */
+    @PostMapping("/courseComment")
+    public void courseComment(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String accountId=interactive.getStringParameter("accountId","");
+        String courseId=interactive.getStringParameter("courseId","");
+        String content=interactive.getStringParameter("content","");
+        int score=interactive.getInteger("score",1);
+        JsonMessageCreator jmc=getSuccessMessage();
+        try {
+            courseCommentService.comment(courseId,accountId,content,score);
+        } catch (ServiceException e) {
+            catchServiceException(jmc,e);
+        }
+        interactive.writeUTF8Text(jmc.build());
+    }
+    /**
+     * 添加课程到收藏夹
+     * @param interactive
+     * @param response
+     * @throws IOException
+     */
+    @PostMapping("/joinFavorites")
+    public void joinFavorites(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String accountId=interactive.getStringParameter("accountId","");
+        String courseId=interactive.getStringParameter("courseId","");
+        JsonMessageCreator jmc=getSuccessMessage();
+        try {
+            courseFavoritesService.addFavorites(accountId,courseId);
+        } catch (ServiceException e) {
+            catchServiceException(jmc,e);
+        }
+        interactive.writeUTF8Text(jmc.build());
+    }
+
+    /**
+     * 添加课程浏览记录
+     * @param interactive
+     * @param response
+     * @throws IOException
+     */
+    @PostMapping("/addCorseBrowse")
+    public void addCorseBrowse(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String accountId=interactive.getStringParameter("accountId","");
+        String courseId=interactive.getStringParameter("courseId","");
+        JsonMessageCreator jmc=getSuccessMessage();
+        try {
+            courseBrowseService.addCourseBrowse(accountId,courseId);
         } catch (ServiceException e) {
             catchServiceException(jmc,e);
         }

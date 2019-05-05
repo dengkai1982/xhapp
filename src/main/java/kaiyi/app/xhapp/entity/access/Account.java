@@ -24,7 +24,7 @@ public class Account extends AbstractEntity {
     @PageField(label = "登录密码",showSearch = false,showTable = false,showDetail = false)
     private String password;
     @IDate
-    @PageField(label = "手机号码",type = FieldType.DATETIME)
+    @PageField(label = "注册时间",type = FieldType.DATETIME)
     private Date registerTime;
     @PageField(label = "用户头像",type=FieldType.DOCUMENT,showSearch = false,showTable = false,showDetail = false)
     @FieldDocument

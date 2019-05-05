@@ -84,7 +84,7 @@
                 <div class="main-header">
                     <h2>${webPage.pageTitle}</h2>
                     <div class="pull-right btn-toolbar">
-                        <a href="${webPage.backPage}&expandId=${requestScope.course.category.entityId}" type="button" class="btn btn-link"><i class="icon-back muted"></i> 返回</a>
+                        <a href="${webPage.backPage}&expandId=${requestScope.category.entityId}" type="button" class="btn btn-link"><i class="icon-back muted"></i> 返回</a>
                     </div>
                 </div>
             </div>
@@ -138,7 +138,7 @@
                 </div>
                 <div style="text-align: center;">
                     <button type="button" id="scrollTopAction" class="btn btn-wide btn-secondary">回到顶部</button>
-                    <a href="${webPage.backPage}&expandId=${requestScope.course.category.entityId}" class="btn btn-back btn-wide">返回</a>
+                    <a href="${webPage.backPage}&expandId=${requestScope.category.entityId}" class="btn btn-back btn-wide">返回</a>
                 </div>
             </div>
         </div>
@@ -147,7 +147,11 @@
 <%@include file="/WEB-INF/footerPage.jsp"%>
 <script type="text/javascript">
     function pageReady(doc) {
-
+        $("th.strong").each(function(i,d){
+            if($(d).html()=="课程简介"||$(d).html()=="课程摘要"||$(d).html()=="购买权限"){
+                $(d).parent("tr").find("td").attr("colspan","5");
+            }
+        })
     }
 </script>
 </body>

@@ -185,7 +185,7 @@ public class CurriculumController extends ManagerController{
     }
 
     @RequestMapping("/course/detail")
-    @AccessControl(name = "课程详情", weight = 3.26f, detail = "处理章节上下架",
+    @AccessControl(name = "课程详情", weight = 3.26f, detail = "课程详情",
             code = rootPath+ "/course/detail", parent = rootPath+"/course",defaultAuthor = true)
     public String courseDetail(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
         Course course=detailPage(interactive,courseService,3);
@@ -194,6 +194,7 @@ public class CurriculumController extends ManagerController{
         StreamCollection<Chapter> chapters=chapterService.getEntitys(queryExpress,new OrderBy(queryExpress.getPrefix(),"weight"));
         interactive.setRequestAttribute("chapters",chapters);
         interactive.getWebPage().setPageTitle("课程详情");
+        interactive.setRequestAttribute("category",course.getCategory());
         return rootPath+"/courseDetail";
     }
 

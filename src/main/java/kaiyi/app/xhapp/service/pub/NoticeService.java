@@ -1,4 +1,4 @@
-package kaiyi.app.xhapp.service.bus;
+package kaiyi.app.xhapp.service.pub;
 
 
 import kaiyi.app.xhapp.entity.pub.Notice;

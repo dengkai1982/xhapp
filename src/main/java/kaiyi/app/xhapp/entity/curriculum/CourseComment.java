@@ -2,11 +2,9 @@ package kaiyi.app.xhapp.entity.curriculum;
 
 import kaiyi.app.xhapp.entity.AbstractEntity;
 import kaiyi.app.xhapp.entity.access.Account;
+import kaiyi.app.xhapp.entity.access.VisitorUser;
 import kaiyi.puer.commons.data.IDate;
-import kaiyi.puer.h5ui.annotations.FieldReference;
-import kaiyi.puer.h5ui.annotations.FieldType;
-import kaiyi.puer.h5ui.annotations.PageEntity;
-import kaiyi.puer.h5ui.annotations.PageField;
+import kaiyi.puer.h5ui.annotations.*;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -22,11 +20,17 @@ public class CourseComment extends AbstractEntity {
     @PageField(label = "课程名称",type = FieldType.REFERENCE)
     @FieldReference(fieldName = "name")
     private Course course;
+    @PageField(label = "课程评分",type = FieldType.NUMBER)
+    @FieldNumber(type = FieldNumber.TYPE.INT)
+    private int score;
     @IDate
     @PageField(label = "评论时间",type = FieldType.DATETIME)
     private Date commentTime;
     @PageField(label = "评论内容")
     private String content;
+    @PageField(label = "回复人",type = FieldType.REFERENCE)
+    @FieldReference(fieldName = "realName")
+    private VisitorUser replier;
     @PageField(label = "回复内容")
     private String reply;
     @IDate
@@ -81,5 +85,22 @@ public class CourseComment extends AbstractEntity {
 
     public void setReplyTime(Date replyTime) {
         this.replyTime = replyTime;
+    }
+    @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
+    @JoinColumn(name="replier")
+    public VisitorUser getReplier() {
+        return replier;
+    }
+
+    public void setReplier(VisitorUser replier) {
+        this.replier = replier;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
 }

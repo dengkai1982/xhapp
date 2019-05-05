@@ -1,6 +1,7 @@
 package kaiyi.app.xhapp.entity.curriculum;
 
 import kaiyi.app.xhapp.entity.AbstractEntity;
+import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.app.xhapp.entity.access.enums.MemberShip;
 import kaiyi.app.xhapp.entity.curriculum.enums.Difficulty;
 import kaiyi.puer.commons.collection.StreamArray;
@@ -36,7 +37,6 @@ public class Course extends AbstractEntity {
     @PageField(label = "课程上架/下架",type = FieldType.BOOLEAN,showForm = false,tableLength =120)
     @FieldBoolean(values = {"上架","下架"})
     private boolean sale;
-
     @NotEmpty(hint = "课程封面必须选择")
     @PageField(label = "课程封面",type = FieldType.DOCUMENT,formColumnLength = 3,showQuery = false,showSearch = false,
     showDetail = false,showTable = false)
@@ -53,11 +53,17 @@ public class Course extends AbstractEntity {
     @NotEmpty(hint = "课程售价必须填写")
     @ICurrency
     @PageField(label = "课程售价",type = FieldType.NUMBER)
+    @FieldNumber(type = FieldNumber.TYPE.INT)
     private int price;
     @PageField(label = "浏览量",type = FieldType.NUMBER,showForm = false)
+    @FieldNumber(type = FieldNumber.TYPE.LONG)
     private long browseVolume;
     @PageField(label = "购买量",type = FieldType.NUMBER,showForm = false)
+    @FieldNumber(type = FieldNumber.TYPE.LONG)
     private long buyVolume;
+    @PageField(label = "评价得分",type = FieldType.NUMBER,showForm = false)
+    @FieldNumber(type = FieldNumber.TYPE.DOUBLE)
+    private double commentAvgScore;
     @PageField(label = "购买权限",tableLength =300,showForm = false,showQuery = false,showSearch = false)
     private String buyerPrivilege;
 
@@ -171,7 +177,7 @@ public class Course extends AbstractEntity {
     public String getBuyerPrivilege() {
         StreamCollection<CourseBuyerPrivilege> stream=getPrivilegeStream();
         return stream.joinString(m->{
-            return "【"+m.getMemberShip().getShowName()+" "+Currency.noDecimalBuild(m.getPrice(),2).toString()+"】";
+            return "【"+m.getMemberShip().getValue()+" "+Currency.noDecimalBuild(m.getPrice(),2).toString()+"】";
         },",");
     }
 
@@ -197,5 +203,28 @@ public class Course extends AbstractEntity {
             return stream;
         }
         return new StreamCollection<>();
+    }
+
+    /*
+    计算课程售价
+     */
+    @Transient
+    public int computerCoursePrice(Account account){
+        int price=getPrice();
+        StreamCollection<CourseBuyerPrivilege> privileges=getPrivilegeStream();
+        for(CourseBuyerPrivilege privilege:privileges){
+            if(privilege.getMemberShip().getItemNumber()==account.getMemberShip().getItemNumber()){
+                return privilege.getPrice();
+            }
+        }
+        return price;
+    }
+
+    public double getCommentAvgScore() {
+        return commentAvgScore;
+    }
+
+    public void setCommentAvgScore(double commentAvgScore) {
+        this.commentAvgScore = commentAvgScore;
     }
 }

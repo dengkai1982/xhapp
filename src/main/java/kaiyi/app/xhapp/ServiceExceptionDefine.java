@@ -40,4 +40,7 @@ public class ServiceExceptionDefine {
     public static final ServiceException addMediaError=new ServiceException(
             ServiceException.CODE_FAIL,"添加媒体库错误,请稍后重试");
 
+    public static final ServiceException goldInsufficient=new ServiceException(
+            ServiceException.CODE_FAIL,"账户金币余额不足");
+
 }
