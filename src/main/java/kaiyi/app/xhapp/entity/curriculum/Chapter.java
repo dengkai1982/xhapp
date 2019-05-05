@@ -80,7 +80,7 @@ public class Chapter extends AbstractEntity {
         if(StreamCollection.assertNotEmpty(this.courseMovies)){
             StreamCollection<CourseMovie> movies=new StreamCollection<>(this.courseMovies);
             movies.sort((o1,o2)->{
-                return Integer.valueOf(o1.getWeight()).compareTo(o2.getWeight());
+                return Integer.valueOf(o2.getWeight()).compareTo(o1.getWeight());
             });
             return movies;
         }

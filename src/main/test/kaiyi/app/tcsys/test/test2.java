@@ -26,7 +26,7 @@ public class test2 {
     @Test
     public void alivod() throws Exception {
         DefaultAcsClient client=AliyunVodHelper.initVodClient("LTAIrqzREtcK5vSq","E6UdEzJxsyZ0E28iqdyIazR4JNLlTr");
-        CreateUploadVideoResponse resp=AliyunVodHelper.createUploadVideo(client);
+        CreateUploadVideoResponse resp=AliyunVodHelper.createUploadVideo(client,null);
         System.out.println("VideoId = " + resp.getVideoId());
         System.out.println("UploadAddress = " + resp.getUploadAddress());
         System.out.println("UploadAuth = " + resp.getUploadAuth());
@@ -74,6 +74,7 @@ public class test2 {
     RequestId=670916CF-A173-4ED9-BF4E-2565BE26CB35
     VideoId=9e4289e9bf164580b26ee089726f8665
      */
+
 
     @Test
     public void getPrintUrl() throws Exception {

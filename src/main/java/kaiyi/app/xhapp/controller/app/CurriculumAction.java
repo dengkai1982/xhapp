@@ -109,7 +109,7 @@ public class CurriculumAction extends SuperAction {
     }
 
     /**
-     * 媒体播放地址
+     * 获取媒体播放地址
      * @param interactive
      * @param response
      * @throws IOException
