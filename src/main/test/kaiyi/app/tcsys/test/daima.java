@@ -7,6 +7,7 @@ import kaiyi.app.xhapp.entity.curriculum.Category;
 import kaiyi.app.xhapp.entity.curriculum.Course;
 import kaiyi.app.xhapp.entity.log.ShortMessageSenderNote;
 import kaiyi.app.xhapp.entity.pages.ContentText;
+import kaiyi.app.xhapp.entity.pages.DisplayMap;
 import kaiyi.app.xhapp.entity.pub.Configure;
 import kaiyi.app.xhapp.entity.pub.Notice;
 import kaiyi.puer.commons.bean.BeanSyntacticSugar;
@@ -58,10 +59,9 @@ public class daima {
         BeanSyntacticSugar.printEntity(Account.class);
         BeanSyntacticSugar.printEntity(CourseOrder.class);
         BeanSyntacticSugar.printEntity(Course.class);
-        BeanSyntacticSugar.printEntity(Category.class);
         BeanSyntacticSugar.printEntity(Configure.class);
         BeanSyntacticSugar.printEntity(ShortMessageSenderNote.class);
-        BeanSyntacticSugar.printEntity(ContentText.class);
+        BeanSyntacticSugar.printEntity(DisplayMap.class);
         BeanSyntacticSugar.printEntity(Notice.class);
     }
 }

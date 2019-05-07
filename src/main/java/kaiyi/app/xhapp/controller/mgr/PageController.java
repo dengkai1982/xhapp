@@ -3,6 +3,7 @@ package kaiyi.app.xhapp.controller.mgr;
 import kaiyi.app.xhapp.entity.pages.enums.LinkType;
 import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
 import kaiyi.app.xhapp.service.pages.DisplayMapService;
+import kaiyi.app.xhapp.service.pages.ExamInfoService;
 import kaiyi.app.xhapp.service.pub.ConfigureService;
 import kaiyi.app.xhapp.service.pub.NoticeService;
 import kaiyi.puer.commons.access.AccessControl;
@@ -35,6 +36,8 @@ public class PageController extends ManagerController {
     private ConfigureService configureService;
     @Resource
     private NoticeService noticeService;
+    @Resource
+    private ExamInfoService examInfoService;
     @RequestMapping("/displayMap")
     @AccessControl(name = "展示图片", weight = 2.1f, detail = "设置展示图片", code = rootPath+ "/displayMap", parent = rootPath)
     public String displayMap(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
@@ -80,8 +83,44 @@ public class PageController extends ManagerController {
         interactive.writeUTF8Text(msg.build());
     }
 
+    @RequestMapping("/examInfo")
+    @AccessControl(name = "考试资讯", weight = 2.2f, code = rootPath+ "/examInfo", parent = rootPath)
+    public String examInfo(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        setDefaultPage(interactive,rootPath+"/examInfo");
+        mainTablePage(interactive,examInfoService,null,null,
+                new DynamicGridInfo(false,DynamicGridInfo.OperMenuType.popup));
+        return rootPath+"/examInfo";
+    }
+    @RequestMapping("/examInfo/new")
+    @AccessControl(name = "新增资讯", weight = 2.21f,code = rootPath+ "/examInfo/new",
+            parent = rootPath+"/examInfo")
+    public String examInfoNew(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        newOrEditPage(interactive,examInfoService,3);
+        setDefaultPage(interactive,rootPath+"/examInfo");
+        return rootPath+"/examInfoForm";
+    }
+    @RequestMapping("/examInfo/modify")
+    @AccessControl(name = "修改资讯", weight = 2.22f,code = rootPath+ "/examInfo/modify",
+            parent = rootPath+"/examInfo")
+    public String examInfoModify(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        newOrEditPage(interactive,examInfoService,3);
+        setDefaultPage(interactive,rootPath+"/examInfo");
+        return rootPath+"/examInfoForm";
+    }
+    @RequestMapping("/examInfo/examInfo")
+    @AccessControl(name = "删除咨询", weight = 2.23f,code = rootPath+ "/examInfo/delete",
+            parent = rootPath+"/examInfo")
+    public void examInfoDelete(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String entityId=interactive.getStringParameter("entityId","");
+        noticeService.deleteById(entityId);
+        interactive.writeUTF8Text(getSuccessMessage().build());
+    }
+    @PostMapping("/examInfo/commit")
+    public void examInfoCommit(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        contextCommit(interactive,examInfoService);
+    }
     @RequestMapping("/notice")
-    @AccessControl(name = "系统公告", weight = 2.2f, code = rootPath+ "/notice", parent = rootPath)
+    @AccessControl(name = "系统公告", weight = 2.3f, code = rootPath+ "/notice", parent = rootPath)
     public String notice(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
         setDefaultPage(interactive,rootPath+"/notice");
         mainTablePage(interactive,noticeService,null,null,
@@ -89,7 +128,7 @@ public class PageController extends ManagerController {
         return rootPath+"/notice";
     }
     @RequestMapping("/notice/new")
-    @AccessControl(name = "发布公告", weight = 2.21f,code = rootPath+ "/notice/new",
+    @AccessControl(name = "发布公告", weight = 2.31f,code = rootPath+ "/notice/new",
             parent = rootPath+"/notice")
     public String noticeNew(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
         newOrEditPage(interactive,noticeService,3);
@@ -97,7 +136,7 @@ public class PageController extends ManagerController {
         return rootPath+"/noticeForm";
     }
     @RequestMapping("/notice/modify")
-    @AccessControl(name = "修改公告", weight = 2.22f,code = rootPath+ "/notice/modify",
+    @AccessControl(name = "修改公告", weight = 2.32f,code = rootPath+ "/notice/modify",
             parent = rootPath+"/notice")
     public String noticeModify(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
         newOrEditPage(interactive,noticeService,3);
@@ -105,7 +144,7 @@ public class PageController extends ManagerController {
         return rootPath+"/noticeForm";
     }
     @RequestMapping("/notice/delete")
-    @AccessControl(name = "删除公告", weight = 2.23f,code = rootPath+ "/notice/delete",
+    @AccessControl(name = "删除公告", weight = 2.33f,code = rootPath+ "/notice/delete",
             parent = rootPath+"/notice")
     public void noticeDelete(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
         String entityId=interactive.getStringParameter("entityId","");
@@ -114,15 +153,6 @@ public class PageController extends ManagerController {
     }
     @PostMapping("/notice/commit")
     public void noticeCommit(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
-        Map<String,JavaDataTyper> params=interactive.getRequestParameterMap();
-        String storagePath=configureService.getStringValue(ConfigureItem.DOC_SAVE_PATH);
-        String serverPath=configureService.getStringValue(ConfigureItem.DOC_SERVER_PREFIX);
-        String content=params.get("content").stringValue();
-        content=DocumentService.replaceImageSrc(content,AccessController.getAccessTempFilePathPrefix(interactive),
-                storagePath,serverPath);
-        params.put("content",new JavaDataTyper(content));
-        params.put("publishDate",new JavaDataTyper(DateTimeUtil.yyyyMMddHHmmss.format(new Date())));
-        JsonMessageCreator msg=executeNewOrUpdate(interactive,noticeService,params,storagePath);
-        interactive.writeUTF8Text(msg.build());
+        contextCommit(interactive,noticeService);
     }
 }

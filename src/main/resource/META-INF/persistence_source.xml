@@ -12,29 +12,23 @@
 	  <class>kaiyi.app.xhapp.entity.access.VisitorMenu</class>
 	  <class>kaiyi.app.xhapp.entity.bus.CourseOrder</class>
 	  <class>kaiyi.app.xhapp.entity.bus.PaymentNotify</class>
-	  <class>kaiyi.app.xhapp.entity.curriculum.CourseMovie</class>
 	  <class>kaiyi.app.xhapp.entity.curriculum.Course</class>
-	  <class>kaiyi.app.xhapp.entity.curriculum.MediaLibrary</class>
-	  <class>kaiyi.app.xhapp.entity.curriculum.Teacher</class>
 	  <class>kaiyi.app.xhapp.entity.curriculum.Chapter</class>
-	  <class>kaiyi.app.xhapp.entity.curriculum.ShopCar</class>
-	  <class>kaiyi.app.xhapp.entity.curriculum.Category</class>
-	  <class>kaiyi.app.xhapp.entity.curriculum.CourseBuyerPrivilege</class>
-	  <class>kaiyi.app.xhapp.entity.curriculum.CourseProblem</class>
-	  <class>kaiyi.app.xhapp.entity.curriculum.CourseComment</class>
+	  <class>kaiyi.app.xhapp.entity.curriculum.Teacher</class>
+	  <class>kaiyi.app.xhapp.entity.curriculum.MediaLibrary</class>
 	  <class>kaiyi.app.xhapp.entity.curriculum.CourseMovie</class>
-	  <class>kaiyi.app.xhapp.entity.curriculum.Course</class>
-	  <class>kaiyi.app.xhapp.entity.curriculum.MediaLibrary</class>
-	  <class>kaiyi.app.xhapp.entity.curriculum.Teacher</class>
-	  <class>kaiyi.app.xhapp.entity.curriculum.Chapter</class>
-	  <class>kaiyi.app.xhapp.entity.curriculum.ShopCar</class>
-	  <class>kaiyi.app.xhapp.entity.curriculum.Category</class>
-	  <class>kaiyi.app.xhapp.entity.curriculum.CourseBuyerPrivilege</class>
-	  <class>kaiyi.app.xhapp.entity.curriculum.CourseProblem</class>
 	  <class>kaiyi.app.xhapp.entity.curriculum.CourseComment</class>
+	  <class>kaiyi.app.xhapp.entity.curriculum.CourseProblem</class>
+	  <class>kaiyi.app.xhapp.entity.curriculum.ShopCar</class>
+	  <class>kaiyi.app.xhapp.entity.curriculum.CourseFavorites</class>
+	  <class>kaiyi.app.xhapp.entity.curriculum.CourseBuyerPrivilege</class>
+	  <class>kaiyi.app.xhapp.entity.curriculum.Category</class>
 	  <class>kaiyi.app.xhapp.entity.pub.Notice</class>
 	  <class>kaiyi.app.xhapp.entity.pub.Configure</class>
+	  <class>kaiyi.app.xhapp.entity.log.AmountFlow</class>
 	  <class>kaiyi.app.xhapp.entity.log.ShortMessageSenderNote</class>
+	  <class>kaiyi.app.xhapp.entity.log.CourseBrowse</class>
+	  <class>kaiyi.app.xhapp.entity.pages.ExamInfo</class>
 	  <class>kaiyi.app.xhapp.entity.pages.DisplayMap</class>
 	  <class>kaiyi.app.xhapp.entity.pub.Notice</class>
 	  <class>kaiyi.app.xhapp.entity.pub.Configure</class>

@@ -12,7 +12,7 @@ import kaiyi.puer.h5ui.annotations.PageField;
 import javax.persistence.*;
 import java.util.Date;
 
-@Entity(name=CourseComment.TABLE_NAME)
+@Entity(name=CourseProblem.TABLE_NAME)
 @PageEntity(showName = "课程问题",entityName = "courseProblem",serviceName = "courseProblemService")
 public class CourseProblem extends AbstractEntity {
     public static final String TABLE_NAME="course_problem";

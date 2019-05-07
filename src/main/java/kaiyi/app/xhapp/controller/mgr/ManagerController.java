@@ -3,16 +3,23 @@ import kaiyi.app.xhapp.entity.access.RoleAuthorizationMenu;
 import kaiyi.app.xhapp.entity.access.VisitorMenu;
 import kaiyi.app.xhapp.entity.access.VisitorRole;
 import kaiyi.app.xhapp.entity.access.VisitorUser;
+import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
 import kaiyi.app.xhapp.service.access.VisitorMenuService;
+import kaiyi.app.xhapp.service.pub.ConfigureService;
 import kaiyi.puer.commons.collection.Cascadeable;
 import kaiyi.puer.commons.collection.ProcessCascadeEachHandler;
 import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.collection.StreamCollection;
+import kaiyi.puer.commons.data.JavaDataTyper;
+import kaiyi.puer.commons.time.DateTimeUtil;
+import kaiyi.puer.db.orm.DatabaseFastOper;
 import kaiyi.puer.h5ui.bean.DynamicGridInfo;
 import kaiyi.puer.h5ui.bean.PageFieldData;
 import kaiyi.puer.h5ui.controller.H5Controller;
 import kaiyi.puer.h5ui.service.ApplicationService;
+import kaiyi.puer.h5ui.service.DocumentService;
 import kaiyi.puer.h5ui.service.H5UIService;
+import kaiyi.puer.json.creator.JsonMessageCreator;
 import kaiyi.puer.web.servlet.PageNavigation;
 import kaiyi.puer.web.servlet.ServletUtils;
 import kaiyi.puer.web.servlet.WebInteractive;
@@ -21,10 +28,8 @@ import kaiyi.puer.web.servlet.WebPage;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.io.IOException;
+import java.util.*;
 
 public abstract class ManagerController extends H5Controller {
     public static final String prefix="/mgr";
@@ -34,6 +39,8 @@ public abstract class ManagerController extends H5Controller {
     protected ApplicationService applicationService;
     @Resource
     protected H5UIService h5UIService;
+    @Resource
+    private ConfigureService configureService;
     /********************* 页面菜单相关  ***************************/
     //添加菜单到session
     protected VisitorMenu addMenuToSession(WebInteractive interactive){
@@ -232,5 +239,18 @@ public abstract class ManagerController extends H5Controller {
             pageNumbers.insertToLast(interactive.getInteger(WebInteractive.PAGINATION_PARAMETER_CURRENT_PAGE));
         }
         return pageNumbers;
+    }
+
+    protected void contextCommit(WebInteractive interactive, DatabaseFastOper<?> service) throws IOException {
+        Map<String,JavaDataTyper> params=interactive.getRequestParameterMap();
+        String storagePath=configureService.getStringValue(ConfigureItem.DOC_SAVE_PATH);
+        String serverPath=configureService.getStringValue(ConfigureItem.DOC_SERVER_PREFIX);
+        String content=params.get("content").stringValue();
+        content=DocumentService.replaceImageSrc(content,AccessController.getAccessTempFilePathPrefix(interactive),
+                storagePath,serverPath);
+        params.put("content",new JavaDataTyper(content));
+        params.put("publishDate",new JavaDataTyper(DateTimeUtil.yyyyMMddHHmmss.format(new Date())));
+        JsonMessageCreator msg=executeNewOrUpdate(interactive,service,params,storagePath);
+        interactive.writeUTF8Text(msg.build());
     }
 }

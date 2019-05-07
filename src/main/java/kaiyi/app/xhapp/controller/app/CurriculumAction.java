@@ -76,7 +76,7 @@ public class CurriculumAction extends SuperAction {
                             if(field.equals("chapters")){
                                 StreamCollection<Chapter> chapterSet=new StreamCollection<>(entity.getChapters());
                                 chapterSet.sort((c1,c2)->{
-                                    return Integer.valueOf(c1.getWeight()).compareTo(c2.getWeight());
+                                    return Integer.valueOf(c2.getWeight()).compareTo(c1.getWeight());
                                 });
                                 Chapter chapter=new Chapter();
                                 String[] showFieldArray=BeanSyntacticSugar.getFieldStringNotStatic(chapter.getClass(),new String[]{});

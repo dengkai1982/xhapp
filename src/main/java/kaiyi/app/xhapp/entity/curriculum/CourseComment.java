@@ -42,6 +42,8 @@ public class CourseComment extends AbstractEntity {
         return commentator;
     }
 
+    private String headerImage;
+
     public void setCommentator(Account commentator) {
         this.commentator = commentator;
     }
@@ -102,5 +104,13 @@ public class CourseComment extends AbstractEntity {
 
     public void setScore(int score) {
         this.score = score;
+    }
+    @Transient
+    public String getHeaderImage() {
+        return commentator.getHeaderImage();
+    }
+
+    public void setHeaderImage(String headerImage) {
+        this.headerImage = headerImage;
     }
 }
