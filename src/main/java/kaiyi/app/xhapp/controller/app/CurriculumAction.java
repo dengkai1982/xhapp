@@ -20,6 +20,7 @@ import kaiyi.puer.json.JsonValuePolicy;
 import kaiyi.puer.json.creator.CollectionJsonCreator;
 import kaiyi.puer.json.creator.JsonMessageCreator;
 import kaiyi.puer.json.creator.ObjectJsonCreator;
+import kaiyi.puer.json.creator.StringJsonCreator;
 import kaiyi.puer.web.servlet.WebInteractive;
 import kaiyi.puer.web.springmvc.IWebInteractive;
 import org.springframework.stereotype.Controller;
@@ -85,9 +86,17 @@ public class CurriculumAction extends SuperAction {
                                     public JsonCreator getCreator(Chapter entity, String field, Object fieldValue) {
                                         if(field.equals("courseMovies")){
                                             StreamCollection<CourseMovie> movies=entity.getCourseMovieList();
-                                            CourseMovie courseMovie=new CourseMovie();
-                                            String[] showFieldArray=BeanSyntacticSugar.getFieldStringNotStatic(chapter.getClass(),new String[]{});
-                                            return new CollectionJsonCreator<CourseMovie>(movies,showFieldArray);
+                                            return new CollectionJsonCreator<CourseMovie>(movies, new String[]{
+                                                    "name", "longTime", "mediaLibrary", "weight"
+                                            }, new JsonValuePolicy<CourseMovie>() {
+                                                @Override
+                                                public JsonCreator getCreator(CourseMovie entity, String field, Object fieldValue) {
+                                                    if (field.equals("mediaLibrary")) {
+                                                        return new StringJsonCreator(entity.getMediaLibrary().getEntityId());
+                                                    }
+                                                    return null;
+                                                }
+                                            });
                                         }
                                         return null;
                                     }
@@ -147,6 +156,20 @@ public class CurriculumAction extends SuperAction {
         }
         interactive.writeUTF8Text(jmc.build());
     }
+
+    /**
+     * 删除购物车
+     * @param interactive
+     * @param response
+     * @throws IOException
+     */
+    @PostMapping("/deleteShopCar")
+    public void deleteShopCar(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String entityId=interactive.getStringParameter("entityId","");
+        shopCarService.deleteForPrimary(entityId);
+        interactive.writeUTF8Text(getSuccessMessage().build());
+    }
+
     /**
      * 课程提问、考试咨询
      * @param interactive
@@ -202,7 +225,18 @@ public class CurriculumAction extends SuperAction {
         }
         interactive.writeUTF8Text(jmc.build());
     }
-
+    /**
+     * 删除课程浏览记录
+     * @param interactive
+     * @param response
+     * @throws IOException
+     */
+    @PostMapping("/deleteFavorites")
+    public void deleteFavorites(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String entityId=interactive.getStringParameter("entityId","");
+        courseFavoritesService.deleteForPrimary(entityId);
+        interactive.writeUTF8Text(getSuccessMessage().build());
+    }
     /**
      * 添加课程浏览记录
      * @param interactive
@@ -220,5 +254,17 @@ public class CurriculumAction extends SuperAction {
             catchServiceException(jmc,e);
         }
         interactive.writeUTF8Text(jmc.build());
+    }
+    /**
+     * 删除课程浏览记录
+     * @param interactive
+     * @param response
+     * @throws IOException
+     */
+    @PostMapping("/deleteCorseBrowse")
+    public void deleteCorseBrowse(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String entityId=interactive.getStringParameter("entityId","");
+        courseBrowseService.deleteForPrimary(entityId);
+        interactive.writeUTF8Text(getSuccessMessage().build());
     }
 }

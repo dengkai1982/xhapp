@@ -42,6 +42,8 @@ public class CourseProblem extends AbstractEntity {
         return submitter;
     }
 
+    private String headerImage;
+
     public void setSubmitter(Account submitter) {
         this.submitter = submitter;
     }
@@ -94,5 +96,14 @@ public class CourseProblem extends AbstractEntity {
 
     public void setReplier(VisitorUser replier) {
         this.replier = replier;
+    }
+
+    @Transient
+    public String getHeaderImage() {
+        return submitter.getHeaderImage();
+    }
+
+    public void setHeaderImage(String headerImage) {
+        this.headerImage = headerImage;
     }
 }

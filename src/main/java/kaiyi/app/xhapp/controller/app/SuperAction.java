@@ -30,7 +30,7 @@ public abstract class SuperAction extends H5Controller {
 
     @Override
     protected H5UIService getH5UIService() {
-        return null;
+        return h5UIService;
     }
 
     @Override

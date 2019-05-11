@@ -17,6 +17,7 @@ import kaiyi.app.xhapp.service.pub.ConfigureService;
 import kaiyi.puer.commons.access.AccessControl;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.StringEditor;
+import kaiyi.puer.db.orm.ORMException;
 import kaiyi.puer.db.orm.ServiceException;
 import kaiyi.puer.db.query.CompareQueryExpress;
 import kaiyi.puer.db.query.NullQueryExpress;
@@ -244,10 +245,16 @@ public class CurriculumController extends ManagerController{
     @RequestMapping("/mediaLibrary/delete")
     @AccessControl(name = "删除媒体库", weight = 3.92f, detail = "删除媒体库文件",
             code = rootPath+ "/mediaLibrary/delete", parent = rootPath+"/mediaLibrary")
-    public void mediaLibraryDelete(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+    public void mediaLibraryDelete(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
         String entityId=interactive.getStringParameter("entityId","");
-        //TODO 有关联后再来做
-
+        JsonMessageCreator jmc=getSuccessMessage();
+        try{
+            mediaLibraryService.deleteForPrimary(entityId);
+        }catch(ORMException e){
+            jmc.setMsg(e.getMessage());
+            jmc.setCode(JsonMessageCreator.FAIL);
+        }
+        interactive.writeUTF8Text(jmc.build());
     }
 
     @PostMapping("/getPlayAddress")

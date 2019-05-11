@@ -1,4 +1,5 @@
 package kaiyi.app.xhapp.entity.curriculum;
+import kaiyi.app.xhapp.entity.AbstractEntity;
 import kaiyi.puer.commons.collection.Cascadeable;
 import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.collection.StreamCollection;
@@ -11,19 +12,19 @@ import java.util.*;
 
 @Entity(name=Category.TABLE_NAME)
 @PageEntity(showName = "课程分类",entityName = "category",serviceName = "categoryService")
-public class Category extends LogicDeleteEntity implements Cascadeable,Comparable<Category> {
+public class Category extends AbstractEntity implements Cascadeable,Comparable<Category> {
     public static final String TABLE_NAME="category";
     private static final long serialVersionUID = -8344965236426535810L;
     @NotEmpty(hint = "类别名称必须填写")
     @PageField(label = "类别名称")
     private String name;
+    @PageField(label = "启用/停用",type = FieldType.BOOLEAN)
+    @FieldBoolean(values = {"启用","停用"})
+    private boolean enable;
     @NotEmpty(hint = "显示权重必须填写")
     @PageField(label = "显示权重",type = FieldType.NUMBER)
     @FieldNumber(type = FieldNumber.TYPE.FLOAT)
     private Float weight;
-    @PageField(label = "启用/停用",type = FieldType.BOOLEAN)
-    @FieldBoolean(values = {"启用","停用"})
-    private boolean enable;
     @PageField(label = "上级类别",type = FieldType.REFERENCE)
     @FieldReference(fieldName = "name")
     private Category parent;
@@ -55,7 +56,7 @@ public class Category extends LogicDeleteEntity implements Cascadeable,Comparabl
         return this.level;
     }
 
-    @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
     @JoinColumn(name="parent")
     public Category getParent() {
         return parent;
@@ -119,12 +120,10 @@ public class Category extends LogicDeleteEntity implements Cascadeable,Comparabl
         this.level = level;
     }
 
-    @Override
     public boolean isEnable() {
         return enable;
     }
 
-    @Override
     public void setEnable(boolean enable) {
         this.enable = enable;
     }

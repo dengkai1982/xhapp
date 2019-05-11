@@ -42,5 +42,6 @@ public class ServiceExceptionDefine {
 
     public static final ServiceException goldInsufficient=new ServiceException(
             ServiceException.CODE_FAIL,"账户金币余额不足");
-
+    public static final ServiceException mediaReference=new ServiceException(
+            ServiceException.CODE_FAIL,"视频文件已被引用,不能删除");
 }

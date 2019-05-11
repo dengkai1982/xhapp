@@ -69,13 +69,27 @@
     }
     function createMenuItems(dataId,dataRow,data){
         var items = [{
-            url:"${contextPath}${webPage.modifyEntityPage}${suffix}?entityId="+dataId+"&${paginationCurrentPage}="+getPaginationCurrentPage(),
-            label:"编辑修改",
-            className:"privilege",
-            access:"${webPage.modifyEntityPage}"
-        },{
-            url:"${contextPath}${webPage.detailEntityPage}${suffix}?entityId="+dataId+"&${paginationCurrentPage}="+getPaginationCurrentPage(),
-            label:"查看详情"
+            label:"删除媒体库",
+            privilege:"/mgr/curriculum/mediaLibrary/delete",
+            onClick:function(){
+                confirmOper("消息","确实要删除媒体库文件?",function(){
+                    postJSON("${managerPath}/curriculum/mediaLibrary/delete${suffix}",{
+                        entityId:dataId
+                    },"正在执行,请稍后...",function(result){
+                        if(result.code==SUCCESS){
+                            bootbox.alert({
+                                title:"消息",
+                                message: "删除媒体库成功,点击确认返回",
+                                callback: function () {
+                                    reflashPageData();
+                                }
+                            })
+                        }else{
+                            showMessage(result.msg,1500);
+                        }
+                    });
+                })
+            }
         }]
         checkPrivilege(items);
         return items;
