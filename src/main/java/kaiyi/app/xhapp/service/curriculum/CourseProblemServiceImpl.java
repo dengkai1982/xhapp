@@ -50,5 +50,6 @@ public class CourseProblemServiceImpl extends InjectDao<CourseProblem> implement
         problem.setReplier(replier);
         problem.setReplyTime(new Date());
         problem.setReply(replyContent);
+        problem.setAnswer(true);
     }
 }

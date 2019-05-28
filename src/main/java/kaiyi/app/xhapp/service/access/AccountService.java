@@ -1,6 +1,7 @@
 package kaiyi.app.xhapp.service.access;
 
 import kaiyi.app.xhapp.entity.access.Account;
+import kaiyi.app.xhapp.entity.access.enums.MemberShip;
 import kaiyi.puer.db.orm.DatabaseFastOper;
 import kaiyi.puer.db.orm.DatabaseQuery;
 import kaiyi.puer.db.orm.ServiceException;
@@ -38,4 +39,11 @@ public interface AccountService extends DatabaseQuery<Account>,DatabaseFastOper<
      * @param newPassword
      */
     void resetPassword(String phone,String newPassword)throws ServiceException;
+
+    /**
+     * 更改会员类型
+     * @param entityId
+     * @param memberShip
+     */
+    void changeMemberShip(String entityId, MemberShip memberShip);
 }

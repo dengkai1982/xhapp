@@ -30,6 +30,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Objects;
 
 @Controller
@@ -55,6 +57,8 @@ public class CurriculumAction extends SuperAction {
     private CourseCommentService courseCommentService;
     @Resource
     private CourseProblemService courseProblemService;
+    @Resource
+    private FaceToFaceService faceToFaceService;
     /**
      * 根据ID获取课程信息
      * @param interactive
@@ -75,10 +79,7 @@ public class CurriculumAction extends SuperAction {
                         @Override
                         public JsonCreator getCreator(Course entity, String field, Object fieldValue) {
                             if(field.equals("chapters")){
-                                StreamCollection<Chapter> chapterSet=new StreamCollection<>(entity.getChapters());
-                                chapterSet.sort((c1,c2)->{
-                                    return Integer.valueOf(c2.getWeight()).compareTo(c1.getWeight());
-                                });
+                                StreamCollection<Chapter> chapterSet=entity.getChapterList();
                                 Chapter chapter=new Chapter();
                                 String[] showFieldArray=BeanSyntacticSugar.getFieldStringNotStatic(chapter.getClass(),new String[]{});
                                 return new CollectionJsonCreator<Chapter>(chapterSet,showFieldArray,new DefaultJsonValuePolicy<Chapter>(new JsonValuePolicy<Chapter>() {
@@ -266,5 +267,19 @@ public class CurriculumAction extends SuperAction {
         String entityId=interactive.getStringParameter("entityId","");
         courseBrowseService.deleteForPrimary(entityId);
         interactive.writeUTF8Text(getSuccessMessage().build());
+    }
+
+    /**
+     * 面授预约
+     * @param interactive
+     * @param response
+     */
+    @PostMapping("/faceToFace")
+    public void faceToFace(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        String name=interactive.getStringParameter("name","");
+        String phone=interactive.getStringParameter("phone","");
+        String course=interactive.getStringParameter("course","");
+        Date faceTime=interactive.getDateParameter("faceTime",new SimpleDateFormat("yyyy-MM-dd"));
+        faceToFaceService.make(name,phone,course,faceTime);
     }
 }

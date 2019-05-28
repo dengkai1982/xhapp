@@ -9,10 +9,12 @@ import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.app.xhapp.service.access.AccountService;
 import kaiyi.app.xhapp.service.access.VisitorUserService;
 import kaiyi.puer.commons.data.Currency;
+import kaiyi.puer.db.orm.ORMException;
 import org.springframework.stereotype.Service;
 import kaiyi.puer.db.orm.ServiceException;
 
 import javax.annotation.Resource;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
@@ -64,6 +66,18 @@ public class CourseCommentServiceImpl extends InjectDao<CourseComment> implement
         comment.setReplier(replier);
         comment.setReplyTime(new Date());
         comment.setReply(replyContent);
+        comment.setAnswer(true);
+    }
+
+
+    @Override
+    public void deleteForPrimary(Serializable entityid) throws ORMException {
+        CourseComment courseComment=findForPrimary(entityid);
+        if(Objects.nonNull(courseComment)){
+            Course course=courseComment.getCourse();
+            super.deleteForPrimary(entityid);
+            avgCommentScore(course);
+        }
     }
 
     private double avgCommentScore(Course course){

@@ -1,8 +1,11 @@
 package kaiyi.app.xhapp.controller.mgr;
 
+import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.app.xhapp.entity.access.RoleAuthorizationMenu;
 import kaiyi.app.xhapp.entity.access.VisitorMenu;
 import kaiyi.app.xhapp.entity.access.VisitorRole;
+import kaiyi.app.xhapp.entity.access.enums.MemberShip;
+import kaiyi.app.xhapp.service.access.AccountService;
 import kaiyi.app.xhapp.service.access.RoleAuthorizationMenuService;
 import kaiyi.app.xhapp.service.curriculum.TeacherService;
 import kaiyi.app.xhapp.service.access.VisitorRoleService;
@@ -18,6 +21,7 @@ import kaiyi.puer.h5ui.bean.DynamicGridInfo;
 import kaiyi.puer.json.JsonParserException;
 import kaiyi.puer.json.creator.JsonMessageCreator;
 import kaiyi.puer.json.parse.ArrayJsonParser;
+import kaiyi.puer.web.elements.ChosenElement;
 import kaiyi.puer.web.servlet.WebInteractive;
 import kaiyi.puer.web.springmvc.IWebInteractive;
 import org.springframework.stereotype.Controller;
@@ -42,7 +46,8 @@ public class AccountController extends ManagerController {
     @Resource
     private VisitorUserService visitorUserService;
     @Resource
-    private TeacherService studentService;
+    private AccountService accountService;
+
     @RequestMapping("/visitorRole")
     @AccessControl(name = "角色管理", weight = 1.1f, detail = "管理系统中的访问角色", code = rootPath+ "/visitorRole", parent = rootPath)
     public String visitorRole(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
@@ -223,11 +228,64 @@ public class AccountController extends ManagerController {
         visitorUserService.resetPassword(entityId);
         interactive.writeUTF8Text(getSuccessMessage().build());
     }
-
+    @RequestMapping("/visitorUser/detail")
+    @AccessControl(name = "用户详情", weight = 1.25f, detail = "用户详情",
+            code = rootPath+ "/visitorUser/detail", parent = rootPath+"/visitorUser")
+    public String visitorUserDetail(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        detailPage(interactive,visitorUserService,3);
+        setDefaultPage(interactive,rootPath+"/visitorUser");
+        return rootPath+"/visitorUserDetail";
+    }
     @RequestMapping(value="/visitorUser/commit",method = RequestMethod.POST)
     public void visitorUserCommit(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
         JsonMessageCreator msg=executeNewOrUpdate(interactive,visitorUserService);
         interactive.writeUTF8Text(msg.build());
     }
 
+    /*@RequestMapping("/account")
+    @AccessControl(name = "会员管理", weight = 1.3f, detail = "管理系统中的会员", code = rootPath
+            + "/account", parent = rootPath)
+    public String account(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        setDefaultPage(interactive,rootPath+"/account");
+        mainTablePage(interactive,accountService,null,null,
+                new DynamicGridInfo(false,DynamicGridInfo.OperMenuType.popup));
+        StreamCollection<ChosenElement> memberShips=ChosenElement.build(MemberShip.values());
+        interactive.setRequestAttribute("memberShips",memberShips);
+        return rootPath+"/account";
+    }
+    @RequestMapping("/account/detail")
+    @AccessControl(name = "会员详情", weight = 1.31f, detail = "用户详情",
+            code = rootPath+ "/account/detail", parent = rootPath+"/account")
+    public String accountDetail(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        detailPage(interactive,visitorUserService,3);
+        setDefaultPage(interactive,rootPath+"/account");
+        return rootPath+"/accountDetail";
+    }
+    @AccessControl(name = "重置密码", weight = 1.32f, detail = "重置会员密码", code = rootPath
+            + "/account/resetPasswd", parent = rootPath+"/account")
+    @RequestMapping("/account/resetPasswd")
+    public void accountResetPasswd(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String entityId=interactive.getStringParameter("entityId","");
+        Account account=accountService.findForPrimary(entityId);
+        String newPassword=interactive.getStringParameter("newPassword","");
+        JsonMessageCreator jmc=getSuccessMessage();
+        if(Objects.nonNull(account)){
+            try {
+                accountService.resetPassword(account.getPhone(),newPassword);
+            } catch (ServiceException e) {
+                catchServiceException(jmc,e);
+            }
+        }
+        interactive.writeUTF8Text(jmc.build());
+    }
+    @AccessControl(name = "修改会员类型", weight = 1.33f, detail = "改变会员类型", code = rootPath
+            + "/account/changeMemberShip", parent = rootPath+"/account")
+    @RequestMapping("/account/changeMemberShip")
+    public void accountChangeMemberShip(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String entityId=interactive.getStringParameter("entityId","");
+        MemberShip memberShip=interactive.getEnumParameterByOrdinal(MemberShip.class,"memberShip",MemberShip.normal);
+        JsonMessageCreator jmc=getSuccessMessage();
+        accountService.changeMemberShip(entityId,memberShip);
+        interactive.writeUTF8Text(jmc.build());
+    }*/
 }

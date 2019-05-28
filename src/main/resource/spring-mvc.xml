@@ -24,7 +24,7 @@
 	</bean>
 	<mvc:interceptors>
 		<bean class="kaiyi.app.xhapp.controller.interceptor.LoginInterceptor">
-			<property name="redirectPage" value="privilege.jsp"/>
+			<property name="redirectPage" value="login.jsp"/>
 			<property name="managerPrifix" value="/mgr"/>
 			<property name="appPrifix" value="/app"/>
 			<property name="excludeUrl">

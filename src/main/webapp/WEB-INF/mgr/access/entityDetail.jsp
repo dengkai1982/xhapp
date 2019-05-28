@@ -13,7 +13,7 @@
     <c:forEach items="${requestScope.pageFieldDataLines}" var="dataLine">
         <tr>
             <c:forEach items="${dataLine.fieldDatas}" var="fieldData">
-                <th class="strong">${fieldData.label}</th>
+                <th class="strong" name="${fieldData.field.name}">${fieldData.label}</th>
                 <td>
                     <c:choose>
                         <c:when test="${fieldData.type.fieldType.showName=='CHOSEN'||fieldData.type.fieldType.showName=='BOOLEAN'}">

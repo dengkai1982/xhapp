@@ -12,6 +12,7 @@ import kaiyi.puer.h5ui.annotations.*;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Objects;
 
 @Entity(name=Account.TABLE_NAME)
 @PageEntity(showName = "用户账户",entityName = "account",serviceName = "accountService")
@@ -129,5 +130,12 @@ public class Account extends AbstractEntity {
 
     public void setRegisterTime(Date registerTime) {
         this.registerTime = registerTime;
+    }
+    @Transient
+    public String getShowAccountName(){
+        if(Objects.isNull(nickName)){
+            return phone;
+        }
+        return nickName;
     }
 }

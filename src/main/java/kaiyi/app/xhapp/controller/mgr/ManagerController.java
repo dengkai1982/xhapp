@@ -88,10 +88,22 @@ public abstract class ManagerController extends H5Controller {
         });
         VisitorMenu firstMenu=null;
         if(!menus.isEmpty()){
-            VisitorMenu first=menus.get(0);
+            VisitorMenu first=null;
+            for(VisitorMenu menu:menus){
+                if(menu.isShowable()){
+                    first=menu;
+                    break;
+                }
+            }
             first.setActive(true);
             if(!first.getChildrenList().isEmpty()){
-                firstMenu=first.getChildrenList().get(0);
+                StreamCollection<VisitorMenu> children=new StreamCollection<>(first.getChildrenList());
+                for(VisitorMenu menu:children){
+                    if(menu.isShowable()){
+                        firstMenu=menu;
+                        break;
+                    }
+                }
                 firstMenu.setActive(true);
             }
         }

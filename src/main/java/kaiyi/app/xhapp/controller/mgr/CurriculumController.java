@@ -5,10 +5,7 @@ import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.vod.model.v20170321.CreateUploadVideoResponse;
 import com.aliyuncs.vod.model.v20170321.RefreshUploadVideoResponse;
 import kaiyi.app.xhapp.entity.access.enums.MemberShip;
-import kaiyi.app.xhapp.entity.curriculum.Category;
-import kaiyi.app.xhapp.entity.curriculum.Chapter;
-import kaiyi.app.xhapp.entity.curriculum.Course;
-import kaiyi.app.xhapp.entity.curriculum.MediaLibrary;
+import kaiyi.app.xhapp.entity.curriculum.*;
 import kaiyi.app.xhapp.entity.pojo.CreateUploadVideoRequestInfo;
 import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
 import kaiyi.app.xhapp.service.AliyunVodHelper;
@@ -16,6 +13,7 @@ import kaiyi.app.xhapp.service.curriculum.*;
 import kaiyi.app.xhapp.service.pub.ConfigureService;
 import kaiyi.puer.commons.access.AccessControl;
 import kaiyi.puer.commons.collection.StreamCollection;
+import kaiyi.puer.commons.data.JavaDataTyper;
 import kaiyi.puer.commons.data.StringEditor;
 import kaiyi.puer.db.orm.ORMException;
 import kaiyi.puer.db.orm.ServiceException;
@@ -37,6 +35,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Map;
+
 @Controller
 @RequestMapping(CurriculumController.rootPath)
 @AccessControl(name = "课程管理", weight = 3f, detail = "管理课程相关内容", code = CurriculumController.rootPath)
@@ -57,6 +57,12 @@ public class CurriculumController extends ManagerController{
     private ChapterService chapterService;
     @Resource
     private CourseMovieService courseMovieService;
+    @Resource
+    private CourseCommentService courseCommentService;
+    @Resource
+    private CourseProblemService courseProblemService;
+    @Resource
+    private FaceToFaceService faceToFaceService;
     @RequestMapping("/teacher")
     @AccessControl(name = "授课教师", weight = 3.1f, detail = "管理授课教师", code = rootPath+ "/teacher", parent = rootPath)
     public String teacher(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
@@ -117,7 +123,6 @@ public class CurriculumController extends ManagerController{
         }
         return rootPath+"/course";
     }
-    //TODO 新增课程和新增章节放开
     @RequestMapping("/course/new")
     @AccessControl(name = "新增课程", weight = 3.21f, detail = "添加新的课程",
             code = rootPath+ "/course/new", parent = rootPath+"/course")
@@ -224,6 +229,129 @@ public class CurriculumController extends ManagerController{
         interactive.writeUTF8Text(getSuccessMessage().build());
     }
 
+    @RequestMapping("/courseComment")
+    @AccessControl(name = "课程评论", weight = 3.3f, detail = "查看课程评论内容", code = rootPath+ "/courseComment", parent = rootPath)
+    public String courseComment(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        setDefaultPage(interactive,rootPath+"/courseComment");
+        mainTablePage(interactive,courseCommentService,null,null,
+                new DynamicGridInfo(false,DynamicGridInfo.OperMenuType.popup));
+        return rootPath+"/courseComment";
+    }
+
+    @RequestMapping("/courseComment/reply")
+    @AccessControl(name = "回复评论", weight = 3.31f, detail = "回复课程评论",
+            code = rootPath+ "/courseComment/reply", parent = rootPath+"/courseComment")
+    public String courseCommentReply(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        detailPage(interactive,courseCommentService,3);
+        setDefaultPage(interactive,rootPath+"/courseComment");
+        interactive.getWebPage().setPageTitle("课程评论回复");
+        return rootPath+"/courseCommentReply";
+    }
+
+    @RequestMapping("/courseComment/detail")
+    @AccessControl(name = "评论详情", weight = 3.32f, detail = "查看评论详情",
+            code = rootPath+ "/courseComment/detail", parent = rootPath+"/courseComment",defaultAuthor = true)
+    public String courseCommentDetail(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        detailPage(interactive,courseCommentService,3);
+        setDefaultPage(interactive,rootPath+"/courseComment");
+        interactive.getWebPage().setPageTitle("课程评论详情");
+        return rootPath+"/courseCommentDetail";
+    }
+
+    @PostMapping("/courseComment/delete")
+    @AccessControl(name = "删除评论", weight = 3.33f, detail = "删除评论",
+            code = rootPath+ "/courseComment/delete", parent = rootPath+"/courseComment")
+    public void courseCommentDelete(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String entityId=interactive.getStringParameter("entityId","");
+        JsonMessageCreator jmc=getSuccessMessage();
+        courseCommentService.deleteForPrimary(entityId);
+        interactive.writeUTF8Text(jmc.build());
+    }
+
+    @PostMapping("/courseComment/doReply")
+    public void CourseCommentDoReply(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        doReplay(interactive,courseCommentService);
+    }
+    //课程提问
+    @RequestMapping("/courseProblem")
+    @AccessControl(name = "课程问题", weight = 3.4f, detail = "查看课程问题列表", code = rootPath+ "/courseProblem", parent = rootPath)
+    public String courseProblem(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        setDefaultPage(interactive,rootPath+"/courseProblem");
+        mainTablePage(interactive,courseProblemService,null,null,
+                new DynamicGridInfo(false,DynamicGridInfo.OperMenuType.popup));
+        return rootPath+"/courseProblem";
+    }
+
+    @RequestMapping("/courseProblem/reply")
+    @AccessControl(name = "问题回复", weight = 3.41f, detail = "回复课程为题",
+            code = rootPath+ "/courseProblem/reply", parent = rootPath+"/courseProblem")
+    public String courseProblemReply(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        detailPage(interactive,courseProblemService,3);
+        setDefaultPage(interactive,rootPath+"/courseProblem");
+        interactive.getWebPage().setPageTitle("回复课程问题");
+        return rootPath+"/courseProblemReply";
+    }
+
+    @RequestMapping("/courseProblem/detail")
+    @AccessControl(name = "问题详情", weight = 3.42f, detail = "查看课程问题详情",
+            code = rootPath+ "/courseProblem/detail", parent = rootPath+"/courseProblem",defaultAuthor = true)
+    public String courseProblemDetail(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        detailPage(interactive,courseProblemService,3);
+        setDefaultPage(interactive,rootPath+"/courseProblem");
+        interactive.getWebPage().setPageTitle("课程问题详情");
+        return rootPath+"/courseProblemDetail";
+    }
+
+    @PostMapping("/courseProblem/doReply")
+    public void courseProblemDoReply(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException{
+        doReplay(interactive,courseProblemService);
+    }
+    //面授预约
+    @RequestMapping("/faceToFace")
+    @AccessControl(name = "面授预约", weight = 3.5f, detail = "查看面授预约请求", code = rootPath+ "/faceToFace", parent = rootPath)
+    public String faceToFace(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        setDefaultPage(interactive,rootPath+"/faceToFace");
+        mainTablePage(interactive,faceToFaceService,null,null,
+                new DynamicGridInfo(false,DynamicGridInfo.OperMenuType.popup));
+        return rootPath+"/faceToFace";
+    }
+
+    @RequestMapping("/faceToFace/reply")
+    @AccessControl(name = "预约回复", weight = 3.51f, detail = "回复面试预约",
+            code = rootPath+ "/faceToFace/reply", parent = rootPath+"/faceToFace")
+    public String faceToFaceReply(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        detailPage(interactive,faceToFaceService,3);
+        setDefaultPage(interactive,rootPath+"/courseProblem");
+        interactive.getWebPage().setPageTitle("预约面授回复");
+        return rootPath+"/faceToFaceReply";
+    }
+
+    @RequestMapping("/faceToFace/detail")
+    @AccessControl(name = "预约面授详情", weight = 3.52f, detail = "查看预约面授详情",
+            code = rootPath+ "/faceToFace/detail", parent = rootPath+"/faceToFace",defaultAuthor = true)
+    public String faceToFaceDetail(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        detailPage(interactive,faceToFaceService,3);
+        setDefaultPage(interactive,rootPath+"/faceToFace");
+        interactive.getWebPage().setPageTitle("课程问题详情");
+        return rootPath+"/faceToFaceDetail";
+    }
+
+    @PostMapping("/faceToFace/doReply")
+    public void faceToFaceDoReply(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException{
+        doReplay(interactive,faceToFaceService);
+    }
+
+    private void doReplay(@IWebInteractive WebInteractive interactive,ReplyService replyService) throws IOException {
+        String entityId=interactive.getStringParameter("entityId","");
+        String replyContent=interactive.getStringParameter("replyContent","");
+        JsonMessageCreator jmc=getSuccessMessage();
+        try {
+            replyService.reply(entityId,getLoginedUser(interactive).getEntityId(),replyContent);
+        } catch (ServiceException e) {
+            catchServiceException(jmc,e);
+        }
+        interactive.writeUTF8Text(jmc.build());
+    }
 
     @RequestMapping("/mediaLibrary")
     @AccessControl(name = "媒体库", weight = 3.9f, detail = "管理上传媒体文件", code = rootPath+ "/mediaLibrary", parent = rootPath)

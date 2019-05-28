@@ -12,8 +12,7 @@ import kaiyi.puer.commons.validate.NotEmpty;
 import kaiyi.puer.h5ui.annotations.*;
 
 import javax.persistence.*;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity(name=Course.TABLE_NAME)
 @PageEntity(showName = "课程",entityName = "course",serviceName = "courseService")
@@ -34,6 +33,11 @@ public class Course extends AbstractEntity {
     @PageField(label = "课程难度",type = FieldType.CHOSEN)
     @FieldChosen
     private Difficulty difficulty;
+    @NotEmpty(hint = "课程售价必须填写")
+    @ICurrency
+    @PageField(label = "课程售价",type = FieldType.NUMBER)
+    @FieldNumber(type = FieldNumber.TYPE.INT)
+    private int price;
     @PageField(label = "课程上架/下架",type = FieldType.BOOLEAN,showForm = false,tableLength =120)
     @FieldBoolean(values = {"上架","下架"})
     private boolean sale;
@@ -50,14 +54,6 @@ public class Course extends AbstractEntity {
     @PageField(label = "课程简介",type=FieldType.AREATEXT,showSearch = false,showTable = false,showQuery =false,formColumnLength = 3)
     @FieldArea(row=5)
     private String detail;
-    @NotEmpty(hint = "课程售价必须填写")
-    @ICurrency
-    @PageField(label = "课程售价",type = FieldType.NUMBER)
-    @FieldNumber(type = FieldNumber.TYPE.INT)
-    private int price;
-    @PageField(label = "浏览量",type = FieldType.NUMBER,showForm = false)
-    @FieldNumber(type = FieldNumber.TYPE.LONG)
-    private long browseVolume;
     @PageField(label = "购买量",type = FieldType.NUMBER,showForm = false)
     @FieldNumber(type = FieldNumber.TYPE.LONG)
     private long buyVolume;
@@ -123,15 +119,7 @@ public class Course extends AbstractEntity {
     public void setPrice(int price) {
         this.price = price;
     }
-
-    public long getBrowseVolume() {
-        return browseVolume;
-    }
-
-    public void setBrowseVolume(long browseVolume) {
-        this.browseVolume = browseVolume;
-    }
-
+    
     public long getBuyVolume() {
         return buyVolume;
     }
@@ -172,6 +160,19 @@ public class Course extends AbstractEntity {
 
     public void setChapters(Set<Chapter> chapters) {
         this.chapters = chapters;
+    }
+    @Transient
+    public StreamCollection<Chapter> getChapterList(){
+        List<Chapter> chapterStream=new ArrayList<>();
+        if(Objects.nonNull(this.chapters)){
+            for(Chapter chapter:this.chapters){
+                chapterStream.add(chapter);
+            }
+        }
+        Collections.sort(chapterStream,(c1,c2)->{
+            return Integer.valueOf(c1.getWeight()).compareTo(c2.getWeight());
+        });
+        return new StreamCollection<>(chapterStream);
     }
     @Transient
     public String getBuyerPrivilege() {

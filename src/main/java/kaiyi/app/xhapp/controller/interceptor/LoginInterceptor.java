@@ -1,4 +1,6 @@
 package kaiyi.app.xhapp.controller.interceptor;
+import kaiyi.app.xhapp.controller.mgr.ManagerController;
+import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.h5ui.controller.H5Controller;
 import kaiyi.puer.json.creator.JsonMessageCreator;
 import kaiyi.puer.web.servlet.ServletUtils;
@@ -13,7 +15,7 @@ import java.util.Objects;
 /**
  * 用户登录拦截
  */
-public class LoginInterceptor implements HandlerInterceptor {
+public class LoginInterceptor extends ManagerController implements HandlerInterceptor {
     private List<String> excludeUrl;
     public static final String SESSION_INVALIDE="_session_invalide";
     private String redirectPage;
@@ -87,7 +89,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         }
         String requestPrefix=ServletUtils.getRequestPrefix(request,false);
         if(requestPrefix.startsWith(managerPrifix)){
-            if(Objects.isNull(!H5Controller.userIsLogin(request))){
+            if(!H5Controller.userIsLogin(request)){
                 if(Objects.nonNull(request.getParameter("ajax"))){
                     JsonMessageCreator jmc=new JsonMessageCreator(JsonMessageCreator.FAIL,SESSION_INVALIDE,SESSION_INVALIDE);
                     response.getWriter().write(jmc.build());

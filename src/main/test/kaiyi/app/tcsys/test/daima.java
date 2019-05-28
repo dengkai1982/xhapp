@@ -2,11 +2,8 @@ package kaiyi.app.tcsys.test;
 
 import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.app.xhapp.entity.access.VisitorMenu;
-import kaiyi.app.xhapp.entity.bus.CourseOrder;
-import kaiyi.app.xhapp.entity.curriculum.Category;
 import kaiyi.app.xhapp.entity.curriculum.Course;
 import kaiyi.app.xhapp.entity.log.ShortMessageSenderNote;
-import kaiyi.app.xhapp.entity.pages.ContentText;
 import kaiyi.app.xhapp.entity.pages.DisplayMap;
 import kaiyi.app.xhapp.entity.pub.Configure;
 import kaiyi.app.xhapp.entity.pub.Notice;
@@ -14,13 +11,23 @@ import kaiyi.puer.commons.bean.BeanSyntacticSugar;
 import kaiyi.puer.commons.utils.CoderUtil;
 import kaiyi.puer.crypt.cipher.RSACipher;
 import kaiyi.puer.crypt.key.KeyGeneratorUtils;
+import kaiyi.puer.http.HttpException;
+import kaiyi.puer.http.HttpResponse;
+import kaiyi.puer.http.connect.HttpConnector;
+import kaiyi.puer.http.connect.OKHttpConnection;
+import kaiyi.puer.http.parse.TextParser;
+import kaiyi.puer.http.request.HttpGetRequest;
 import kaiyi.puer.json.parse.ArrayJsonParser;
+import org.apache.http.client.methods.HttpGet;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import org.jsoup.select.Elements;
 import org.junit.Test;
 
-import java.io.UnsupportedEncodingException;
 import java.security.KeyPair;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
+import java.util.List;
 
 public class daima {
     @Test
@@ -57,11 +64,34 @@ public class daima {
     @Test
     public void printEntity(){
         BeanSyntacticSugar.printEntity(Account.class);
-        BeanSyntacticSugar.printEntity(CourseOrder.class);
         BeanSyntacticSugar.printEntity(Course.class);
         BeanSyntacticSugar.printEntity(Configure.class);
         BeanSyntacticSugar.printEntity(ShortMessageSenderNote.class);
         BeanSyntacticSugar.printEntity(DisplayMap.class);
         BeanSyntacticSugar.printEntity(Notice.class);
+    }
+
+    @Test
+    public void jobInfo() throws HttpException {
+        HttpGetRequest get=new HttpGetRequest("https://zg.58.com/job.shtml?PGTID=0d100000-01a5-92f9-197f-5cfded7a15e1&ClickID=2");
+        HttpConnector<String> http=new OKHttpConnection<>();
+        HttpResponse<String> resp=http.doRequest(get,new TextParser());
+        String html=resp.getResponseData().getData();
+        Document doc=Jsoup.parse(html);
+        Element sidebar=doc.getElementById("sidebar-right");
+        //List<Node> nodes=sidebar.child(0).childNodes();
+        Elements elements=sidebar.getElementsByTag("li");
+        elements.forEach(a->{
+            Elements atag=a.getElementsByTag("a");
+            System.out.println("=============");
+            for(int i=0;i<atag.size();i++){
+                if(i==0){
+                    System.out.println(atag.get(i).html());
+                }else{
+                    System.out.println("\t"+atag.get(i).html());
+                }
+            }
+            System.out.println("=============");
+        });
     }
 }

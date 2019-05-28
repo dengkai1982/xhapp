@@ -14,9 +14,6 @@
                 <c:if test="${requestScope.hasData}">
                     <a href="#" class="btn btn-link querybox-toggle" id="show_or_hide_search"><i class="icon-search icon"></i> 搜索</a>
                 </c:if>
-                <visit:auth url="${webPage.newEntityPage}">
-                    <a href="${contextPath}${webPage.newEntityPage}${suffix}?${paginationCurrentPage}=1" class="btn btn-primary"><i class="icon icon-plus"></i> 新增${requestScope.entityShowName}</a>
-                </visit:auth>
             </div>
         </div>
         <c:if test="${requestScope.hasData}">
@@ -32,8 +29,6 @@
                     <div class="table-empty-tip">
                         <p>
                             <span class="text-muted">抱歉,展示没有任何数据。</span>
-                            <span class="text-muted">您现在可以 </span>
-                            <a href="${contextPath}${webPage.newEntityPage}${suffix}?${paginationCurrentPage}=1" class="btn btn-info"><i class="icon icon-plus"></i> 新增${requestScope.entityShowName}</a>
                         </p>
                     </div>
                 </c:otherwise>
@@ -50,25 +45,20 @@
     }
     function createMenuItems(dataId,dataRow,data){
         var items = [{
-            url:"${contextPath}${webPage.modifyEntityPage}${suffix}?entityId="+dataId+"&${paginationCurrentPage}="+getPaginationCurrentPage(),
-            label:"编辑修改",
-            className:"privilege",
-            access:"${webPage.modifyEntityPage}"
-        },{
-            url:"${contextPath}${webPage.detailEntityPage}${suffix}?entityId="+dataId+"&${paginationCurrentPage}="+getPaginationCurrentPage(),
+            url:"${managerPath}/curriculum/courseComment/detail${suffix}?entityId="+dataId+"&${paginationCurrentPage}="+getPaginationCurrentPage(),
             label:"查看详情"
         },{
-            label:"删除用户",
-            privilege:"/mgr/account/visitorUser/delete",
+            label:"删除评论",
+            privilege:"/mgr/curriculum/courseComment/delete",
             onClick:function(){
-                confirmOper("消息","确实要删除选中的用户?",function(){
-                    postJSON("${managerPath}/account/visitorUser/delete${suffix}",{
+                confirmOper("消息","确实要删除选中的评论?",function(){
+                    postJSON("${managerPath}/curriculum/courseComment/delete${suffix}",{
                         entityId:dataId
                     },"正在执行,请稍后...",function(result){
                         if(result.code==SUCCESS){
                             bootbox.alert({
                                 title:"消息",
-                                message: "删除用户成功,点击确认返回",
+                                message: "删除评论成功,点击确认返回",
                                 callback: function () {
                                     reflashPageData();
                                 }
@@ -80,6 +70,14 @@
                 })
             }
         }]
+        if(data.answer.name=="false"){
+            items.push({
+                url:"${managerPath}/curriculum/courseComment/reply${suffix}?entityId="+dataId+"&${paginationCurrentPage}="+getPaginationCurrentPage(),
+                label:"课程回复",
+                className:"privilege",
+                access:"/mgr/curriculum/courseComment/reply"
+            });
+        }
         checkPrivilege(items);
         return items;
     };

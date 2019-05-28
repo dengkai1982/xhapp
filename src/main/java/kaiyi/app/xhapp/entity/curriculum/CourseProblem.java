@@ -4,10 +4,7 @@ import kaiyi.app.xhapp.entity.AbstractEntity;
 import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.app.xhapp.entity.access.VisitorUser;
 import kaiyi.puer.commons.data.IDate;
-import kaiyi.puer.h5ui.annotations.FieldReference;
-import kaiyi.puer.h5ui.annotations.FieldType;
-import kaiyi.puer.h5ui.annotations.PageEntity;
-import kaiyi.puer.h5ui.annotations.PageField;
+import kaiyi.puer.h5ui.annotations.*;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -17,25 +14,28 @@ import java.util.Date;
 public class CourseProblem extends AbstractEntity {
     public static final String TABLE_NAME="course_problem";
     private static final long serialVersionUID = -4278346481297773802L;
-    @PageField(label = "提交人",type = FieldType.REFERENCE)
-    @FieldReference(fieldName = "phone")
+    @PageField(label = "提交人",type = FieldType.REFERENCE,tableLength = 120)
+    @FieldReference(fieldName = "showAccountName")
     private Account submitter;
-    @PageField(label = "课程名称",type = FieldType.REFERENCE)
+    @PageField(label = "课程名称",type = FieldType.REFERENCE,tableLength = 200)
     @FieldReference(fieldName = "name")
     private Course course;
     @IDate
-    @PageField(label = "提交时间",type = FieldType.DATETIME)
+    @PageField(label = "提交时间",type = FieldType.DATETIME,tableLength = 160)
     private Date commitTime;
-    @PageField(label = "评论内容")
+    @PageField(label = "问题内容",tableLength = 280,formColumnLength = 3)
     private String content;
+    @PageField(label = "是否回复",type = FieldType.BOOLEAN)
+    @FieldBoolean(values={"已回复","未回复"})
+    private boolean answer;
     @PageField(label = "回复人",type = FieldType.REFERENCE)
     @FieldReference(fieldName = "realName")
     private VisitorUser replier;
-    @PageField(label = "回复内容")
-    private String reply;
     @IDate
-    @PageField(label = "回复时间",type = FieldType.DATETIME)
+    @PageField(label = "回复时间",type = FieldType.DATETIME,tableLength = 160)
     private Date replyTime;
+    @PageField(label = "回复内容",tableLength = 300,formColumnLength = 3)
+    private String reply;
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
     @JoinColumn(name="submitter")
     public Account getSubmitter() {
@@ -105,5 +105,13 @@ public class CourseProblem extends AbstractEntity {
 
     public void setHeaderImage(String headerImage) {
         this.headerImage = headerImage;
+    }
+
+    public boolean isAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(boolean answer) {
+        this.answer = answer;
     }
 }

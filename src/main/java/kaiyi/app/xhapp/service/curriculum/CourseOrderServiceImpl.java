@@ -1,16 +1,13 @@
-package kaiyi.app.xhapp.service.bus;
+package kaiyi.app.xhapp.service.curriculum;
 
 import kaiyi.app.xhapp.ServiceExceptionDefine;
 import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.app.xhapp.entity.access.enums.CapitalType;
-import kaiyi.app.xhapp.entity.bus.CourseOrder;
-import kaiyi.app.xhapp.entity.bus.enums.CourseOrderStatus;
+import kaiyi.app.xhapp.entity.curriculum.CourseOrder;
+import kaiyi.app.xhapp.entity.curriculum.enums.CourseOrderStatus;
 import kaiyi.app.xhapp.entity.curriculum.Course;
-import kaiyi.app.xhapp.entity.log.enums.AmountType;
-import kaiyi.app.xhapp.entity.log.enums.BorrowLend;
 import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.app.xhapp.service.access.AccountService;
-import kaiyi.app.xhapp.service.curriculum.CourseService;
 import kaiyi.app.xhapp.service.log.AmountFlowService;
 import kaiyi.puer.db.orm.ServiceException;
 

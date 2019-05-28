@@ -78,4 +78,12 @@ public class AccountServiceImpl extends InjectDao<Account> implements AccountSer
         account.setPassword(applicationService.cipherToString(newPassword));
         updateObject(account);
     }
+
+    @Override
+    public void changeMemberShip(String entityId, MemberShip memberShip) {
+        Account account=findForPrimary(entityId);
+        if(Objects.nonNull(account)){
+           account.setMemberShip(memberShip);
+        }
+    }
 }

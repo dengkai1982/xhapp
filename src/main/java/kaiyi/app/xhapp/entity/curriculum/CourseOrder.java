@@ -1,10 +1,9 @@
-package kaiyi.app.xhapp.entity.bus;
+package kaiyi.app.xhapp.entity.curriculum;
 
 import kaiyi.app.xhapp.entity.AbstractEntity;
 import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.app.xhapp.entity.access.enums.CapitalType;
-import kaiyi.app.xhapp.entity.bus.enums.CourseOrderStatus;
-import kaiyi.app.xhapp.entity.curriculum.Course;
+import kaiyi.app.xhapp.entity.curriculum.enums.CourseOrderStatus;
 import kaiyi.puer.commons.data.ICurrency;
 import kaiyi.puer.commons.data.IDate;
 import kaiyi.puer.h5ui.annotations.*;

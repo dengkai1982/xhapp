@@ -148,7 +148,12 @@
 	width:116px;
 }
 #query_search_from .link_container{
-	width:140px;
+	width:30%;
+}
+@media screen and (max-width:1500px){
+	#query_search_from .link_container{
+		width:140px;
+	}
 }
 #query_search_from .link_container .link_center{
 	width:60%;

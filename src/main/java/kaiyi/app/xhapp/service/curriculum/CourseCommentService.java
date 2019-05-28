@@ -1,13 +1,14 @@
 package kaiyi.app.xhapp.service.curriculum;
 
 import kaiyi.app.xhapp.entity.curriculum.CourseComment;
+import kaiyi.puer.db.orm.DatabaseOperator;
 import kaiyi.puer.db.orm.DatabaseQuery;
 import kaiyi.puer.db.orm.ServiceException;
 
 /**
  * 评论
  */
-public interface CourseCommentService extends DatabaseQuery<CourseComment> {
+public interface CourseCommentService extends DatabaseQuery<CourseComment>,DatabaseOperator<CourseComment>,ReplyService {
     /**
      * 评论课程
      * @param courseId
@@ -15,12 +16,6 @@ public interface CourseCommentService extends DatabaseQuery<CourseComment> {
      * @param content
      */
     void comment(String courseId,String commentator,String content,int score)throws ServiceException;
-    /**
-     * 课程回复
-     * @param entityId
-     * @param replierId
-     * @param replyContent
-     */
-    void reply(String entityId,String replierId,String replyContent)throws ServiceException;
+
 
 }

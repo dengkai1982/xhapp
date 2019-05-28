@@ -107,7 +107,7 @@ public class PageController extends ManagerController {
         setDefaultPage(interactive,rootPath+"/examInfo");
         return rootPath+"/examInfoForm";
     }
-    @RequestMapping("/examInfo/examInfo")
+    @RequestMapping("/examInfo/delete")
     @AccessControl(name = "删除咨询", weight = 2.23f,code = rootPath+ "/examInfo/delete",
             parent = rootPath+"/examInfo")
     public void examInfoDelete(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {

@@ -1,7 +1,7 @@
-package kaiyi.app.xhapp.entity.bus;
+package kaiyi.app.xhapp.entity.curriculum;
 
 
-import kaiyi.app.xhapp.entity.bus.enums.PayPlatform;
+import kaiyi.app.xhapp.entity.curriculum.enums.PayPlatform;
 import kaiyi.app.xhapp.entity.AbstractEntity;
 import kaiyi.puer.h5ui.annotations.PageEntity;
 

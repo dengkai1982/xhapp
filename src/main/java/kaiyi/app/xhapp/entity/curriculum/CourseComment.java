@@ -14,28 +14,31 @@ import java.util.Date;
 public class CourseComment extends AbstractEntity {
     public static final String TABLE_NAME="course_comment";
     private static final long serialVersionUID = 8869194154150782526L;
-    @PageField(label = "评论人",type = FieldType.REFERENCE)
-    @FieldReference(fieldName = "phone")
+    @PageField(label = "评论人",type = FieldType.REFERENCE,tableLength = 140)
+    @FieldReference(fieldName = "showAccountName")
     private Account commentator;
-    @PageField(label = "课程名称",type = FieldType.REFERENCE)
+    @PageField(label = "课程名称",type = FieldType.REFERENCE,tableLength = 200)
     @FieldReference(fieldName = "name")
     private Course course;
     @PageField(label = "课程评分",type = FieldType.NUMBER)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int score;
     @IDate
-    @PageField(label = "评论时间",type = FieldType.DATETIME)
+    @PageField(label = "评论时间",type = FieldType.DATETIME,tableLength = 160)
     private Date commentTime;
-    @PageField(label = "评论内容")
+    @PageField(label = "评论内容",tableLength = 280)
     private String content;
+    @PageField(label = "是否回复",type = FieldType.BOOLEAN)
+    @FieldBoolean(values={"已回复","未回复"})
+    private boolean answer;
     @PageField(label = "回复人",type = FieldType.REFERENCE)
     @FieldReference(fieldName = "realName")
     private VisitorUser replier;
-    @PageField(label = "回复内容")
-    private String reply;
     @IDate
-    @PageField(label = "回复时间",type = FieldType.DATETIME)
+    @PageField(label = "回复时间",type = FieldType.DATETIME,tableLength = 160)
     private Date replyTime;
+    @PageField(label = "回复内容",tableLength = 300,formColumnLength = 3)
+    private String reply;
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
     @JoinColumn(name="commentator")
     public Account getCommentator() {
@@ -112,5 +115,13 @@ public class CourseComment extends AbstractEntity {
 
     public void setHeaderImage(String headerImage) {
         this.headerImage = headerImage;
+    }
+
+    public boolean isAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(boolean answer) {
+        this.answer = answer;
     }
 }

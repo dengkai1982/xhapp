@@ -1,7 +1,7 @@
-package kaiyi.app.xhapp.service.bus;
+package kaiyi.app.xhapp.service.curriculum;
 
 
-import kaiyi.app.xhapp.entity.bus.PaymentNotify;
+import kaiyi.app.xhapp.entity.curriculum.PaymentNotify;
 import kaiyi.puer.db.orm.DatabaseOperator;
 import kaiyi.puer.db.orm.DatabaseQuery;
 

@@ -1,6 +1,6 @@
-package kaiyi.app.xhapp.service.bus;
+package kaiyi.app.xhapp.service.curriculum;
 
-import kaiyi.app.xhapp.entity.bus.PaymentNotify;
+import kaiyi.app.xhapp.entity.curriculum.PaymentNotify;
 import kaiyi.app.xhapp.service.InjectDao;
 import org.springframework.stereotype.Service;
 

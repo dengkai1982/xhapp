@@ -774,7 +774,12 @@ function initApplication() {
     });
 
 }
-
+//清理detail页面的相关项目
+function clearDetailItem(name){
+    var $th=$("th[name='"+name+"']");
+    $th.next("td").remove();
+    $th.remove();
+}
 /********************* 服务框架回调函数说明 ******************************/
 /*
     1:filterQueryConditionValue(chosenField,valueHtml) 如果要对返回的填写值窗口进行过滤,那么重写该方法
