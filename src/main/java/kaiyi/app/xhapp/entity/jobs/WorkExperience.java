@@ -8,9 +8,7 @@ import kaiyi.puer.h5ui.annotations.FieldType;
 import kaiyi.puer.h5ui.annotations.PageEntity;
 import kaiyi.puer.h5ui.annotations.PageField;
 
-import javax.persistence.Entity;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity(name=WorkExperience.TABLE_NAME)
@@ -33,6 +31,8 @@ public class WorkExperience extends AbstractEntity {
     @PageField(label = "至今",type = FieldType.BOOLEAN)
     @FieldBoolean(values={"是","否"})
     private boolean current;
+
+    private Resume resume;
 
     public String getCompany() {
         return company;
@@ -72,5 +72,14 @@ public class WorkExperience extends AbstractEntity {
 
     public void setCurrent(boolean current) {
         this.current = current;
+    }
+    @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.LAZY)
+    @JoinColumn(name="resume")
+    public Resume getResume() {
+        return resume;
+    }
+
+    public void setResume(Resume resume) {
+        this.resume = resume;
     }
 }

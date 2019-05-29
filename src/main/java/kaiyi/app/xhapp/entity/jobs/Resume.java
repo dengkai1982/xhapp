@@ -88,7 +88,7 @@ public class Resume extends AbstractEntity {
     public void setIdcard(String idcard) {
         this.idcard = idcard;
     }
-
+    @Lob
     public String getIdcardFront() {
         return idcardFront;
     }
@@ -96,7 +96,7 @@ public class Resume extends AbstractEntity {
     public void setIdcardFront(String idcardFront) {
         this.idcardFront = idcardFront;
     }
-
+    @Lob
     public String getIdcardBack() {
         return idcardBack;
     }
