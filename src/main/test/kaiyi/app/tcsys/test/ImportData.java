@@ -8,6 +8,7 @@ import kaiyi.app.xhapp.service.access.AccountService;
 import kaiyi.app.xhapp.service.access.VisitorRoleService;
 import kaiyi.app.xhapp.service.access.VisitorUserService;
 import kaiyi.app.xhapp.service.curriculum.CategoryService;
+import kaiyi.app.xhapp.service.jobs.PositionService;
 import kaiyi.app.xhapp.service.log.ShortMessageSenderNoteService;
 import kaiyi.app.xhapp.service.pub.ConfigureService;
 import kaiyi.puer.commons.bean.SpringSelector;
@@ -17,6 +18,16 @@ import kaiyi.puer.crypt.cipher.CipherOperator;
 import kaiyi.puer.crypt.cipher.RSACipher;
 import kaiyi.puer.db.orm.ServiceException;
 import kaiyi.puer.h5ui.service.ApplicationService;
+import kaiyi.puer.http.HttpException;
+import kaiyi.puer.http.HttpResponse;
+import kaiyi.puer.http.connect.HttpConnector;
+import kaiyi.puer.http.connect.OKHttpConnection;
+import kaiyi.puer.http.parse.TextParser;
+import kaiyi.puer.http.request.HttpGetRequest;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
@@ -72,7 +83,7 @@ public class ImportData {
             put("loginName",new JavaDataTyper("admin"));
             put("realName",new JavaDataTyper("系统管理员"));
             put("password",new JavaDataTyper("123456"));
-            put("visitorRole",new JavaDataTyper("15507507370770001"));
+            put("visitorRole",new JavaDataTyper("15592239223100055"));
         }});
     }
     @Test
@@ -128,5 +139,32 @@ public class ImportData {
                 configureService.getStringValue(ConfigureItem.ALIYUN_VOD_ACCESS_KEY_SECRET));
         String url=AliyunVodHelper.getPlayUrl(client,"69491d9f378c43e89c8dfcafc7dae823");
         System.out.println(url);
+    }
+    @Test
+    public void importJobInfo() throws HttpException {
+        PositionService positionService=sel.getBean(PositionService.class);
+        HttpGetRequest get=new HttpGetRequest("https://zg.58.com/job.shtml?PGTID=0d100000-01a5-92f9-197f-5cfded7a15e1&ClickID=2");
+        HttpConnector<String> http=new OKHttpConnection<>();
+        HttpResponse<String> resp=http.doRequest(get,new TextParser());
+        String html=resp.getResponseData().getData();
+        Document doc= Jsoup.parse(html);
+        Element sidebar=doc.getElementById("sidebar-right");
+        //List<Node> nodes=sidebar.child(0).childNodes();
+        Elements elements=sidebar.getElementsByTag("li");
+        elements.forEach(a->{
+            Elements atag=a.getElementsByTag("a");
+            System.out.println("=============");
+            String parentName=null;
+            for(int i=0;i<atag.size();i++){
+                String name=atag.get(i).html();
+                if(i==0){
+                    positionService.newJobs(name,null);
+                    parentName=name;
+                }else{
+                    positionService.newJobs(name,parentName);
+                }
+            }
+            System.out.println("=============");
+        });
     }
 }

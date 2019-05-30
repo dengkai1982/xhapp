@@ -255,14 +255,14 @@ public abstract class ManagerController extends H5Controller {
 
     protected void contextCommit(WebInteractive interactive, DatabaseFastOper<?> service) throws IOException {
         Map<String,JavaDataTyper> params=interactive.getRequestParameterMap();
-        String storagePath=configureService.getStringValue(ConfigureItem.DOC_SAVE_PATH);
-        String serverPath=configureService.getStringValue(ConfigureItem.DOC_SERVER_PREFIX);
+        String serverPathParams=configureService.getStringValue(ConfigureItem.DOC_SERVER_PREFIX);
+        String storagePathParams=configureService.getStringValue(ConfigureItem.DOC_SAVE_PATH);
         String content=params.get("content").stringValue();
         content=DocumentService.replaceImageSrc(content,AccessController.getAccessTempFilePathPrefix(interactive),
-                storagePath,serverPath);
+                storagePathParams,serverPathParams);
         params.put("content",new JavaDataTyper(content));
         params.put("publishDate",new JavaDataTyper(DateTimeUtil.yyyyMMddHHmmss.format(new Date())));
-        JsonMessageCreator msg=executeNewOrUpdate(interactive,service,params,storagePath);
+        JsonMessageCreator msg=executeNewOrUpdate(interactive,service,params,storagePathParams);
         interactive.writeUTF8Text(msg.build());
     }
 }

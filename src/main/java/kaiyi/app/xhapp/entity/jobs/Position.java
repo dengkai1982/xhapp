@@ -19,7 +19,7 @@ public class Position extends AbstractEntity implements Cascadeable,Comparable<P
     @NotEmpty(hint = "职位名称必须填写")
     @PageField(label = "职位名称")
     private String name;
-    @PageField(label = "上级类别",type = FieldType.REFERENCE)
+    @PageField(label = "上级类别",type = FieldType.REFERENCE,showForm = false)
     @FieldReference(fieldName = "name")
     private Position parent;
     private Set<Position> children;

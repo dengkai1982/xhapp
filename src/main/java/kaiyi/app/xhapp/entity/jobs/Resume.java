@@ -51,7 +51,7 @@ public class Resume extends AbstractEntity {
     @PageField(label = "意向城市")
     private String intentCity;
     @PageField(label = "意向岗位",type = FieldType.REFERENCE)
-    @FieldReference
+    @FieldReference(fieldName = "name")
     private Position position;
     @ICurrency
     @PageField(label = "薪资",type = FieldType.NUMBER)

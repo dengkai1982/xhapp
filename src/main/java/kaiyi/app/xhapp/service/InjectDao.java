@@ -178,4 +178,11 @@ public abstract class InjectDao<T> extends JpaDataOperImpl<T> implements Databas
 		StringEditor editor=new StringEditor(getSimpleEntityClassName()+"Service");
 		return editor.lowerFirst().getValue();
 	}
+	protected String[] getFormElementHiddenParams(){
+		return new String[0];
+	}
+	protected boolean existParameter(Map<String, JavaDataTyper> params,String name){
+		return params.get(name)!=null;
+
+	}
 }
