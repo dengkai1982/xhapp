@@ -6,4 +6,6 @@ import kaiyi.puer.db.orm.DatabaseOperator;
 import kaiyi.puer.db.orm.DatabaseQuery;
 
 public interface ResumeService extends DatabaseOperator<Resume>, DatabaseFastOper<Resume>, DatabaseQuery<Resume> {
+
+
 }

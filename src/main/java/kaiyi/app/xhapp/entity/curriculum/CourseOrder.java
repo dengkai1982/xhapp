@@ -10,18 +10,19 @@ import kaiyi.puer.h5ui.annotations.*;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Set;
 
 @Entity(name=CourseOrder.TABLE_NAME)
 @PageEntity(showName = "课程订单",entityName = "courseOrder",serviceName = "courseOrderService")
 public class CourseOrder extends AbstractEntity {
     public static final String TABLE_NAME="course_order";
     private static final long serialVersionUID = -6133783542944108049L;
-    @PageField(label = "课程名称",type = FieldType.REFERENCE)
-    @FieldReference(fieldName = "name")
-    private Course course;
+
     @PageField(label = "下单会员",type = FieldType.REFERENCE)
     @FieldReference(fieldName = "phone")
     private Account account;
+    @PageField(label = "订单号")
+    private String orderId;
     @ICurrency
     @PageField(label = "订单金额",type = FieldType.NUMBER,tableLength = 120)
     @FieldNumber(type=FieldNumber.TYPE.INT)
@@ -40,15 +41,9 @@ public class CourseOrder extends AbstractEntity {
     private Date paymentDate;
     @PageField(label = "支付单号",tableLength = 160)
     private String platformOrderId;
-    @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
-    @JoinColumn(name="course")
-    public Course getCourse() {
-        return course;
-    }
 
-    public void setCourse(Course course) {
-        this.course = course;
-    }
+    private Set<OrderItem> orderItems;
+
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
     @JoinColumn(name="account")
     public Account getAccount() {
@@ -107,5 +102,19 @@ public class CourseOrder extends AbstractEntity {
         this.platformOrderId = platformOrderId;
     }
 
+    public String getOrderId() {
+        return orderId;
+    }
 
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER,mappedBy = "courseOrder")
+    public Set<OrderItem> getOrderItems() {
+        return orderItems;
+    }
+
+    public void setOrderItems(Set<OrderItem> orderItems) {
+        this.orderItems = orderItems;
+    }
 }
