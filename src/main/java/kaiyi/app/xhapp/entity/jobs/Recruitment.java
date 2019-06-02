@@ -1,29 +1,20 @@
 package kaiyi.app.xhapp.entity.jobs;
 
 import kaiyi.app.xhapp.entity.AbstractEntity;
+import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.puer.commons.validate.NotEmpty;
 import kaiyi.puer.h5ui.annotations.*;
 
-import javax.persistence.Entity;
-import javax.persistence.Lob;
+import javax.persistence.*;
 
 @Entity(name=Recruitment.TABLE_NAME)
 @PageEntity(showName = "企业招聘",entityName = "recruitment",serviceName = "recruitmentService")
 public class Recruitment extends AbstractEntity {
     public static final String TABLE_NAME="recruitment";
     private static final long serialVersionUID = -893953219915415823L;
-    @NotEmpty(hint = "企业名称必须填写")
-    @PageField(label = "企业名称")
-    private String enterpriseName;
-    @NotEmpty(hint = "电话必须填写")
-    @PageField(label = "电话")
-    private String phone;
-    @NotEmpty(hint = "三合一编码必须填写")
-    @PageField(label = "三合一编码",tableLength = 160)
-    private String code;
-    @PageField(label = "营业执照",type = FieldType.DOCUMENT)
-    @FieldDocument
-    private String licensePhoto;
+    @PageField(label = "企业信息",type = FieldType.REFERENCE)
+    @FieldReference(fieldName = "name")
+    private Enterprise enterprise;
     @NotEmpty(hint = "招聘岗位必须填写")
     @PageField(label = "招聘岗位")
     private String job;
@@ -44,40 +35,12 @@ public class Recruitment extends AbstractEntity {
     private String workYear;
     @PageField(label = "其他要求",tableLength = 160)
     private String otherRequire;
+    @PageField(label = "发布人",type = FieldType.REFERENCE)
+    @FieldReference(fieldName = "phone")
+    private Account publisher;
     @PageField(label = "备注",tableLength = 300)
     private String remark;
 
-    public String getEnterpriseName() {
-        return enterpriseName;
-    }
-
-    public void setEnterpriseName(String enterpriseName) {
-        this.enterpriseName = enterpriseName;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-    @Lob
-    public String getLicensePhoto() {
-        return licensePhoto;
-    }
-
-    public void setLicensePhoto(String licensePhoto) {
-        this.licensePhoto = licensePhoto;
-    }
 
     public String getJob() {
         return job;
@@ -141,5 +104,23 @@ public class Recruitment extends AbstractEntity {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+    @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
+    @JoinColumn(name="enterprise")
+    public Enterprise getEnterprise() {
+        return enterprise;
+    }
+
+    public void setEnterprise(Enterprise enterprise) {
+        this.enterprise = enterprise;
+    }
+    @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
+    @JoinColumn(name="publisher")
+    public Account getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(Account publisher) {
+        this.publisher = publisher;
     }
 }

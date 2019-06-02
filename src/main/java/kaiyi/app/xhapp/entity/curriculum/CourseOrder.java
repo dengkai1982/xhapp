@@ -109,6 +109,7 @@ public class CourseOrder extends AbstractEntity {
     public void setOrderId(String orderId) {
         this.orderId = orderId;
     }
+
     @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER,mappedBy = "courseOrder")
     public Set<OrderItem> getOrderItems() {
         return orderItems;

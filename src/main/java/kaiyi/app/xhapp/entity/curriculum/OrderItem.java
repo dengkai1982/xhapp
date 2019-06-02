@@ -52,7 +52,7 @@ public class OrderItem extends AbstractEntity {
         this.orderTime = orderTime;
     }
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
-    @JoinColumn(name="courseOrder")
+    @JoinColumn(name="course")
     public Course getCourse() {
         return course;
     }
