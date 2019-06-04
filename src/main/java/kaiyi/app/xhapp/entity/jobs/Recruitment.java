@@ -15,9 +15,9 @@ public class Recruitment extends AbstractEntity {
     @PageField(label = "企业信息",type = FieldType.REFERENCE)
     @FieldReference(fieldName = "name")
     private Enterprise enterprise;
-    @NotEmpty(hint = "招聘岗位必须填写")
-    @PageField(label = "招聘岗位")
-    private String job;
+    @PageField(label = "招聘岗位",type = FieldType.REFERENCE)
+    @FieldReference(fieldName = "name")
+    private Position position;
     @PageField(label = "工作类型",type = FieldType.BOOLEAN)
     @FieldBoolean(values = {"全职","兼职"})
     private boolean fullTime;
@@ -41,14 +41,6 @@ public class Recruitment extends AbstractEntity {
     @PageField(label = "备注",tableLength = 300)
     private String remark;
 
-
-    public String getJob() {
-        return job;
-    }
-
-    public void setJob(String job) {
-        this.job = job;
-    }
 
     public boolean isFullTime() {
         return fullTime;
@@ -122,5 +114,14 @@ public class Recruitment extends AbstractEntity {
 
     public void setPublisher(Account publisher) {
         this.publisher = publisher;
+    }
+    @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
+    @JoinColumn(name="position")
+    public Position getPosition() {
+        return position;
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
     }
 }
