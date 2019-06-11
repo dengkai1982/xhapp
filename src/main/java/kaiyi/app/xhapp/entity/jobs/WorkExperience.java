@@ -31,7 +31,7 @@ public class WorkExperience extends AbstractEntity {
     @PageField(label = "至今",type = FieldType.BOOLEAN)
     @FieldBoolean(values={"是","否"})
     private boolean current;
-
+    //对应的简历
     private Resume resume;
 
     public String getCompany() {

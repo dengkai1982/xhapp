@@ -27,6 +27,8 @@ public class Resume extends AbstractEntity {
     @IDate
     @PageField(label = "更新时间",type = FieldType.DATETIME,tableLength = 160)
     private Date updateTime;
+    @PageField(label = "专业",tableLength = 120)
+    private String profess;
     @NotEmpty(hint = "手机号码必须填写")
     @Mobile(hint = "手机号码格式错误")
     @PageField(label = "手机号码")
@@ -179,4 +181,11 @@ public class Resume extends AbstractEntity {
         this.updateTime = updateTime;
     }
 
+    public String getProfess() {
+        return profess;
+    }
+
+    public void setProfess(String profess) {
+        this.profess = profess;
+    }
 }

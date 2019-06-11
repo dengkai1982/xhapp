@@ -1,10 +1,7 @@
 package kaiyi.app.xhapp.controller.app;
 
 import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
-import kaiyi.app.xhapp.service.jobs.CertificateService;
-import kaiyi.app.xhapp.service.jobs.RecruitmentService;
-import kaiyi.app.xhapp.service.jobs.ResumeService;
-import kaiyi.app.xhapp.service.jobs.WorkExperienceService;
+import kaiyi.app.xhapp.service.jobs.*;
 import kaiyi.app.xhapp.service.pub.ConfigureService;
 import kaiyi.puer.json.creator.JsonMessageCreator;
 import kaiyi.puer.web.servlet.WebInteractive;
@@ -31,6 +28,8 @@ public class JobAction extends SuperAction {
     private CertificateService certificateService;
     @Resource
     private RecruitmentService recruitmentService;
+    @Resource
+    private EnterpriseService enterpriseService;
     /**
      * 新增修改个人简历
      * @param interactive
@@ -75,8 +74,19 @@ public class JobAction extends SuperAction {
      */
     @PostMapping("/commitRecruitment")
     public void commitRecruitment(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
-        JsonMessageCreator msg=executeNewOrUpdate(interactive,workExperienceService);
+        JsonMessageCreator msg=executeNewOrUpdate(interactive,recruitmentService);
         interactive.writeUTF8Text(msg.build());
     }
-
+    /**
+     * 新增修企业信息
+     * @param interactive
+     * @param response
+     * @throws IOException
+     */
+    @PostMapping("/commitEnterprise")
+    public void commitEnterprise(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String docSavePath=configureService.getStringValue(ConfigureItem.DOC_SAVE_PATH);
+        JsonMessageCreator msg=executeNewOrUpdate(interactive,enterpriseService,docSavePath);
+        interactive.writeUTF8Text(msg.build());
+    }
 }

@@ -1,6 +1,7 @@
 package kaiyi.app.xhapp.entity.jobs;
 
 import kaiyi.app.xhapp.entity.AbstractEntity;
+import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.puer.commons.data.ICurrency;
 import kaiyi.puer.commons.validate.NotEmpty;
 import kaiyi.puer.h5ui.annotations.*;
@@ -22,8 +23,8 @@ public class Certificate extends AbstractEntity {
     @PageField(label = "期望价值",type = FieldType.NUMBER)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int expect;
-
-    private Resume resume;
+    //所有者
+    private Account owner;
 
     public String getName() {
         return name;
@@ -49,12 +50,12 @@ public class Certificate extends AbstractEntity {
         this.expect = expect;
     }
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.LAZY)
-    @JoinColumn(name="resume")
-    public Resume getResume() {
-        return resume;
+    @JoinColumn(name="owner")
+    public Account getOwner() {
+        return owner;
     }
 
-    public void setResume(Resume resume) {
-        this.resume = resume;
+    public void setOwner(Account owner) {
+        this.owner = owner;
     }
 }
