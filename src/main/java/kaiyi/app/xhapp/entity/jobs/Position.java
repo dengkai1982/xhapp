@@ -23,6 +23,9 @@ public class Position extends AbstractEntity implements Cascadeable,Comparable<P
     @FieldReference(fieldName = "name")
     private Position parent;
     private Set<Position> children;
+    @PageField(label = "层级",type = FieldType.NUMBER,showForm = false,
+            showTable = false,showQuery = false,showDetail = false,showSearch = false)
+    @FieldNumber(type = FieldNumber.TYPE.INT)
     private int level;
     @Override
     public StreamArray<String> filterField() {
