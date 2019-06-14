@@ -24,6 +24,9 @@ public class Certificate extends AbstractEntity {
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int expect;
     //所有者
+    @PageField(label = "所有人",type = FieldType.REFERENCE,showForm = false,
+            showTable = false,showQuery = false,showDetail = false,showSearch = false)
+    @FieldReference(fieldName = "phone")
     private Account owner;
 
     public String getName() {

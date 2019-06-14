@@ -59,7 +59,9 @@ public class Resume extends AbstractEntity {
     @PageField(label = "薪资",type = FieldType.NUMBER)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int salary;
-
+    @PageField(label = "所有人",type = FieldType.REFERENCE,showForm = false,
+            showTable = false,showQuery = false,showDetail = false,showSearch = false)
+    @FieldReference(fieldName = "phone")
     private Account owner;
 
     @Override

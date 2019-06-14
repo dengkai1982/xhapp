@@ -3,12 +3,20 @@
 <html>
 <head>
     <title>Title</title>
+    <%@include file="/WEB-INF/htmlHeader.jsp"%>
 </head>
 <body>
-    <form action="${contextPath}/app/account/changeAccountInfo${suffix}" method="post">
-       id:<input type="text" name="entityId"/>
-       name:<input type="text" name="nickName">
-       <input type="submit" value="提交">
-    </form>
+    <h1>测试</h1>
+    <script src="${contextPath}/js/app.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        queryDataOfOrderBySetUrl("${contextPath}/app/query/pagination${suffix}","positionService",
+            [{
+                field:"level",
+                condition:Condition_EQUAL,
+                value:0
+            }],0,100,"name","asc",function(d){
+                console.log(d);
+            })
+    </script>
 </body>
 </html>

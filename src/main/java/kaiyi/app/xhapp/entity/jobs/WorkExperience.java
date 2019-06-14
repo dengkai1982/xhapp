@@ -3,10 +3,7 @@ package kaiyi.app.xhapp.entity.jobs;
 import kaiyi.app.xhapp.entity.AbstractEntity;
 import kaiyi.puer.commons.data.IDate;
 import kaiyi.puer.commons.validate.NotEmpty;
-import kaiyi.puer.h5ui.annotations.FieldBoolean;
-import kaiyi.puer.h5ui.annotations.FieldType;
-import kaiyi.puer.h5ui.annotations.PageEntity;
-import kaiyi.puer.h5ui.annotations.PageField;
+import kaiyi.puer.h5ui.annotations.*;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -32,6 +29,9 @@ public class WorkExperience extends AbstractEntity {
     @FieldBoolean(values={"是","否"})
     private boolean current;
     //对应的简历
+    @PageField(label = "引用简历",type = FieldType.REFERENCE,showForm = false,
+            showTable = false,showQuery = false,showDetail = false,showSearch = false)
+    @FieldReference(fieldName = "name")
     private Resume resume;
 
     public String getCompany() {
