@@ -5,12 +5,14 @@ import kaiyi.app.xhapp.entity.jobs.Recruitment;
 import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.JavaDataTyper;
+import kaiyi.puer.db.orm.ServiceException;
 import kaiyi.puer.db.query.ContainQueryExpress;
 import kaiyi.puer.db.query.LinkQueryExpress;
 import kaiyi.puer.db.query.QueryExpress;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 
@@ -20,6 +22,11 @@ public class RecruitmentServiceImpl extends InjectDao<Recruitment> implements Re
 
     @Resource
     private PositionService positionService;
+
+    @Override
+    protected void objectBeforePersistHandler(Recruitment recruitment, Map<String, JavaDataTyper> params) throws ServiceException {
+        recruitment.setPublishTime(new Date());
+    }
 
     @Override
     public QueryExpress getCustomerQuery(Map<String, JavaDataTyper> params) {

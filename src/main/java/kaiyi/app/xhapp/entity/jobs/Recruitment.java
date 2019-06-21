@@ -2,10 +2,12 @@ package kaiyi.app.xhapp.entity.jobs;
 
 import kaiyi.app.xhapp.entity.AbstractEntity;
 import kaiyi.app.xhapp.entity.access.Account;
+import kaiyi.puer.commons.data.IDate;
 import kaiyi.puer.commons.validate.NotEmpty;
 import kaiyi.puer.h5ui.annotations.*;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity(name=Recruitment.TABLE_NAME)
 @PageEntity(showName = "企业招聘",entityName = "recruitment",serviceName = "recruitmentService")
@@ -38,6 +40,12 @@ public class Recruitment extends AbstractEntity {
     @PageField(label = "发布人",type = FieldType.REFERENCE)
     @FieldReference(fieldName = "phone")
     private Account publisher;
+    @IDate
+    @PageField(label = "发布时间",type = FieldType.DATETIME)
+    public Date publishTime;
+    @IDate(pattern = "yyyy-MM-dd")
+    @PageField(label = "有效时间时间",type = FieldType.DATETIME)
+    public Date invalidTime;
     @PageField(label = "备注",tableLength = 300)
     private String remark;
 
@@ -123,5 +131,21 @@ public class Recruitment extends AbstractEntity {
 
     public void setPosition(Position position) {
         this.position = position;
+    }
+    @Temporal(TemporalType.TIMESTAMP)
+    public Date getPublishTime() {
+        return publishTime;
+    }
+
+    public void setPublishTime(Date publishTime) {
+        this.publishTime = publishTime;
+    }
+    @Temporal(TemporalType.TIMESTAMP)
+    public Date getInvalidTime() {
+        return invalidTime;
+    }
+
+    public void setInvalidTime(Date invalidTime) {
+        this.invalidTime = invalidTime;
     }
 }

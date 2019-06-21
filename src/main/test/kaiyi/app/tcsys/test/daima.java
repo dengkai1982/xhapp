@@ -3,6 +3,7 @@ package kaiyi.app.tcsys.test;
 import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.app.xhapp.entity.access.VisitorMenu;
 import kaiyi.app.xhapp.entity.curriculum.Course;
+import kaiyi.app.xhapp.entity.jobs.Position;
 import kaiyi.app.xhapp.entity.log.ShortMessageSenderNote;
 import kaiyi.app.xhapp.entity.pages.DisplayMap;
 import kaiyi.app.xhapp.entity.pub.Configure;
@@ -69,6 +70,7 @@ public class daima {
         BeanSyntacticSugar.printEntity(ShortMessageSenderNote.class);
         BeanSyntacticSugar.printEntity(DisplayMap.class);
         BeanSyntacticSugar.printEntity(Notice.class);
+        BeanSyntacticSugar.printEntity(Position.class);
     }
 
     @Test

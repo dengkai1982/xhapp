@@ -59,15 +59,13 @@ public class Resume extends AbstractEntity {
     @PageField(label = "薪资",type = FieldType.NUMBER)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int salary;
+    @PageField(label = "求职描述")
+    private String detail;
     @PageField(label = "所有人",type = FieldType.REFERENCE,showForm = false,
             showTable = false,showQuery = false,showDetail = false,showSearch = false)
     @FieldReference(fieldName = "phone")
     private Account owner;
 
-    @Override
-    public StreamArray<String> filterField() {
-        return new StreamArray<>(new String[]{"owner"});
-    }
 
     public String getName() {
         return name;
@@ -157,7 +155,7 @@ public class Resume extends AbstractEntity {
     public void setSalary(int salary) {
         this.salary = salary;
     }
-    @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
     @JoinColumn(name="owner")
     public Account getOwner() {
         return owner;
@@ -189,5 +187,13 @@ public class Resume extends AbstractEntity {
 
     public void setProfess(String profess) {
         this.profess = profess;
+    }
+    @Lob
+    public String getDetail() {
+        return detail;
+    }
+
+    public void setDetail(String detail) {
+        this.detail = detail;
     }
 }
