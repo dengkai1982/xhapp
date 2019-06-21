@@ -37,9 +37,13 @@ public class Account extends AbstractEntity {
     @PageField(label = "性别",type = FieldType.CHOSEN)
     @FieldChosen
     private SEX sex;
+    @PageField(label = "行业")
+    private String industry;
     @Email(hint = "电子邮箱格式错误")
     @PageField(label = "电子邮箱")
     private String email;
+    @PageField(label = "地址")
+    private String address;
     @ICurrency
     @PageField(label = "金币",type = FieldType.NUMBER)
     private int gold;
@@ -137,5 +141,21 @@ public class Account extends AbstractEntity {
             return phone;
         }
         return nickName;
+    }
+
+    public String getIndustry() {
+        return industry;
+    }
+
+    public void setIndustry(String industry) {
+        this.industry = industry;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

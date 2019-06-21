@@ -44,4 +44,10 @@ public class ServiceExceptionDefine {
             ServiceException.CODE_FAIL,"账户金币余额不足");
     public static final ServiceException mediaReference=new ServiceException(
             ServiceException.CODE_FAIL,"视频文件已被引用,不能删除");
+
+    public static final ServiceException certConcerned=new ServiceException(
+            ServiceException.CODE_FAIL,"证书已经被关注过");
+
+    public static final ServiceException enterpriseConcerned=new ServiceException(
+            ServiceException.CODE_FAIL,"企业已经被关注过");
 }

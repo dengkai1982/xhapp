@@ -1,6 +1,7 @@
 package kaiyi.app.xhapp.controller.app;
 
 import kaiyi.app.xhapp.entity.AbstractEntity;
+import kaiyi.app.xhapp.service.CustomerPaginationJson;
 import kaiyi.puer.db.Pagination;
 import kaiyi.puer.db.orm.DatabaseQuery;
 import kaiyi.puer.db.query.QueryExpress;
@@ -56,7 +57,12 @@ public class QueryController extends SuperAction {
                                          DatabaseQuery<? extends JsonBuilder> databaseQuery,
                                          QueryExpress query) {
         executeConditionQuery(interactive,databaseQuery,query,pagination->{
-            ObjectJsonCreator<Pagination> creator=getDefaultObjectCreator(pagination);
+            ObjectJsonCreator<Pagination> creator=null;
+            if(databaseQuery instanceof CustomerPaginationJson){
+                creator=((CustomerPaginationJson)databaseQuery).getCustomerCreator(pagination);
+            }else{
+                creator=getDefaultObjectCreator(pagination);
+            }
             try {
                 interactive.writeUTF8Text(creator.build());
             } catch (IOException e) {

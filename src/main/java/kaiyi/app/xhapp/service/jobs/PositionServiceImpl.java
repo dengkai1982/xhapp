@@ -67,6 +67,7 @@ public class PositionServiceImpl extends InjectDao<Position> implements Position
         saveObject(newJobs);
     }
 
+
     @Override
 
     protected String[] getFormElementHiddenParams() {

@@ -16,6 +16,9 @@ public class Enterprise extends AbstractEntity {
     @NotEmpty(hint = "企业名称必须填写")
     @PageField(label = "企业名称")
     private String enterpriseName;
+    @PageField(label = "企业logo",type = FieldType.DOCUMENT)
+    @FieldDocument
+    private String logoImage;
     @NotEmpty(hint = "电话必须填写")
     @PageField(label = "联系电话")
     private String phone;
@@ -89,5 +92,13 @@ public class Enterprise extends AbstractEntity {
 
     public void setContent(String content) {
         this.content = content;
+    }
+    @Lob
+    public String getLogoImage() {
+        return logoImage;
+    }
+
+    public void setLogoImage(String logoImage) {
+        this.logoImage = logoImage;
     }
 }
