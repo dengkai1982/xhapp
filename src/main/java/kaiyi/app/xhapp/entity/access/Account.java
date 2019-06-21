@@ -11,6 +11,7 @@ import kaiyi.puer.commons.validate.Mobile;
 import kaiyi.puer.h5ui.annotations.*;
 
 import javax.persistence.*;
+import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.Objects;
 
@@ -27,7 +28,7 @@ public class Account extends AbstractEntity {
     @IDate
     @PageField(label = "注册时间",type = FieldType.DATETIME)
     private Date registerTime;
-    @PageField(label = "用户头像",type=FieldType.DOCUMENT,showSearch = false,showTable = false,showDetail = false)
+    @PageField(label = "用户头像",type=FieldType.DOCUMENT,showSearch = false)
     @FieldDocument
     private String headerImage;
     @PageField(label = "签名")
@@ -157,5 +158,13 @@ public class Account extends AbstractEntity {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    @Override
+    public <T> String convertToJson(T entity, Field field, Object data) {
+        if(field.getName().equals("headerImage")){
+            return data.toString();
+        }
+        return "";
     }
 }

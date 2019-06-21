@@ -62,7 +62,7 @@ public class Certificate extends AbstractEntity {
     public void setExpect(int expect) {
         this.expect = expect;
     }
-    @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
     @JoinColumn(name="owner")
     public Account getOwner() {
         return owner;
