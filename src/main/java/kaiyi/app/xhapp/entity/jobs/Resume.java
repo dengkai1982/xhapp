@@ -61,6 +61,7 @@ public class Resume extends AbstractEntity {
     private int salary;
     @PageField(label = "求职描述")
     private String detail;
+    //private String parentPositionId;
     @PageField(label = "所有人",type = FieldType.REFERENCE,showForm = false,
             showTable = false,showQuery = false,showDetail = false,showSearch = false)
     @FieldReference(fieldName = "phone")
@@ -196,4 +197,5 @@ public class Resume extends AbstractEntity {
     public void setDetail(String detail) {
         this.detail = detail;
     }
+
 }
