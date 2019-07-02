@@ -7,6 +7,7 @@ import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
 import kaiyi.app.xhapp.service.AliyunVodHelper;
 import kaiyi.app.xhapp.service.curriculum.*;
 import kaiyi.app.xhapp.service.log.CourseBrowseService;
+import kaiyi.app.xhapp.service.pages.ExamInfoService;
 import kaiyi.app.xhapp.service.pub.ConfigureService;
 import kaiyi.puer.commons.bean.BeanSyntacticSugar;
 import kaiyi.puer.commons.collection.StreamCollection;
@@ -59,6 +60,8 @@ public class CurriculumAction extends SuperAction {
     private CourseProblemService courseProblemService;
     @Resource
     private FaceToFaceService faceToFaceService;
+    @Resource
+    private ExamInfoService examInfoService;
     /**
      * 根据ID获取课程信息
      * @param interactive
@@ -281,5 +284,15 @@ public class CurriculumAction extends SuperAction {
         String course=interactive.getStringParameter("course","");
         Date faceTime=interactive.getDateParameter("faceTime",new SimpleDateFormat("yyyy-MM-dd"));
         faceToFaceService.make(name,phone,course,faceTime);
+    }
+
+    /**
+     * 读取咨询，将阅读量加1
+     * */
+    @PostMapping("/readExaminfo")
+    public void readExaminfo(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String entityId=interactive.getStringParameter("entityId","");
+        examInfoService.readExamInfo(entityId);
+        interactive.writeUTF8Text(getSuccessMessage().build());
     }
 }

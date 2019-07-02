@@ -72,7 +72,7 @@
             access:"${webPage.deleteEntityPage}",
             onClick:function(){
                 confirmOper("警告","确实要删除选中的考试资讯?",function(){
-                    postJSON("${managerPath}/public/examInfo/delete${suffix}",{
+                    postJSON("${managerPath}/pages/examInfo/delete${suffix}",{
                         entityId:dataId
                     },"正在执行,请稍后...",function(result){
                         if(result.code==SUCCESS){

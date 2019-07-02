@@ -2,8 +2,8 @@ package kaiyi.app.xhapp.entity.pages;
 import kaiyi.app.xhapp.entity.AbstractEntity;
 import kaiyi.puer.commons.data.IDate;
 import kaiyi.puer.commons.time.DateTimeUtil;
-import kaiyi.puer.h5ui.annotations.PageEntity;
-import kaiyi.puer.h5ui.annotations.PageField;
+import kaiyi.puer.commons.validate.NotEmpty;
+import kaiyi.puer.h5ui.annotations.*;
 import kaiyi.puer.web.html.HtmlConvertUtils;
 
 import javax.persistence.Entity;
@@ -17,14 +17,21 @@ import java.util.Objects;
 public class ExamInfo extends AbstractEntity implements ContentText {
     private static final long serialVersionUID = -3047395829998804499L;
     public static final String TABLE_NAME="exam_info";
-    @PageField(label = "资讯标题")
+    @NotEmpty(hint = "咨询标题必须填写")
+    @PageField(label = "资讯标题",formColumnLength = 3)
     private String title;
     @PageField(label="发布时间",showForm = false,showSearch = false)
     @IDate
     private Date publishDate;
     @PageField(label = "资讯内容",showForm = false,showSearch = false,showTable = false)
     private String content;
-
+    @PageField(label = "阅读量",type = FieldType.NUMBER,showForm = false)
+    @FieldNumber(type = FieldNumber.TYPE.LONG)
+    private long readVolume;
+    @PageField(label = "封面图片",type = FieldType.DOCUMENT,formColumnLength = 3,
+            showQuery = false,showSearch = false,showDetail = false,showTable = false)
+    @FieldDocument(maxFileSize = "4mb")
+    private String cover;
     public String getTitle() {
         return title;
     }
@@ -68,5 +75,21 @@ public class ExamInfo extends AbstractEntity implements ContentText {
             return HtmlConvertUtils.htmlUnescape(content);
         }
         return "";
+    }
+
+    public long getReadVolume() {
+        return readVolume;
+    }
+
+    public void setReadVolume(long readVolume) {
+        this.readVolume = readVolume;
+    }
+    @Lob
+    public String getCover() {
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
     }
 }

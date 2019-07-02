@@ -19,15 +19,18 @@ public class Enterprise extends AbstractEntity {
     @PageField(label = "企业logo",type = FieldType.DOCUMENT)
     @FieldDocument
     private String logoImage;
+    @PageField(label = "推荐企业",type = FieldType.BOOLEAN)
+    @FieldBoolean(values = {"是","否"})
+    private boolean recommend;
     @NotEmpty(hint = "电话必须填写")
     @PageField(label = "联系电话")
     private String phone;
-    @NotEmpty(hint = "三合一编码必须填写")
     @PageField(label = "三合一编码",tableLength = 160)
     private String code;
     @PageField(label = "营业执照",type = FieldType.DOCUMENT)
     @FieldDocument
     private String licensePhoto;
+    @NotEmpty(hint = "联系电话必须填写")
     @PageField(label = "联系电话")
     private String address;
     @PageField(label = "所有人",type = FieldType.REFERENCE)
@@ -100,5 +103,13 @@ public class Enterprise extends AbstractEntity {
 
     public void setLogoImage(String logoImage) {
         this.logoImage = logoImage;
+    }
+
+    public boolean isRecommend() {
+        return recommend;
+    }
+
+    public void setRecommend(boolean recommend) {
+        this.recommend = recommend;
     }
 }

@@ -112,7 +112,7 @@ public class PageController extends ManagerController {
             parent = rootPath+"/examInfo")
     public void examInfoDelete(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
         String entityId=interactive.getStringParameter("entityId","");
-        noticeService.deleteById(entityId);
+        examInfoService.deleteById(entityId);
         interactive.writeUTF8Text(getSuccessMessage().build());
     }
     @PostMapping("/examInfo/commit")

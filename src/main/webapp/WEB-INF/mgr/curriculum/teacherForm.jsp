@@ -8,7 +8,7 @@
         .photo_container{
             position: absolute;
             top:58px;
-            left:40px;
+            left:50px;
         }
         img{
             width:128px;

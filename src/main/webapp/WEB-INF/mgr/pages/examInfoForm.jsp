@@ -21,14 +21,7 @@
             <%@include file="/WEB-INF/mgr/access/newOrEditBaseTitle.jsp"%>
             <form id="editor_form" data-form-name="${webPage.pageTitle}" class="form-horizontal" method="post"
                   action="${contextPath}${webPage.commitEntityAction}${suffix}">
-                <c:set var="entity" value="${requestScope.entity}"/>
-                <input type="hidden" name="entityId" value="${entity.entityId}">
-                <div class="form-group">
-                    <label for="title" class="col-sm-1 required">考试资讯标题</label>
-                    <div data-column-type="TEXT" class="col-sm-5">
-                        <input type="text" data-validate="required:资讯标题必须输入" value="${entity.title}" name="title" class="form-control" id="title" placeholder="请输入考试资讯标题">
-                    </div>
-                </div>
+                <%@include file="/WEB-INF/mgr/access/newOrEditForm.jsp"%>
                 <div class="form-group" id="contentContainer">
                     <label for="contentEditor" class="col-sm-1 required">考试资讯内容</label>
                     <div class="col-sm-11">
@@ -37,10 +30,7 @@
                         </div>
                     </div>
                 </div>
-                <div style="text-align: center;">
-                    <button type="button" id="formSubmitAction" class="btn btn-wide btn-primary">提交保存</button>
-                    <a href="${webPage.backPage}"  class="btn btn-back btn-wide">返回</a>
-                </div>
+                <%@include file="/WEB-INF/mgr/access/formCommitButton.jsp"%>
             </form>
         </div>
     </div>

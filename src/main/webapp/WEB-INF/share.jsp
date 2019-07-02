@@ -26,4 +26,4 @@
 <c:set var="suffix" value=".xhtml"/>
 <c:set var="managerUser" value="<%=ManagerController.getLoginedUser(request)%>"/>
 <c:set var="system_name" value="鑫鸿电商平台后台管理系统"/>
-<c:set var="ecoInfo" value="四川金软科技有限公司"/>
+<c:set var="ecoInfo" value="四川零克斯信息科技有限公司"/>

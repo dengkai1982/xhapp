@@ -20,10 +20,10 @@ public class Course extends AbstractEntity {
     private static final long serialVersionUID = -516765397341241977L;
     public static final String TABLE_NAME="course";
     @NotEmpty(hint = "课程名称必须填写")
-    @PageField(label = "课程名称",tableLength =200)
+    @PageField(label = "课程名称",tableLength =300)
     private String name;
     @NotEmpty(hint = "课程讲师必须选择")
-    @PageField(label = "课程讲师",type = FieldType.REFERENCE,tableLength =100)
+    @PageField(label = "课程讲师",type = FieldType.REFERENCE,tableLength =150)
     @FieldReference(fieldName = "name")
     private Teacher teacher;
     @PageField(label = "课程类别",type = FieldType.REFERENCE,showSearch = false,showForm = false,tableLength =120)
@@ -54,13 +54,13 @@ public class Course extends AbstractEntity {
     @PageField(label = "课程简介",type=FieldType.AREATEXT,showSearch = false,showTable = false,showQuery =false,formColumnLength = 3)
     @FieldArea(row=5)
     private String detail;
-    @PageField(label = "购买量",type = FieldType.NUMBER,showForm = false)
+    @PageField(label = "购买量",type = FieldType.NUMBER,showForm = false,tableLength = 140)
     @FieldNumber(type = FieldNumber.TYPE.LONG)
     private long buyVolume;
-    @PageField(label = "评价得分",type = FieldType.NUMBER,showForm = false)
+    @PageField(label = "评价得分",type = FieldType.NUMBER,showForm = false,tableLength = 140)
     @FieldNumber(type = FieldNumber.TYPE.DOUBLE)
     private double commentAvgScore;
-    @PageField(label = "购买权限",tableLength =300,showForm = false,showQuery = false,showSearch = false)
+    @PageField(label = "购买权限",tableLength =600,showForm = false,showQuery = false,showSearch = false)
     private String buyerPrivilege;
 
     private Set<CourseBuyerPrivilege> privileges;

@@ -9,8 +9,8 @@
     <h1>测试</h1>
     <script src="${contextPath}/js/app.js" type="text/javascript"></script>
     <script type="text/javascript">
-        queryDataOfOrderBySetUrl("${contextPath}/app/query/pagination${suffix}?parentPositionId=15594602391900119","resumeService",
-            [],0,100,"name","asc",function(d){
+        queryDataOfOrderBySetUrl("${contextPath}/app/query/pagination${suffix}","examInfoService",
+            [],0,100,"publishDate","desc",function(d){
                 console.log(d);
             })
     </script>

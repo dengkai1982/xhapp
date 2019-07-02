@@ -51,7 +51,7 @@
     </bean>
     <bean id="h5UIService" class="kaiyi.puer.h5ui.service.H5UIService" init-method="initial">
         <property name="springContextHolder" ref="springContextHolder"/>
-        <property name="templateDir" value="/Users/dengkai/JavaProject/kaiyi_puer_final/xhapp/src/main/resource/template"/>
+        <property name="templateDir" value="D:\JavaProject\xhapp\src\main\resource\template"/>
         <property name="scanPackage" value="kaiyi.app.xhapp.entity"/>
     </bean>
     <bean id="applicationService" class="kaiyi.puer.h5ui.service.ApplicationService" init-method="initial">

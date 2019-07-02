@@ -14,12 +14,15 @@ import java.util.Date;
 public class Recruitment extends AbstractEntity {
     public static final String TABLE_NAME="recruitment";
     private static final long serialVersionUID = -893953219915415823L;
-    @PageField(label = "企业信息",type = FieldType.REFERENCE)
+    @NotEmpty(hint = "企业名称必须指定")
+    @PageField(label = "企业名称",type = FieldType.REFERENCE)
     @FieldReference(fieldName = "name")
     private Enterprise enterprise;
+    @NotEmpty(hint = "招聘岗位必须填写")
     @PageField(label = "招聘岗位",type = FieldType.REFERENCE)
     @FieldReference(fieldName = "name")
     private Position position;
+    @NotEmpty(hint = "工作类型必须填写")
     @PageField(label = "工作类型",type = FieldType.BOOLEAN)
     @FieldBoolean(values = {"全职","兼职"})
     private boolean fullTime;
@@ -33,6 +36,7 @@ public class Recruitment extends AbstractEntity {
     @NotEmpty(hint = "薪资待遇必须填写")
     @PageField(label = "薪资待遇")
     private String salary;
+    @NotEmpty(hint = "工作年限要求必须填写")
     @PageField(label = "工作年限要求",tableLength = 160)
     private String workYear;
     @PageField(label = "其他要求",tableLength = 160)
@@ -43,8 +47,9 @@ public class Recruitment extends AbstractEntity {
     @IDate
     @PageField(label = "发布时间",type = FieldType.DATETIME)
     public Date publishTime;
+    @NotEmpty(hint = "有效时间必须填写")
     @IDate(pattern = "yyyy-MM-dd")
-    @PageField(label = "有效时间时间",type = FieldType.DATETIME)
+    @PageField(label = "有效时间",type = FieldType.DATETIME)
     public Date invalidTime;
     @PageField(label = "备注",tableLength = 300)
     private String remark;
