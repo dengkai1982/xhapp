@@ -11,17 +11,17 @@ import kaiyi.puer.h5ui.annotations.PageField;
 import javax.persistence.*;
 import java.util.Date;
 
-@Entity(name=ConcernCertificate.TABLE_NAME)
-@PageEntity(showName = "关注企业",entityName = "concernCertificate",serviceName = "concernCertificateService")
-public class ConcernCertificate extends AbstractEntity {
-    public static final String TABLE_NAME="concern_certificate";
-    private static final long serialVersionUID = -3763589061384356751L;
+@Entity(name=ConcernResume.TABLE_NAME)
+@PageEntity(showName = "关注简历",entityName = "concernResume",serviceName = "concernResumeService")
+public class ConcernResume extends AbstractEntity {
+    public static final String TABLE_NAME="concernResume";
+    private static final long serialVersionUID = 477782534036162556L;
     @PageField(label = "用户名称",type = FieldType.REFERENCE)
     @FieldReference(fieldName = "phone")
     private Account account;
-    @PageField(label = "证书名称",type = FieldType.REFERENCE)
+    @PageField(label = "简历人员姓名",type = FieldType.REFERENCE)
     @FieldReference(fieldName = "name")
-    private Certificate certificate;
+    private Resume resume;
     @IDate
     @PageField(label = "关注时间",type = FieldType.DATETIME)
     private Date createTime;
@@ -35,13 +35,13 @@ public class ConcernCertificate extends AbstractEntity {
         this.account = account;
     }
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
-    @JoinColumn(name="certificate")
-    public Certificate getCertificate() {
-        return certificate;
+    @JoinColumn(name="resume")
+    public Resume getResume() {
+        return resume;
     }
 
-    public void setCertificate(Certificate certificate) {
-        this.certificate = certificate;
+    public void setResume(Resume resume) {
+        this.resume = resume;
     }
     @Temporal(TemporalType.TIMESTAMP)
     public Date getCreateTime() {

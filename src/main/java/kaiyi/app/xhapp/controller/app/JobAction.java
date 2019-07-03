@@ -33,7 +33,7 @@ public class JobAction extends SuperAction {
     @Resource
     private ConcernEnterpriseService concernEnterpriseService;
     @Resource
-    private ConcernCertificateService concernCertificateService;
+    private ConcernResumeService concernResumeService;
     /**
      * 新增修改个人简历
      * @param interactive
@@ -95,16 +95,16 @@ public class JobAction extends SuperAction {
     }
 
     /**
-     * 添加证书关注
+     * 添加关注简历
      * 参数 account:账号ID
-     * certificate:证号ID
+     * resume:简历ID
      * @param interactive
      * @param response
      * @throws IOException
      */
-    @PostMapping("/concernCertificate")
+    @PostMapping("/concernResume")
     public void concernCertificate(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
-        JsonMessageCreator msg=executeNewOrUpdate(interactive,concernCertificateService);
+        JsonMessageCreator msg=executeNewOrUpdate(interactive,concernResumeService);
         interactive.writeUTF8Text(msg.build());
     }
 
@@ -133,13 +133,13 @@ public class JobAction extends SuperAction {
         concernEnterpriseService.deleteForPrimary(entityId);
     }
     /**
-     * 取消企业关注
+     * 取消简历关注
      * @param interactive
      * @param response
      */
-    @PostMapping("/cancelConcernCertificate")
+    @PostMapping("/cancelConcernResume")
     public void cancelConcernCertificate(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
         String entityId=interactive.getStringParameter("entityId","");
-        concernEnterpriseService.deleteForPrimary(entityId);
+        concernResumeService.deleteForPrimary(entityId);
     }
 }

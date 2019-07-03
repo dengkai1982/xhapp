@@ -50,4 +50,7 @@ public class ServiceExceptionDefine {
 
     public static final ServiceException enterpriseConcerned=new ServiceException(
             ServiceException.CODE_FAIL,"企业已经被关注过");
+
+    public static final ServiceException resumeConcerned=new ServiceException(
+            ServiceException.CODE_FAIL,"简历已经被关注过");
 }

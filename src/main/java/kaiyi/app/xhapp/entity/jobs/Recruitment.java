@@ -22,6 +22,9 @@ public class Recruitment extends AbstractEntity {
     @PageField(label = "招聘岗位",type = FieldType.REFERENCE)
     @FieldReference(fieldName = "name")
     private Position position;
+    @PageField(label = "推荐岗位",type = FieldType.BOOLEAN)
+    @FieldBoolean(values = {"是","否"})
+    private boolean recommend;
     @NotEmpty(hint = "工作类型必须填写")
     @PageField(label = "工作类型",type = FieldType.BOOLEAN)
     @FieldBoolean(values = {"全职","兼职"})
@@ -152,5 +155,13 @@ public class Recruitment extends AbstractEntity {
 
     public void setInvalidTime(Date invalidTime) {
         this.invalidTime = invalidTime;
+    }
+
+    public boolean isRecommend() {
+        return recommend;
+    }
+
+    public void setRecommend(boolean recommend) {
+        this.recommend = recommend;
     }
 }
