@@ -14,7 +14,7 @@ import java.util.Date;
 @Entity(name=ConcernResume.TABLE_NAME)
 @PageEntity(showName = "关注简历",entityName = "concernResume",serviceName = "concernResumeService")
 public class ConcernResume extends AbstractEntity {
-    public static final String TABLE_NAME="concernResume";
+    public static final String TABLE_NAME="concern_resume";
     private static final long serialVersionUID = 477782534036162556L;
     @PageField(label = "用户名称",type = FieldType.REFERENCE)
     @FieldReference(fieldName = "phone")
