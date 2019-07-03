@@ -133,7 +133,7 @@ public class JobAction extends SuperAction {
         concernEnterpriseService.deleteForPrimary(entityId);
     }
     /**
-     * 取消简历关注
+     * 取消简历关注20190703
      * @param interactive
      * @param response
      */
