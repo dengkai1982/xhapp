@@ -20,10 +20,11 @@ import kaiyi.puer.json.creator.CollectionJsonCreator;
 import kaiyi.puer.json.creator.JsonBuilder;
 import kaiyi.puer.json.creator.ObjectJsonCreator;
 import kaiyi.puer.json.creator.StringJsonCreator;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.Map;
-
+@Service("concernResumeService")
 public class ConcernResumeServiceImpl extends InjectDao<ConcernResume> implements ConcernResumeService {
     private static final long serialVersionUID = 2618843499288448960L;
 
