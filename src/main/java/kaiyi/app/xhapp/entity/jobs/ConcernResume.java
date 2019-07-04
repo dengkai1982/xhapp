@@ -16,7 +16,7 @@ import java.util.Date;
 public class ConcernResume extends AbstractEntity {
     public static final String TABLE_NAME="concern_resume";
     private static final long serialVersionUID = 477782534036162556L;
-    @PageField(label = "用户名称",type = FieldType.REFERENCE)
+    @PageField(label = "关注人",type = FieldType.REFERENCE)
     @FieldReference(fieldName = "phone")
     private Account account;
     @PageField(label = "简历人员姓名",type = FieldType.REFERENCE)

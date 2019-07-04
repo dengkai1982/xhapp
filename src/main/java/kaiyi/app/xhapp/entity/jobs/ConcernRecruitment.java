@@ -18,7 +18,7 @@ public class ConcernRecruitment extends AbstractEntity {
 
     public static final String TABLE_NAME="concern_recruitment";
 
-    @PageField(label = "用户名称",type = FieldType.REFERENCE)
+    @PageField(label = "关注人",type = FieldType.REFERENCE)
     @FieldReference(fieldName = "phone")
     private Account account;
     @PageField(label = "招聘岗位",type = FieldType.REFERENCE)

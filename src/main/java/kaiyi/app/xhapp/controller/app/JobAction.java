@@ -1,9 +1,23 @@
 package kaiyi.app.xhapp.controller.app;
 
+import kaiyi.app.xhapp.entity.access.Account;
+import kaiyi.app.xhapp.entity.jobs.ConcernRecruitment;
+import kaiyi.app.xhapp.entity.jobs.ConcernResume;
+import kaiyi.app.xhapp.entity.jobs.Recruitment;
+import kaiyi.app.xhapp.entity.jobs.Resume;
 import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
+import kaiyi.app.xhapp.service.access.AccountService;
 import kaiyi.app.xhapp.service.jobs.*;
 import kaiyi.app.xhapp.service.pub.ConfigureService;
+import kaiyi.puer.commons.collection.StreamCollection;
+import kaiyi.puer.commons.data.StringEditor;
+import kaiyi.puer.db.Pagination;
+import kaiyi.puer.db.query.CompareQueryExpress;
+import kaiyi.puer.db.query.ContainQueryExpress;
+import kaiyi.puer.db.query.QueryExpress;
+import kaiyi.puer.json.JsonCreator;
 import kaiyi.puer.json.creator.JsonMessageCreator;
+import kaiyi.puer.json.creator.ObjectJsonCreator;
 import kaiyi.puer.web.servlet.WebInteractive;
 import kaiyi.puer.web.springmvc.IWebInteractive;
 import org.springframework.stereotype.Controller;
@@ -167,4 +181,50 @@ public class JobAction extends SuperAction {
         String entityId=interactive.getStringParameter("entityId","");
         concernRecruitmentService.deleteForPrimary(entityId);
     }
+
+    /**
+     * 根据简历的所有人来查询简历关注信息
+     * @param interactive
+     * @param response
+     * @throws IOException
+     */
+    @RequestMapping("/queryConcernResumeByOwner")
+    public void queryConcernResumeByOwner(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String accountId=interactive.getStringParameter("accountId","");
+        if(StringEditor.notEmpty(accountId)){
+            Account owner=new Account();
+            QueryExpress query=new CompareQueryExpress("owner", CompareQueryExpress.Compare.EQUAL,owner);
+            StreamCollection<Resume> resumes=resumeService.getEntitys(query);
+            if(resumes.assertNotEmpty()){
+                query=new ContainQueryExpress<>("resume", ContainQueryExpress.CONTAINER.IN,resumes.toList());
+                Pagination<ConcernResume> pagination=concernResumeService.getPagination(0,1000,query);
+                ObjectJsonCreator<Pagination> creator=concernResumeService.getCustomerCreator(pagination);
+                interactive.writeUTF8Text(creator.build());
+            }
+        }
+        interactive.writeUTF8Text(JsonCreator.EMPTY_JSON);
+    }
+
+    /**
+     * 根据招聘信息的发布人来查询招聘关注信息。
+     * @param interactive
+     * @param response
+     */
+    @RequestMapping("/queryConcernRecruitmentByPublisher")
+    public void queryConcernRecruitmentByPublisher(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String accountId=interactive.getStringParameter("accountId","");
+        if(StringEditor.notEmpty(accountId)){
+            Account publisher=new Account();
+            QueryExpress query=new CompareQueryExpress("publisher", CompareQueryExpress.Compare.EQUAL,publisher);
+            StreamCollection<Recruitment> recruitments=recruitmentService.getEntitys(query);
+            if(recruitments.assertNotEmpty()){
+                query=new ContainQueryExpress<>("recruitment", ContainQueryExpress.CONTAINER.IN,recruitments.toList());
+                Pagination<ConcernRecruitment> pagination=concernRecruitmentService.getPagination(0,1000,query);
+                ObjectJsonCreator<Pagination> creator=concernRecruitmentService.getCustomerCreator(pagination);
+                interactive.writeUTF8Text(creator.build());
+            }
+        }
+        interactive.writeUTF8Text(JsonCreator.EMPTY_JSON);
+    }
+
 }
