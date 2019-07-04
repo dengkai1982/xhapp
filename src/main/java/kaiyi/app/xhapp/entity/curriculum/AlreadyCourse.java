@@ -10,10 +10,11 @@ import java.util.Date;
 /**
  * 已购课程
  */
-@Entity(name=Course.TABLE_NAME)
+@Entity(name=AlreadyCourse.TABLE_NAME)
 @PageEntity(showName = "已购课程",entityName = "alreadyCourse",serviceName = "alreadyCourseService")
 public class AlreadyCourse extends AbstractEntity {
     private static final long serialVersionUID = -3842555833237366231L;
+    public static final String TABLE_NAME="already_course";
 
     private Account owner;
 

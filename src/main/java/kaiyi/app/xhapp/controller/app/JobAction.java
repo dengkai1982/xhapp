@@ -34,6 +34,8 @@ public class JobAction extends SuperAction {
     private ConcernEnterpriseService concernEnterpriseService;
     @Resource
     private ConcernResumeService concernResumeService;
+    @Resource
+    private ConcernRecruitmentService concernRecruitmentService;
     /**
      * 新增修改个人简历
      * @param interactive
@@ -141,5 +143,28 @@ public class JobAction extends SuperAction {
     public void cancelConcernCertificate(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
         String entityId=interactive.getStringParameter("entityId","");
         concernResumeService.deleteForPrimary(entityId);
+    }
+    /**
+     * 添加关注招聘信息
+     * 参数 account:账号ID
+     * recruitment:招聘岗位ID
+     * @param interactive
+     * @param response
+     * @throws IOException
+     */
+    @PostMapping("/concernRecruitment")
+    public void concernRecruitment(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        JsonMessageCreator msg=executeNewOrUpdate(interactive,concernRecruitmentService);
+        interactive.writeUTF8Text(msg.build());
+    }
+    /**
+     * 取消招聘信息关注20190704
+     * @param interactive
+     * @param response
+     */
+    @PostMapping("/cancelConcernRecruitment")
+    public void cancelConcernRecruitment(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        String entityId=interactive.getStringParameter("entityId","");
+        concernRecruitmentService.deleteForPrimary(entityId);
     }
 }

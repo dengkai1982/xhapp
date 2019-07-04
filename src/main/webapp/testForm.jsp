@@ -9,8 +9,12 @@
     <h1>测试</h1>
     <script src="${contextPath}/js/app.js" type="text/javascript"></script>
     <script type="text/javascript">
-        queryDataOfOrderBySetUrl("${contextPath}/app/query/pagination${suffix}","examInfoService",
-            [],0,100,"publishDate","desc",function(d){
+        queryDataOfOrderBySetUrl("${contextPath}/app/query/pagination${suffix}","courseService",
+            [{
+                field:"sale",
+                condition:"0",
+                value:"true"
+            }],0,100,"entityId","ase",function(d){
                 console.log(d);
             })
     </script>

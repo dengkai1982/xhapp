@@ -8,18 +8,18 @@ import kaiyi.puer.h5ui.annotations.PageField;
 
 import javax.persistence.*;
 
-@Entity(name= ChoiceAnswer.TABLE_NAME)
-@PageEntity(showName = "选择题答案",entityName = "choiceAnswer",serviceName = "choiceAnswerService")
-public class ChoiceAnswer extends AbstractEntity {
+@Entity(name= ExamChoiceAnswer.TABLE_NAME)
+@PageEntity(showName = "考试答案",entityName = "choiceAnswer",serviceName = "choiceAnswerService")
+public class ExamChoiceAnswer extends AbstractEntity {
     private static final long serialVersionUID = 8954908025941101896L;
-    public static final String TABLE_NAME="choice_answer";
+    public static final String TABLE_NAME="exam_choice_answer";
     @PageField(label = "选项名称")
     private String optionName;
     @PageField(label = "选择值")
     private String detailValue;
     @PageField(label = "所属问题",type = FieldType.REFERENCE)
     @FieldReference(fieldName = "detail")
-    private Question question;
+    private ExamQuestionItem examQuestionItem;
 
     public String getOptionName() {
         return optionName;
@@ -37,12 +37,12 @@ public class ChoiceAnswer extends AbstractEntity {
         this.detailValue = detailValue;
     }
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.LAZY)
-    @JoinColumn(name="question")
-    public Question getQuestion() {
-        return question;
+    @JoinColumn(name="examQuestionItem")
+    public ExamQuestionItem getExamQuestionItem() {
+        return examQuestionItem;
     }
 
-    public void setQuestion(Question question) {
-        this.question = question;
+    public void setExamQuestionItem(ExamQuestionItem examQuestionItem) {
+        this.examQuestionItem = examQuestionItem;
     }
 }

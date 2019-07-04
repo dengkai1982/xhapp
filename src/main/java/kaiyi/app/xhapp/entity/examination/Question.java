@@ -31,9 +31,9 @@ public class Question extends AbstractEntity {
     @PageField(label = "题目类型",type = FieldType.CHOSEN)
     @FieldChosen
     private QuestionType questionType;
-    @Min(val = 1,hint = "问题得分最少需要指定1分")
-    @Max(val = 99,hint = "问题得分不能超过99分")
-    @PageField(label = "问题得分",type = FieldType.NUMBER)
+    @Min(val = 1,hint = "问题分值最少需要指定1分")
+    @Max(val = 99,hint = "问题分值不能超过99分")
+    @PageField(label = "问题分值",type = FieldType.NUMBER)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int score;
     @PageField(label = "问题解析",type = FieldType.AREATEXT,formColumnLength = 3,tableLength = 500)
@@ -68,7 +68,7 @@ public class Question extends AbstractEntity {
     public void setAnalysis(String analysis) {
         this.analysis = analysis;
     }
-
+    @Enumerated(EnumType.STRING)
     public QuestionType getQuestionType() {
         return questionType;
     }

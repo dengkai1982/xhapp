@@ -137,5 +137,23 @@ public enum ConfigureItem {
 		public String toString() {
 			return "视频分类ID号";
 		}
+	},
+	EXAM_QUESTION_SINGLE_NUMBER{
+		@Override
+		public String toString() {
+			return "单选题数量";
+		}
+	},
+	EXAM_QUESTION_MULTIPLE_NUMBER{
+		@Override
+		public String toString() {
+			return "多选题数量";
+		}
+	},
+	EXAM_QUESTION_ANSWER_NUMBER{
+		@Override
+		public String toString() {
+			return "问答题数量";
+		}
 	}
 }

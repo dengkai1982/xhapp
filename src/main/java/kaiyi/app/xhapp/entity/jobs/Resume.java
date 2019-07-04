@@ -69,7 +69,7 @@ public class Resume extends AbstractEntity {
     @PageField(label = "求职描述")
     private String detail;
     //private String parentPositionId;
-    @PageField(label = "归属人人",type = FieldType.REFERENCE,showForm = false,
+    @PageField(label = "归属人",type = FieldType.REFERENCE,showForm = false,
             showTable = false,showQuery = false,showDetail = false,showSearch = false)
     @FieldReference(fieldName = "phone")
     private Account owner;
