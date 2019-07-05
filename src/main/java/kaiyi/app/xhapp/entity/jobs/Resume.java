@@ -28,45 +28,45 @@ public class Resume extends AbstractEntity {
     @PageField(label = "更新时间",type = FieldType.DATETIME,tableLength = 160)
     private Date updateTime;
     @NotEmpty(hint = "专业必须填写")
-    @PageField(label = "专业",tableLength = 120)
+    @PageField(label = "专业",tableLength = 180)
     private String profess;
     @NotEmpty(hint = "手机号码必须填写")
     @Mobile(hint = "手机号码格式错误")
-    @PageField(label = "手机号码")
+    @PageField(label = "手机号码",tableLength = 160)
     private String phone;
     @NotEmpty(hint = "身份证号必须填写")
     @IDCard(hint = "身份证号码格式错误")
-    @PageField(label = "身份证号")
+    @PageField(label = "身份证号",tableLength = 180)
     private String idcard;
-    @PageField(label = "身份证正面",type = FieldType.DOCUMENT)
+    @PageField(label = "身份证正面",type = FieldType.DOCUMENT,showDetail = false)
     @FieldDocument
     private String idcardFront;
-    @PageField(label = "身份证背面",type = FieldType.DOCUMENT)
+    @PageField(label = "身份证背面",type = FieldType.DOCUMENT,showDetail = false)
     @FieldDocument
     private String idcardBack;
-    @PageField(label = "户籍")
+    @PageField(label = "户籍",tableLength = 220)
     private String household;
     @NotEmpty(hint = "工作类型必须填写")
     @PageField(label = "工作类型",type = FieldType.BOOLEAN)
     @FieldBoolean(values = {"全职","兼职"})
     private boolean fullTime;
     @NotEmpty(hint = "现住址必须填写")
-    @PageField(label = "现住址")
+    @PageField(label = "现住址",tableLength = 320)
     private String houseAddress;
     @NotEmpty(hint = "意向城市必须填写")
-    @PageField(label = "意向城市")
+    @PageField(label = "意向城市",tableLength = 240)
     private String intentCity;
     @NotEmpty(hint = "意向岗位必须填写")
-    @PageField(label = "意向岗位",type = FieldType.REFERENCE)
+    @PageField(label = "意向岗位",type = FieldType.REFERENCE,tableLength = 160)
     @FieldReference(fieldName = "name")
     private Position position;
     @NotEmpty(hint = "期望薪资必须填写")
     @ICurrency
-    @PageField(label = "期望薪资",type = FieldType.NUMBER)
+    @PageField(label = "期望薪资",type = FieldType.NUMBER,tableLength = 140)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int salary;
     @NotEmpty(hint = "求职描述必须填写")
-    @PageField(label = "求职描述")
+    @PageField(label = "求职描述",tableLength = 400)
     private String detail;
     //private String parentPositionId;
     @PageField(label = "归属人",type = FieldType.REFERENCE,showForm = false,

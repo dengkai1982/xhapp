@@ -242,7 +242,7 @@ public class AccountController extends ManagerController {
         interactive.writeUTF8Text(msg.build());
     }
 
-    /*@RequestMapping("/account")
+    @RequestMapping("/account")
     @AccessControl(name = "会员管理", weight = 1.3f, detail = "管理系统中的会员", code = rootPath
             + "/account", parent = rootPath)
     public String account(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
@@ -257,7 +257,7 @@ public class AccountController extends ManagerController {
     @AccessControl(name = "会员详情", weight = 1.31f, detail = "用户详情",
             code = rootPath+ "/account/detail", parent = rootPath+"/account")
     public String accountDetail(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
-        detailPage(interactive,visitorUserService,3);
+        detailPage(interactive,accountService,3);
         setDefaultPage(interactive,rootPath+"/account");
         return rootPath+"/accountDetail";
     }
@@ -267,7 +267,7 @@ public class AccountController extends ManagerController {
     public void accountResetPasswd(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
         String entityId=interactive.getStringParameter("entityId","");
         Account account=accountService.findForPrimary(entityId);
-        String newPassword=interactive.getStringParameter("newPassword","");
+        String newPassword="123456";//interactive.getStringParameter("newPassword","");
         JsonMessageCreator jmc=getSuccessMessage();
         if(Objects.nonNull(account)){
             try {
@@ -287,5 +287,5 @@ public class AccountController extends ManagerController {
         JsonMessageCreator jmc=getSuccessMessage();
         accountService.changeMemberShip(entityId,memberShip);
         interactive.writeUTF8Text(jmc.build());
-    }*/
+    }
 }

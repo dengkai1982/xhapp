@@ -7,4 +7,13 @@ import kaiyi.puer.db.orm.DatabaseQuery;
 
 public interface EnterpriseService extends DatabaseFastOper<Enterprise>,DatabaseOperator<Enterprise>,
         DatabaseQuery<Enterprise> {
+    /**
+     * 设置企业为推荐企业
+     * @param entityId
+     */
+    void changeRecommend(String entityId);
+    /**
+     * 企业认证
+     */
+    void changeVerifyed(String entityId);
 }

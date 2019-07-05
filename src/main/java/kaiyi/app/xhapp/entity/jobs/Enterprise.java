@@ -6,39 +6,46 @@ import kaiyi.puer.h5ui.annotations.*;
 import kaiyi.puer.web.elements.UIColumn;
 import kaiyi.puer.web.elements.UIColumnType;
 import kaiyi.puer.web.elements.UIEntity;
+import org.apache.poi.ss.formula.functions.T;
 
 import javax.persistence.*;
+import java.lang.reflect.Field;
+import java.util.Objects;
 
 @Entity(name=Enterprise.TABLE_NAME)
 @PageEntity(showName = "企业信息",entityName = "enterprise",serviceName = "enterpriseService")
 public class Enterprise extends AbstractEntity {
     public static final String TABLE_NAME="enterprise";
     @NotEmpty(hint = "企业名称必须填写")
-    @PageField(label = "企业名称")
+    @PageField(label = "企业名称",tableLength = 260)
     private String enterpriseName;
-    @PageField(label = "企业logo",type = FieldType.DOCUMENT)
+    @PageField(label = "企业Logo",type = FieldType.DOCUMENT,showSearch = false,showForm = false,showDetail = false)
     @FieldDocument
     private String logoImage;
     @PageField(label = "推荐企业",type = FieldType.BOOLEAN)
     @FieldBoolean(values = {"是","否"})
     private boolean recommend;
+    @PageField(label = "认证情况",type = FieldType.BOOLEAN)
+    @FieldBoolean(values = {"已认证","未认证"})
+    private boolean verifyed;
     @NotEmpty(hint = "电话必须填写")
-    @PageField(label = "联系电话")
+    @PageField(label = "联系电话",tableLength = 160)
     private String phone;
     @PageField(label = "三合一编码",tableLength = 160)
     private String code;
-    @PageField(label = "营业执照",type = FieldType.DOCUMENT)
+    @PageField(label = "营业执照",type = FieldType.DOCUMENT,showSearch = false,showForm = false,showDetail = false)
     @FieldDocument
     private String licensePhoto;
-    @NotEmpty(hint = "联系电话必须填写")
-    @PageField(label = "联系电话")
+    @NotEmpty(hint = "企业详细地址必须填写")
+    @PageField(label = "详细地址")
     private String address;
-    @PageField(label = "所有人",type = FieldType.REFERENCE)
+    @PageField(label = "所属账户",type = FieldType.REFERENCE,tableLength = 160)
     @FieldReference(fieldName = "phone")
     private Account owner;
-    @PageField(label = "简介",type = FieldType.AREATEXT)
+    @PageField(label = "简介",type = FieldType.AREATEXT,tableLength = 600)
     @FieldArea(row = 4)
     private String content;
+
 
     public String getEnterpriseName() {
         return enterpriseName;
@@ -63,7 +70,7 @@ public class Enterprise extends AbstractEntity {
     public void setCode(String code) {
         this.code = code;
     }
-
+    @Lob
     public String getLicensePhoto() {
         return licensePhoto;
     }
@@ -111,5 +118,22 @@ public class Enterprise extends AbstractEntity {
 
     public void setRecommend(boolean recommend) {
         this.recommend = recommend;
+    }
+
+    public boolean isVerifyed() {
+        return verifyed;
+    }
+
+    public void setVerifyed(boolean verifyed) {
+        this.verifyed = verifyed;
+    }
+
+    @Override
+    public <Enterprise> String convertToJson(Enterprise entity, Field field, Object data) {
+        if(Objects.nonNull(data)){
+            return data.toString();
+        }else{
+            return "";
+        }
     }
 }

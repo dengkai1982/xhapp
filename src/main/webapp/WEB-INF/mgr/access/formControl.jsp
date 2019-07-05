@@ -119,8 +119,8 @@
                 <c:choose>
                     <c:when test="${fieldData.require}">
                         <div class="input-group">
-                            <input type="hidden" name="${fieldData.field.name}" value="${fieldData.value.value}" class="query_value" data-ref-value="${fieldData.field.name}"/>
-                            <input type="text" class="form-control popupSingleChoose" data-ref-value="${fieldData.field.name}" readonly placeholder="点击选择"
+                            <input type="hidden" id="${fieldData.field.name}" name="${fieldData.field.name}" value="${fieldData.value.value}" class="query_value" data-ref-value="${fieldData.field.name}"/>
+                            <input id="${fieldData.field.name}Reference" name="${fieldData.field.name}Reference" type="text" class="form-control popupSingleChoose" data-ref-value="${fieldData.field.name}" readonly placeholder="点击选择"
                                    value="${fieldData.value.html}"
                                    data-service-name="${fieldData.type.serviceName}"
                                    data-search-title-name="${fieldData.type.searchTitleName}"

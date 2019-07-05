@@ -15,11 +15,11 @@ public class Recruitment extends AbstractEntity {
     public static final String TABLE_NAME="recruitment";
     private static final long serialVersionUID = -893953219915415823L;
     @NotEmpty(hint = "企业名称必须指定")
-    @PageField(label = "企业名称",type = FieldType.REFERENCE)
-    @FieldReference(fieldName = "name")
+    @PageField(label = "企业名称",type = FieldType.REFERENCE,tableLength = 180)
+    @FieldReference(fieldName = "enterpriseName")
     private Enterprise enterprise;
     @NotEmpty(hint = "招聘岗位必须填写")
-    @PageField(label = "招聘岗位",type = FieldType.REFERENCE)
+    @PageField(label = "招聘岗位",type = FieldType.REFERENCE,tableLength = 220)
     @FieldReference(fieldName = "name")
     private Position position;
     @PageField(label = "推荐岗位",type = FieldType.BOOLEAN)
@@ -30,7 +30,7 @@ public class Recruitment extends AbstractEntity {
     @FieldBoolean(values = {"全职","兼职"})
     private boolean fullTime;
     @NotEmpty(hint = "工作城市必须填写")
-    @PageField(label = "工作城市")
+    @PageField(label = "工作城市",tableLength = 280)
     private String workCity;
     @NotEmpty(hint = "招聘人数必须填写")
     @PageField(label = "招聘人数",type = FieldType.NUMBER)
@@ -42,17 +42,17 @@ public class Recruitment extends AbstractEntity {
     @NotEmpty(hint = "工作年限要求必须填写")
     @PageField(label = "工作年限要求",tableLength = 160)
     private String workYear;
-    @PageField(label = "其他要求",tableLength = 160)
+    @PageField(label = "其他要求",tableLength = 360)
     private String otherRequire;
     @PageField(label = "发布人",type = FieldType.REFERENCE)
     @FieldReference(fieldName = "phone")
     private Account publisher;
     @IDate
-    @PageField(label = "发布时间",type = FieldType.DATETIME)
+    @PageField(label = "发布时间",type = FieldType.DATETIME,tableLength = 160)
     public Date publishTime;
     @NotEmpty(hint = "有效时间必须填写")
     @IDate(pattern = "yyyy-MM-dd")
-    @PageField(label = "有效时间",type = FieldType.DATETIME)
+    @PageField(label = "有效时间",type = FieldType.DATETIME,tableLength = 160)
     public Date invalidTime;
     @PageField(label = "备注",tableLength = 300)
     private String remark;

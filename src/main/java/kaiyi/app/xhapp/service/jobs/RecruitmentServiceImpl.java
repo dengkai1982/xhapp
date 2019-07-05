@@ -42,4 +42,12 @@ public class RecruitmentServiceImpl extends InjectDao<Recruitment> implements Re
         }
         return query;
     }
+
+    @Override
+    public void changeRecommend(String entityId) {
+        Recruitment recruitment=findForPrimary(entityId);
+        if(Objects.nonNull(recruitment)){
+            recruitment.setRecommend(!recruitment.isRecommend());
+        }
+    }
 }

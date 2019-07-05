@@ -21,36 +21,37 @@ public class Account extends AbstractEntity {
     private static final long serialVersionUID = -555171879389398184L;
     public static final String TABLE_NAME="account";
     @Mobile(hint = "手机号码格式错误")
-    @PageField(label = "手机号码")
+    @PageField(label = "会员手机号码",tableLength = 160)
     private String phone;
     @PageField(label = "登录密码",showSearch = false,showTable = false,showDetail = false)
     private String password;
     @IDate
-    @PageField(label = "注册时间",type = FieldType.DATETIME)
+    @PageField(label = "注册时间",type = FieldType.DATETIME,tableLength = 160)
     private Date registerTime;
-    @PageField(label = "用户头像",type=FieldType.DOCUMENT,showSearch = false)
+    @PageField(label = "会员等级",type = FieldType.CHOSEN,tableLength = 100)
+    @FieldChosen
+    private MemberShip memberShip;
+    @PageField(label = "用户头像",type=FieldType.DOCUMENT,showSearch = false,showDetail = false)
     @FieldDocument
     private String headerImage;
-    @PageField(label = "签名")
+    @PageField(label = "签名",tableLength = 200)
     private String sign;
-    @PageField(label = "昵称")
+    @PageField(label = "昵称",tableLength = 200)
     private String nickName;
     @PageField(label = "性别",type = FieldType.CHOSEN)
     @FieldChosen
     private SEX sex;
-    @PageField(label = "行业")
+    @PageField(label = "行业",tableLength = 120)
     private String industry;
     @Email(hint = "电子邮箱格式错误")
-    @PageField(label = "电子邮箱")
+    @PageField(label = "电子邮箱",tableLength = 200)
     private String email;
-    @PageField(label = "地址")
+    @PageField(label = "地址",tableLength = 400)
     private String address;
     @ICurrency
-    @PageField(label = "金币",type = FieldType.NUMBER)
+    @PageField(label = "持有金币",type = FieldType.NUMBER)
     private int gold;
-    @PageField(label = "会员等级",type = FieldType.CHOSEN)
-    @FieldChosen
-    private MemberShip memberShip;
+
 
     @Override
     public StreamArray<String> filterField() {

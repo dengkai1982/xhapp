@@ -26,15 +26,14 @@ public class Certificate extends AbstractEntity {
     @PageField(label = "到期时间",type = FieldType.DATE)
     private Date expire;
     @PageField(label = "证书图片",type = FieldType.DOCUMENT,tableLength = 3,showTable = false,showQuery = false,
-    showSearch = false)
+    showSearch = false,showDetail = false)
     @FieldDocument
     private String photo;
     //所有者
-    @PageField(label = "所有人",type = FieldType.REFERENCE,showForm = false,tableLength = 3,
-            showTable = false,showQuery = false,showDetail = false,showSearch = false)
+    @PageField(label = "证书所有人",type = FieldType.REFERENCE)
     @FieldReference(fieldName = "phone")
     private Account owner;
-    @PageField(label = "期望价值",type = FieldType.AREATEXT,showSearch = false,showQuery = false,
+    @PageField(label = "备注信息",type = FieldType.AREATEXT,showSearch = false,showQuery = false,
     showTable = false)
     @FieldArea(row = 4)
     private String remark;

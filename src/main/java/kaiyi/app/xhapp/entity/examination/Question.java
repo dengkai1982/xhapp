@@ -24,13 +24,15 @@ public class Question extends AbstractEntity {
     @NotEmpty(hint = "题目必须填写")
     @PageField(label = "试题题目",type = FieldType.AREATEXT,formColumnLength = 3,tableLength = 500)
     private String detail;
-    @NotEmpty(hint = "题目必须填写")
+    @NotEmpty(hint = "所属类别必须选择")
     @PageField(label = "所属类别",type = FieldType.REFERENCE)
     @FieldReference(fieldName = "name")
     private Category category;
+    @NotEmpty(hint = "题目类型必须选择")
     @PageField(label = "题目类型",type = FieldType.CHOSEN)
     @FieldChosen
     private QuestionType questionType;
+    @NotEmpty(hint = "问题分值必须设置")
     @Min(val = 1,hint = "问题分值最少需要指定1分")
     @Max(val = 99,hint = "问题分值不能超过99分")
     @PageField(label = "问题分值",type = FieldType.NUMBER)
@@ -38,7 +40,7 @@ public class Question extends AbstractEntity {
     private int score;
     @PageField(label = "问题解析",type = FieldType.AREATEXT,formColumnLength = 3,tableLength = 500)
     private String analysis;
-    @PageField(label = "参考答案",type = FieldType.CHOSEN,tableLength = 300,showForm = false,showQuery = false,showSearch = false)
+    @PageField(label = "参考答案",showForm = false,showQuery = false,showSearch = false)
     private String answer;
 
     private Set<ChoiceAnswer> choiceAnswers;

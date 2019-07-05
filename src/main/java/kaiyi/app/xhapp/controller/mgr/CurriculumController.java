@@ -450,4 +450,17 @@ public class CurriculumController extends ManagerController{
         interactive.writeUTF8Json(jsonCreator);
     }
 
+
+    @RequestMapping("/categoryEnableQuery")
+    public String categoryEnableQuery(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        StreamCollection<Category> categories=categoryService.getEnableRootCategory();
+        String treeData=categoryService.toJsonTree(categories,"categoryQueryTree.ftlh");
+        if(StringEditor.isEmpty(treeData)){
+            treeData=JsonCreator.EMPTY_JSON;
+        }
+        interactive.setRequestAttribute("referenceQueryName",interactive.getStringParameter("referenceQueryName",""));
+        interactive.setRequestAttribute("referenceQueryId",interactive.getStringParameter("referenceQueryId",""));
+        interactive.setRequestAttribute("treeData",treeData);
+        return rootPath+"/categoryQuery";
+    }
 }

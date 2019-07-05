@@ -7,4 +7,6 @@ import kaiyi.puer.db.orm.DatabaseQuery;
 
 public interface RecruitmentService extends DatabaseFastOper<Recruitment>,DatabaseQuery<Recruitment>,
         DatabaseOperator<Recruitment> {
+
+    void changeRecommend(String entityId);
 }
