@@ -1,8 +1,10 @@
 package kaiyi.app.xhapp.entity.examination;
 
 import kaiyi.app.xhapp.entity.AbstractEntity;
+import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.IDate;
+import kaiyi.puer.commons.validate.NotEmpty;
 import kaiyi.puer.h5ui.annotations.FieldNumber;
 import kaiyi.puer.h5ui.annotations.FieldType;
 import kaiyi.puer.h5ui.annotations.PageEntity;
@@ -19,24 +21,28 @@ import java.util.Set;
 public class TestPager extends AbstractEntity {
     public static final String TABLE_NAME="test_pager";
     private static final long serialVersionUID = -8765999321414804847L;
+    @NotEmpty(hint = "试卷名称必须填写")
     @PageField(label = "试卷名称",tableLength = 200)
     private String name;
     @IDate
     @PageField(label = "创建时间",type = FieldType.DATETIME,showForm = false,tableLength = 160)
     private Date createTime;
-    @PageField(label = "单选题数量",type = FieldType.NUMBER,tableLength = 200)
+    @PageField(label = "单选题数量",type = FieldType.NUMBER,showForm = false)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int singleChoiceNumber;
-    @PageField(label = "多选题数量",type = FieldType.NUMBER,tableLength = 200)
+    @PageField(label = "多选题数量",type = FieldType.NUMBER,showForm = false)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int multipleChoiceNumber;
-    @PageField(label = "问答题数量",type = FieldType.NUMBER,tableLength = 200)
+    @PageField(label = "问答题数量",type = FieldType.NUMBER,showForm = false)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int questionsAndAnswersNumber;
 
     private Set<TestPagerQuestion> testPagerQuestions;
 
-
+    @Override
+    public StreamArray<String> filterField() {
+        return new StreamArray<>(new String[]{"testPagerQuestions"});
+    }
 
     public String getName() {
         return name;
@@ -77,7 +83,7 @@ public class TestPager extends AbstractEntity {
     public void setQuestionsAndAnswersNumber(int questionsAndAnswersNumber) {
         this.questionsAndAnswersNumber = questionsAndAnswersNumber;
     }
-    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER,mappedBy = "question")
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,mappedBy = "question")
     public Set<TestPagerQuestion> getTestPagerQuestions() {
         return testPagerQuestions;
     }
@@ -86,7 +92,7 @@ public class TestPager extends AbstractEntity {
         this.testPagerQuestions = testPagerQuestions;
     }
 
-    @Transient
+    /*@Transient
     public StreamCollection<TestPagerQuestion> getChoiceAnswerStream(){
         if(StreamCollection.assertNotEmpty(testPagerQuestions)){
             List<TestPagerQuestion> testPagerQuestionsList=StreamCollection.setToList(testPagerQuestions);
@@ -96,5 +102,5 @@ public class TestPager extends AbstractEntity {
             return new StreamCollection<>(testPagerQuestionsList);
         }
         return new StreamCollection<>();
-    }
+    }*/
 }

@@ -1,10 +1,7 @@
 package kaiyi.app.xhapp.entity.examination;
 
 import kaiyi.app.xhapp.entity.AbstractEntity;
-import kaiyi.puer.h5ui.annotations.FieldReference;
-import kaiyi.puer.h5ui.annotations.FieldType;
-import kaiyi.puer.h5ui.annotations.PageEntity;
-import kaiyi.puer.h5ui.annotations.PageField;
+import kaiyi.puer.h5ui.annotations.*;
 
 import javax.persistence.*;
 
@@ -20,6 +17,9 @@ public class ChoiceAnswer extends AbstractEntity {
     @PageField(label = "所属问题",type = FieldType.REFERENCE)
     @FieldReference(fieldName = "detail")
     private Question question;
+    @PageField(label = "已选答案",type = FieldType.BOOLEAN)
+    @FieldBoolean(values = {"已选","未选"})
+    private boolean checked;
 
     public String getOptionName() {
         return optionName;
@@ -44,5 +44,13 @@ public class ChoiceAnswer extends AbstractEntity {
 
     public void setQuestion(Question question) {
         this.question = question;
+    }
+
+    public boolean isChecked() {
+        return checked;
+    }
+
+    public void setChecked(boolean checked) {
+        this.checked = checked;
     }
 }

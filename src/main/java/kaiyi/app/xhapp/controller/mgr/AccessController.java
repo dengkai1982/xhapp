@@ -14,6 +14,7 @@ import kaiyi.puer.db.orm.ServiceException;
 import kaiyi.puer.db.query.QueryExpress;
 import kaiyi.puer.h5ui.bean.DynamicGridInfo;
 import kaiyi.puer.h5ui.service.DocumentService;
+import kaiyi.puer.json.creator.JsonBuilder;
 import kaiyi.puer.json.creator.JsonMessageCreator;
 import kaiyi.puer.json.creator.MutilJsonCreator;
 import kaiyi.puer.web.elements.FormElementHidden;
@@ -21,6 +22,7 @@ import kaiyi.puer.web.service.EntityQueryService;
 import kaiyi.puer.web.servlet.ServletUtils;
 import kaiyi.puer.web.servlet.WebInteractive;
 import kaiyi.puer.web.springmvc.IWebInteractive;
+import kaiyi.puer.web.springmvc.SpringContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -125,9 +127,21 @@ public class AccessController extends ManagerController {
             executeConditionQuery(interactive,databaseQuery,query);
         }
     }
+    //弹出多选框
+    @RequestMapping("/popupMultipleChoose")
+    public String popupMultipleChoose(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        popupChoose(interactive,true,DynamicGridInfo.OperMenuType.none);
+        return rootPath+"/popupMultipleChoose";
+    }
+
     //弹出窗单选
     @RequestMapping("/popupSingleChoose")
     public String popupSingleChoose(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        popupChoose(interactive,false,DynamicGridInfo.OperMenuType.single);
+        return rootPath+"/popupSingleChoose";
+    }
+
+    public void popupChoose(WebInteractive interactive, boolean supportMultiple, DynamicGridInfo.OperMenuType operMenuType){
         String serviceName=interactive.getStringParameter("serviceName","");
         String actionButtonName=interactive.getStringParameter("actionButtonName","");
         String fieldName=interactive.getStringParameter("fieldName","");
@@ -142,9 +156,10 @@ public class AccessController extends ManagerController {
         }
         interactive.setRequestAttribute("actionButtonName",actionButtonName);
         interactive.setRequestAttribute("fieldName",fieldName);
-        queryTablePage(interactive,databaseQuery,queryExpress,hiddens,new DynamicGridInfo(false,DynamicGridInfo.OperMenuType.single));
-        return rootPath+"/popupSingleChoose";
+        queryTablePage(interactive,databaseQuery,queryExpress,hiddens,new DynamicGridInfo(supportMultiple,operMenuType));
     }
+
+
     @RequestMapping(value="/changePassword",method = RequestMethod.POST)
     public void changePassword(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
         JsonMessageCreator msg=getSuccessMessage();

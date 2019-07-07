@@ -10,4 +10,8 @@ public interface QuestionService extends DatabaseQuery<Question>, DatabaseFastOp
      * 删除参考答案
      */
     void deleteChoiceAnswer(String choiceAnswerId);
+    /**
+     * 移除所有参考答案
+     */
+    void removeChoiceAnswer(String questionId);
 }

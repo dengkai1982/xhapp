@@ -434,6 +434,10 @@ function setInputContol() {
         $(this).parent(".input-group").find("input").val("");
     });
 }
+function openMultipleChooseTrigger(){
+
+}
+
 function openSingleChoosenTrigger(showName,showValue,serviceName,fieldName,searchTitleName,actionButtonName){
     var isCustomSelectModal=false;
     if(functionExist("interceptorSelectModal")){
@@ -455,7 +459,11 @@ function openSingleChoosenTrigger(showName,showValue,serviceName,fieldName,searc
         size:'fullscreen',
         title:searchTitleName,
         backdrop:'static',
-        type:'iframe'
+        type:'iframe',
+        onShow:function(){
+            var bodyWidth=$("body").width();
+            $(".modal-fullscreen").css("max-width",bodyWidth+"px");
+        }
     });
     popupSingleChooseTrigger.show({hidden: function(){
         var popupSelectValueResult=$("input[name='popupSelectValueResult']").val();
@@ -466,6 +474,9 @@ function openSingleChoosenTrigger(showName,showValue,serviceName,fieldName,searc
         }
         $("input[name='popupSelectValueResult']").val("");
         $("#triggerModal").remove();
+        if(functionExist("popupSingleChooseTriggerClose")){
+            popupSingleChooseTriggerClose();
+        }
     }});
 }
 function initApplication() {

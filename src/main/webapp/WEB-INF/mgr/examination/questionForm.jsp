@@ -20,7 +20,7 @@
                         <input type="text" validate="required:正确答案未选择" value="${entity.answer}" name="answer" class="form-control" id="answer" readonly>
                     </div>
                 </div>
-                <div id="answerContainer" style="display: none">
+                <div id="answerContainer" style="display: none;padding: 0 0 0 142px;">
                     <button type="button" id="newAnswerButton" class="btn btn-wide btn-danger">新增答案</button>
                     <table class="table table-striped table-bordered table-hover" style="margin-top:10px">
                         <thead>
@@ -38,13 +38,27 @@
                                     <td class="detailValue">${answer.detailValue}</td>
                                     <c:choose>
                                         <c:when test="${entity.questionType.itemNumber==0}">
-                                            <td><input type="radio" class="singleRadio" name="answerRadio" optionName="${answer.optionName}"></td>
+                                            <c:choose>
+                                                <c:when test="${answer.checked}">
+                                                    <td><input type="radio" checked="checked" class="singleRadio" name="answerRadio" optionName="${answer.optionName}"></td>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <td><input type="radio" class="singleRadio" name="answerRadio" optionName="${answer.optionName}"></td>
+                                                </c:otherwise>
+                                            </c:choose>
                                         </c:when>
                                         <c:otherwise>
-                                            <td><input type="checkbox" optionName="${answer.optionName}" class="multipleCheckBox"/></td>
+                                            <c:choose>
+                                                <c:when test="${answer.checked}">
+                                                    <td><input type="checkbox" checked="checked" optionName="${answer.optionName}" class="multipleCheckBox"/></td>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <td><input type="checkbox" optionName="${answer.optionName}" class="multipleCheckBox"/></td>
+                                                </c:otherwise>
+                                            </c:choose>
                                         </c:otherwise>
                                     </c:choose>
-                                    <td><a href="###" class="text-danger editAnswer"><i class="icon icon-edit"></i></a><a href="###" class="text-danger deleteAnswer"><i class="icon icon-trash"></i></a></td>
+                                    <td><a href="###" class="text-danger editAnswer"><i class="icon icon-edit"></i></a>&nbsp;<a href="###" class="text-danger deleteAnswer"><i class="icon icon-trash"></i></a></td>
                                 </tr>
                             </c:forEach>
                         </tbody>
@@ -115,7 +129,7 @@
             var answerId=$tr.attr("data-id");
             confirmOper("消息","确实要删除选中的答案?",function(){
                 if(answerId!=""){
-                    postJSON("${managerPath}/account/visitorUser/delete${suffix}",{
+                    postJSON("${managerPath}/examination/question/deleteAnswer${suffix}",{
                         entityId:answerId
                     },"正在执行,请稍后...",function(result){
                         if(result.code==SUCCESS){
@@ -142,20 +156,34 @@
             $("#newOrEditAnswerModal input[name='modal_is_editor']").val("true");
             $("#newOrEditAnswerModal").modal("show");
         });
+        var $questionType=$("#questionType").val();
+        if($questionType=="0"){
+            $("#answerContainer").show();
+            single=true;
+        }else if($questionType=="1"){
+            $("#answerContainer").show();
+            single=false;
+        }else{
+            $("#answerContainer").hide();
+
+        }
 
         $("#questionType").change(function(){
             var questionType=$(this).val();
             if(questionType=="0"){
                 $("#answerContainer").show();
                 single=true;
+                $("#answer").val("");
             }else if(questionType=="1"){
                 $("#answerContainer").show();
+                $("#answer").val("");
                 single=false;
             }else{
                 $("#answerContainer").hide();
+                $("#answer").val("-");
             }
             $("#answerListContainer").empty();
-            $("#answer").val("");
+
         })
         $("#newAnswerButton").click(function(){
             $("#newOrEditAnswerModal input[name='modal_answerId']").val("");
@@ -176,7 +204,6 @@
                 $("#newOrEditAnswerModal").modal("hide");
                 var $form=$("#newOrEditAnswerForm").formToJson();
                 if($form.modal_is_editor=="true"){
-                    console.log($form);
                     var dataId=$form.modal_answerId;
                     var $tr=$("#answerListContainer").find("tr[data-id='"+dataId+"']");
                     $tr.find(".optionName").html($form.optionName_name);
@@ -197,7 +224,6 @@
         })
     }
     function customFormValidate($this,$formData){
-        console.log($formData);
         var choiceAnswer=new Array();
         $("#answerListContainer tr").each(function(){
             var $tr=$(this);
@@ -208,7 +234,7 @@
             })
         });
         $formData["choiceAnswer"]=JSON.stringify(choiceAnswer);
-        console.log(choiceAnswer);
+        console.log($formData);
         return true;
     }
 </script>

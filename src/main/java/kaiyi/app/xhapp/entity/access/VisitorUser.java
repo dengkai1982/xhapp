@@ -2,6 +2,7 @@ package kaiyi.app.xhapp.entity.access;
 
 import kaiyi.app.xhapp.entity.AbstractEntity;
 import kaiyi.puer.commons.data.IDate;
+import kaiyi.puer.commons.validate.NotEmpty;
 import kaiyi.puer.h5ui.annotations.FieldReference;
 import kaiyi.puer.h5ui.annotations.FieldType;
 import kaiyi.puer.h5ui.annotations.PageEntity;
@@ -16,12 +17,14 @@ import java.util.Date;
 public class VisitorUser extends AbstractEntity implements Accesser {
     private static final long serialVersionUID = 1986062763273225706L;
     public static final String TABLE_NAME="visitor_user";
+    @NotEmpty(hint = "登录名称必须填写")
     @PageField(label = "登录名")
     private String loginName;
     @PageField(label = "姓名")
     private String realName;
     @PageField(label = "密码",showSearch = false,showTable = false,showForm = false,showQuery = false,showDetail = false)
     private String password;
+    @NotEmpty(hint = "所属校色必须选择")
     @PageField(label = "所属角色",type = FieldType.REFERENCE)
     @FieldReference(fieldName = "name")
     private VisitorRole visitorRole;

@@ -3,6 +3,7 @@ package kaiyi.app.xhapp.entity.examination;
 import kaiyi.app.xhapp.entity.AbstractEntity;
 import kaiyi.app.xhapp.entity.curriculum.Category;
 import kaiyi.app.xhapp.entity.examination.enums.QuestionType;
+import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.validate.Max;
 import kaiyi.puer.commons.validate.Min;
@@ -44,6 +45,11 @@ public class Question extends AbstractEntity {
     private String answer;
 
     private Set<ChoiceAnswer> choiceAnswers;
+
+    @Override
+    public StreamArray<String> filterField() {
+        return new StreamArray<>(new String[]{"choiceAnswers"});
+    }
 
     @Lob
     public String getDetail() {
