@@ -2,6 +2,7 @@ package kaiyi.app.xhapp.entity.examination;
 
 import kaiyi.app.xhapp.entity.AbstractEntity;
 import kaiyi.app.xhapp.entity.access.Account;
+import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.data.IDate;
 import kaiyi.puer.h5ui.annotations.*;
 
@@ -38,8 +39,31 @@ public class ExamQuestion extends AbstractEntity {
     @PageField(label = "得分",type = FieldType.NUMBER)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int score;
+    @PageField(label = "全部完成",type = FieldType.BOOLEAN)
+    @FieldBoolean(values = {"已完成","未完成"})
+    private boolean finished;
 
     private Set<ExamQuestionItem> questionItems;
+
+    @Override
+    public StreamArray<String> filterField() {
+        return new StreamArray<>(new String[]{"questionItems"});
+    }
+
+    public ExamQuestion() {
+    }
+
+    public ExamQuestion(String name, Account account,int singleChoiceNumber,int multipleChoiceNumber,int questionsAndAnswersNumber) {
+        this.name = name;
+        this.account = account;
+        this.createTime=new Date();
+        this.finished=false;
+        this.finishNumber=0;
+        this.score=0;
+        this.singleChoiceNumber=singleChoiceNumber;
+        this.multipleChoiceNumber=multipleChoiceNumber;
+        this.questionsAndAnswersNumber=questionsAndAnswersNumber;
+    }
 
     public String getName() {
         return name;
@@ -105,12 +129,20 @@ public class ExamQuestion extends AbstractEntity {
     public void setScore(int score) {
         this.score = score;
     }
-    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER,mappedBy = "examQuestion")
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,mappedBy = "examQuestion")
     public Set<ExamQuestionItem> getQuestionItems() {
         return questionItems;
     }
 
     public void setQuestionItems(Set<ExamQuestionItem> questionItems) {
         this.questionItems = questionItems;
+    }
+
+    public boolean isFinished() {
+        return finished;
+    }
+
+    public void setFinished(boolean finished) {
+        this.finished = finished;
     }
 }

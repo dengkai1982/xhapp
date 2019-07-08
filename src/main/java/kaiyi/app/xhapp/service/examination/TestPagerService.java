@@ -14,4 +14,21 @@ public interface TestPagerService extends DatabaseQuery<TestPager> , DatabaseFas
      * @return
      */
     StreamCollection<TestPagerQuestion> getTestPagerQuestion(String testPagerId);
+
+    /**
+     * 移除试卷中的试题
+     * @param testPagerQuestionId
+     */
+    void removeQuestion(String testPagerQuestionId);
+    /**
+     * 移除试卷中的试题
+     * @param testPagerId
+     */
+    void clearQuestion(String testPagerId);
+    /**
+     * 启用或停用试卷
+     * @param entityId
+     */
+    void changeEnable(String entityId);
+
 }

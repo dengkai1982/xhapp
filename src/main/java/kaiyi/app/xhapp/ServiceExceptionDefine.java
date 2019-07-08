@@ -53,4 +53,7 @@ public class ServiceExceptionDefine {
 
     public static final ServiceException resumeConcerned=new ServiceException(
             ServiceException.CODE_FAIL,"简历已经被关注过");
+
+    public static final ServiceException examQuestionExist=new ServiceException(
+            ServiceException.CODE_FAIL,"尚有同类型考试未完成");
 }

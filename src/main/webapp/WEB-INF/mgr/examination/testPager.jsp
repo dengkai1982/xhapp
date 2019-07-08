@@ -57,7 +57,35 @@
         },{
             url:"${contextPath}${webPage.detailEntityPage}${suffix}?entityId="+dataId+"&${paginationCurrentPage}="+getPaginationCurrentPage(),
             label:"查看详情"
-        }]
+        }];
+        var enableName="";
+        if(data.enable.name){
+            enableName="停用试卷";
+        }else{
+            enableName="启用试卷";
+        }
+        items.push({
+            label:enableName,
+            className:"privilege",
+            access:"/mgr/examination/testPager/enable",
+            onClick:function(e){
+                postJSON("${managerPath}/examination/testPager/enable${suffix}",{
+                    entityId:dataId
+                },"正在执行,请稍后...",function(result){
+                    if(result.code==SUCCESS){
+                        bootbox.alert({
+                            title:"消息",
+                            message: enableName+"成功,点击确认返回",
+                            callback: function () {
+                                reflashPageData();
+                            }
+                        })
+                    }else{
+                        showMessage(result.msg,1500);
+                    }
+                });
+            }
+        });
         checkPrivilege(items);
         return items;
     };

@@ -234,7 +234,6 @@
             })
         });
         $formData["choiceAnswer"]=JSON.stringify(choiceAnswer);
-        console.log($formData);
         return true;
     }
 </script>

@@ -68,10 +68,18 @@ public class QuestionController extends ManagerController {
         setDefaultPage(interactive,rootPath+"/question");
         return rootPath+"/questionDetail";
     }
-
+    @RequestMapping("/question/enable")
+    @AccessControl(name = "启用停用试题", weight = 5.14f, detail = "启用停用试题",
+            code = rootPath+ "/question/enable" +
+                    "", parent = rootPath+"/question")
+    public void questionEnable(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String entityId=interactive.getStringParameter("entityId","");
+        questionService.changeEnable(entityId);
+        interactive.writeUTF8Text(getSuccessMessage().build());
+    }
 
     @PostMapping("/question/commit")
-    public void visitorRoleCommit(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+    public void questionCommit(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
         String entityId=interactive.getStringParameter("entityId","");
         if(StringEditor.notEmpty(entityId)){
             questionService.removeChoiceAnswer(entityId);
@@ -121,12 +129,43 @@ public class QuestionController extends ManagerController {
             code = rootPath+ "/testPager/detail" +
                     "", parent = rootPath+"/testPager")
     public String testPagerDetail(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
-        detailPage(interactive,testPagerService,3);
+        TestPager testPager=detailPage(interactive,testPagerService,3);
         setDefaultPage(interactive,rootPath+"/testPager");
+        StreamCollection<TestPagerQuestion> testPagerQuestions = testPagerService.getTestPagerQuestion(testPager.getEntityId());
+        interactive.setRequestAttribute("testPagerQuestions",testPagerQuestions);
         return rootPath+"/testPagerDetail";
     }
-
-
-
-    //TODO 添加试题库，试卷的启用停用属性
+    @RequestMapping("/testPager/enable")
+    @AccessControl(name = "启用停用试卷", weight = 5.24f, detail = "启用停用试卷",
+            code = rootPath+ "/testPager/enable" +
+                    "", parent = rootPath+"/testPager")
+    public void testPagerEnable(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String entityId=interactive.getStringParameter("entityId","");
+        testPagerService.changeEnable(entityId);
+        interactive.writeUTF8Text(getSuccessMessage().build());
+    }
+    @PostMapping("/testPager/commit")
+    public void testPagerCommit(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String entityId=interactive.getStringParameter("entityId","");
+        if(StringEditor.notEmpty(entityId)){
+            testPagerService.clearQuestion(entityId);
+        }
+        Map<String, JavaDataTyper> params=interactive.getRequestParameterMap();
+        String testPagerQuestion=interactive.getHttpServletRequest().getParameter("testPagerQuestion");
+        params.put("testPagerQuestion",new JavaDataTyper(testPagerQuestion));
+        JsonMessageCreator msg=executeNewOrUpdate(interactive,testPagerService,params);
+        interactive.writeUTF8Text(msg.build());
+    }
+    /**
+     * 移除试卷中的试题
+     * @param interactive
+     * @param response
+     * @throws IOException
+     */
+    @PostMapping("/testPager/removeTestPagerQuestion")
+    public void removeTestPagerQuestion(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String entityId=interactive.getStringParameter("entityId","");
+        testPagerService.removeQuestion(entityId);
+        interactive.writeUTF8Text(getSuccessMessage().build());
+    }
 }

@@ -14,4 +14,10 @@ public interface QuestionService extends DatabaseQuery<Question>, DatabaseFastOp
      * 移除所有参考答案
      */
     void removeChoiceAnswer(String questionId);
+
+    /**
+     * 启用或停用试题
+     * @param entityId
+     */
+    void changeEnable(String entityId);
 }

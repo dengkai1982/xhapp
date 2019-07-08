@@ -7,6 +7,9 @@ import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.JavaDataTyper;
 import kaiyi.puer.db.orm.ServiceException;
+import kaiyi.puer.db.query.ContainQueryExpress;
+import kaiyi.puer.db.query.LinkQueryExpress;
+import kaiyi.puer.db.query.QueryExpress;
 import kaiyi.puer.json.JsonParserException;
 import kaiyi.puer.json.JsonUtils;
 import kaiyi.puer.json.parse.ArrayJsonParser;
@@ -30,6 +33,15 @@ public class QuestionServiceImpl extends InjectDao<Question> implements Question
         question.setEntityId(questionId);
         em.createQuery("delete from "+getEntityName(ChoiceAnswer.class)+" o where o.question=:question")
                 .setParameter("question",question).executeUpdate();
+    }
+
+    @Override
+    public void changeEnable(String entityId) {
+        Question question=findForPrimary(entityId);
+        if(Objects.nonNull(question)){
+            question.setEnable(!question.isEnable());
+            updateObject(question);
+        }
     }
 
     @Override
@@ -85,5 +97,21 @@ public class QuestionServiceImpl extends InjectDao<Question> implements Question
             }
         }
         return choiceAnswers;
+    }
+
+    @Override
+    public QueryExpress getCustomerQuery(Map<String, JavaDataTyper> params) {
+        QueryExpress queryExpress = super.getCustomerQuery(params);
+        if(Objects.nonNull(params.get("existEntityIdArray"))){
+            String existEntityIdArray=params.get("existEntityIdArray").stringValue();
+            String[] entityIdArray=existEntityIdArray.split("_");
+            List<String> entityIdList=new ArrayList<>();
+            for(String id:entityIdArray){
+                entityIdList.add(id);
+            }
+            queryExpress=new LinkQueryExpress(queryExpress, LinkQueryExpress.LINK.AND,
+                    new ContainQueryExpress<>("entityId", ContainQueryExpress.CONTAINER.NOT_IN,entityIdList));
+        }
+        return queryExpress;
     }
 }

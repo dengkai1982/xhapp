@@ -43,6 +43,9 @@ public class Question extends AbstractEntity {
     private String analysis;
     @PageField(label = "参考答案",showForm = false,showQuery = false,showSearch = false)
     private String answer;
+    @PageField(label = "启用状态",type = FieldType.BOOLEAN,showForm = false,showQuery = false,showSearch = false)
+    @FieldBoolean(values = {"启用","停用"})
+    private boolean enable;
 
     private Set<ChoiceAnswer> choiceAnswers;
 
@@ -119,5 +122,13 @@ public class Question extends AbstractEntity {
             return new StreamCollection<>(choiceAnswerList);
         }
         return new StreamCollection<>();
+    }
+
+    public boolean isEnable() {
+        return enable;
+    }
+
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
 }

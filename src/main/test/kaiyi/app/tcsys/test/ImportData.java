@@ -8,6 +8,7 @@ import kaiyi.app.xhapp.service.access.AccountService;
 import kaiyi.app.xhapp.service.access.VisitorRoleService;
 import kaiyi.app.xhapp.service.access.VisitorUserService;
 import kaiyi.app.xhapp.service.curriculum.CategoryService;
+import kaiyi.app.xhapp.service.examination.ExamQuestionService;
 import kaiyi.app.xhapp.service.jobs.PositionService;
 import kaiyi.app.xhapp.service.log.ShortMessageSenderNoteService;
 import kaiyi.app.xhapp.service.pub.ConfigureService;
@@ -43,6 +44,28 @@ public class ImportData {
             ctx=new ClassPathXmlApplicationContext("spring-context.xml");
             sel=new SpringSelector(ctx);
         }
+    }
+
+    @Test
+    public void generatorExam() throws ServiceException {
+        String testPagerId="15625950396140092";
+        String accountId="15575605038650042";
+        ExamQuestionService examQuestionService=sel.getBean(ExamQuestionService.class);
+        examQuestionService.generatorByTestPager(accountId,testPagerId);
+    }
+
+    @Test
+    public void generatorExamByCategory() throws ServiceException {
+        String categoryId="15518854151500024";
+        String accountId="15575605038650042";
+        ExamQuestionService examQuestionService=sel.getBean(ExamQuestionService.class);
+        examQuestionService.generatorByCategory(accountId,categoryId);
+    }
+
+    @Test
+    public void testAnswer(){
+        ExamQuestionService examQuestionService=sel.getBean(ExamQuestionService.class);
+        examQuestionService.answerQuestion("15626016943550081","B");
     }
 
     @Test

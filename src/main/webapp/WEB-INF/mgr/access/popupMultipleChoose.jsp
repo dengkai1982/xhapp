@@ -12,6 +12,7 @@
             <div class="btn-toolbar pull-right">
                 <c:if test="${requestScope.hasData}">
                     <a href="#" class="btn btn-link querybox-toggle" id="show_or_hide_search"><i class="icon-search icon"></i> 搜索</a>
+                    <a href="javascript:void(0)" id="finishChoose" type="button" class="btn btn-primary"><i class="icon-check"></i> 确认选择</a>
                 </c:if>
             </div>
         </div>
@@ -28,8 +29,6 @@
                     <div class="table-empty-tip">
                         <p>
                             <span class="text-muted">抱歉,展示没有任何数据。</span>
-                            <span class="text-muted">您现在可以 </span>
-                            <a href="${contextPath}${webPage.newEntityPage}${suffix}?${paginationCurrentPage}=1" class="btn btn-info"><i class="icon icon-plus"></i> 新增员工</a>
                         </p>
                     </div>
                 </c:otherwise>
@@ -42,7 +41,19 @@
         <c:if test="${requestScope.hasData}">
         ${requestScope.tableScript}
         </c:if>
-        //TODO
+        $("#finishChoose").click(function(){
+            if(window.parent.popupMultipleChooseTrigger){
+                var datagrid=$('#remoteDataGrid').data('zui.datagrid');
+                var checkItems=datagrid.getCheckItems();
+                for(i=0;i<checkItems.length;i++){
+                    var data=checkItems[i];
+                    if(data!=null){
+                        window.parent.${requestScope.contextName}.push(data);
+                    }
+                }
+                window.parent.popupMultipleChooseTrigger.close();
+            }
+        })
     }
 </script>
 </body>

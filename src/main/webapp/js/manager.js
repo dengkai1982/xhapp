@@ -434,8 +434,39 @@ function setInputContol() {
         $(this).parent(".input-group").find("input").val("");
     });
 }
-function openMultipleChooseTrigger(){
-
+function openMultipleChooseTrigger(showName,showValue,serviceName,fieldName,searchTitleName,actionButtonName,contextName){
+    var isCustomSelectModal=false;
+    if(functionExist("interceptorSelectModal")){
+        //拦截实体搜索框,采用自己的实现
+        //isCustomSelectModal=interceptorSelectModal($showName,$showValue,referenceQueryId,referenceQueryName,entityName,actionName,showFieldName,fieldName,windowTitle);
+    }
+    //如果自己拦截实现,则返回
+    if(isCustomSelectModal){
+        return;
+    }
+    var extendParams="";
+    if(functionExist("queryBoxExtendParams")){
+        extendParams="&"+jsonObjectToQueryString(queryBoxExtendParams(serviceName,fieldName));
+    }
+    popupMultipleChooseTrigger= new $.zui.ModalTrigger({
+        url:manager+"/access/popupMultipleChoose"+suffix+"?contextName="+contextName+"&serviceName="+serviceName+"&"
+            +"&actionButtonName="+actionButtonName+"&"
+            +"fieldName="+fieldName+extendParams,
+        size:'fullscreen',
+        title:searchTitleName,
+        backdrop:'static',
+        type:'iframe',
+        onShow:function(){
+            var bodyWidth=$("body").width();
+            $(".modal-fullscreen").css("max-width",bodyWidth+"px");
+        }
+    });
+    popupMultipleChooseTrigger.show({hidden: function(){
+        $("#triggerModal").remove();
+        if(functionExist("popupMultipleChooseTriggerClose")){
+            popupMultipleChooseTriggerClose();
+        }
+    }});
 }
 
 function openSingleChoosenTrigger(showName,showValue,serviceName,fieldName,searchTitleName,actionButtonName){

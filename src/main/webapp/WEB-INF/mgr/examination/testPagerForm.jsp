@@ -32,7 +32,7 @@
                                 <tr data-id="${question.entityId}">
                                     <td class="detail" data-id="${question.question.entityId}">${question.question.detail}</td>
                                     <td class="score"><input type="number" value="${question.score}"/></td>
-                                    <td class="weight"><input type="number" value="{question.weight}"/>$</td>
+                                    <td class="weight"><input type="number" value="${question.weight}"/></td>
                                     <td><a href="###" class="text-danger deleteQuestion"><i class="icon icon-trash"></i></a></td>
                                 </tr>
                             </c:forEach>
@@ -51,30 +51,92 @@
 </main>
 <%@include file="/WEB-INF/footerPage.jsp"%>
 <script type="text/javascript">
+    var questionArray;
     function pageReady(doc) {
         $("#newAnswerButton").click(function(){
             var showName=$("input[name='selectQuestionDetail']");
             var showValue=$("input[name='selectQuestionId']");
-            openSingleChoosenTrigger(showName,showValue,"questionService","detail","试题选择","立即选择");
+            questionArray=new Array();
+            openMultipleChooseTrigger(showName,showValue,"questionService","detail","试题选择","立即选择","questionArray");
         });
-    }
-    function popupSingleChooseTriggerClose(){
-        var detail=$("input[name='selectQuestionDetail']").val();
-        var questionId=$("input[name='selectQuestionId']").val();
-        getJson("${contextPath}/app/query/findByEntityId${suffix}",{
-            serviceName:"questionService",
-            entityId:questionId
-        },function(data){
-            var context={
-                testPagerQuestionId:new Date().getTime(),
-                questionId:questionId,
-                score:data.question.score,
-                weight:1,
-                detail:detail
-            }
-            var html=getTemplateHtml("questionList",context,$);
-            $("#questionContainer").append(html);
+        computerTotalScore();
+        $("#questionContainer").on("keyup",".score input",function(){
+            computerTotalScore();
         })
+        $("#questionContainer").on("click",".deleteQuestion",function(){
+            var $tr=$(this).parents("tr");
+            var testPagerQuestionId=$tr.attr("data-id");
+            confirmOper("消息","确实要删除选中的试题?",function(){
+                postJSON("${managerPath}/examination/testPager/removeTestPagerQuestion${suffix}",{
+                    entityId:testPagerQuestionId
+                },"正在执行,请稍后...",function(result){
+                    if(result.code==SUCCESS){
+                        $tr.remove();
+                        computerTotalScore();
+                    }else{
+                        showMessage(result.msg,1500);
+                    }
+                });
+            })
+        })
+    }
+    function popupMultipleChooseTriggerClose(){
+        if(questionArray.length==0)return;
+        var context={
+            question:new Array()
+        }
+        var time=parseInt(new Date().getTime());
+        for(i=0;i<questionArray.length;i++){
+            var qa=questionArray[i];
+            context.question.push({
+                testPagerQuestionId:time++,
+                questionId:qa.entityId,
+                score:qa.score,
+                weight:1,
+                detail:qa.detail
+            })
+        }
+        var html=getTemplateHtml("questionList",context,$);
+        $("#questionContainer").append(html);
+        computerTotalScore();
+    }
+    function computerTotalScore(){
+        var total=0;
+        $("#questionContainer tr").each(function(i,d){
+            var $tr=$(d);
+            var score=$tr.find(".score").find("input").val();
+            total+=parseInt(score);
+        })
+        $(".totalScore").html(total);
+    }
+    function getExistQuestion(){
+        var entityIdArray=new Array();
+        $("#questionContainer tr").each(function(i,d){
+            var $tr=$(d);
+            var entityId=$tr.find(".detail").attr("data-id");
+            entityIdArray.push(entityId);
+        })
+        return entityIdArray;
+    }
+
+    function queryBoxExtendParams(serviceName,fieldName){
+        var entityIdArray=getExistQuestion();
+        return {
+            existEntityIdArray:entityIdArray.join("_")
+        }
+    }
+    function customFormValidate($this,$formData){
+        var testPagerQuestion=new Array();
+        $("#questionContainer tr").each(function(i,d){
+            var $tr=$(this);
+            testPagerQuestion.push({
+                questionId:$tr.find(".detail").attr("data-id"),
+                score:$tr.find(".score").find("input").val(),
+                weight:$tr.find(".weight").find("input").val()
+            });
+        })
+        $formData["testPagerQuestion"]=JSON.stringify(testPagerQuestion);
+        return true;
     }
 </script>
 </body>

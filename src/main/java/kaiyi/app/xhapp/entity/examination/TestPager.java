@@ -5,10 +5,7 @@ import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.IDate;
 import kaiyi.puer.commons.validate.NotEmpty;
-import kaiyi.puer.h5ui.annotations.FieldNumber;
-import kaiyi.puer.h5ui.annotations.FieldType;
-import kaiyi.puer.h5ui.annotations.PageEntity;
-import kaiyi.puer.h5ui.annotations.PageField;
+import kaiyi.puer.h5ui.annotations.*;
 
 import javax.persistence.*;
 import java.util.Collections;
@@ -36,7 +33,9 @@ public class TestPager extends AbstractEntity {
     @PageField(label = "问答题数量",type = FieldType.NUMBER,showForm = false)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int questionsAndAnswersNumber;
-
+    @PageField(label = "启用状态",type = FieldType.BOOLEAN,showForm = false,showQuery = false,showSearch = false)
+    @FieldBoolean(values = {"启用","停用"})
+    private boolean enable;
     private Set<TestPagerQuestion> testPagerQuestions;
 
     @Override
@@ -103,4 +102,12 @@ public class TestPager extends AbstractEntity {
         }
         return new StreamCollection<>();
     }*/
+
+    public boolean isEnable() {
+        return enable;
+    }
+
+    public void setEnable(boolean enable) {
+        this.enable = enable;
+    }
 }

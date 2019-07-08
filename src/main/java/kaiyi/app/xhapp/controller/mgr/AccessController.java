@@ -131,6 +131,8 @@ public class AccessController extends ManagerController {
     @RequestMapping("/popupMultipleChoose")
     public String popupMultipleChoose(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
         popupChoose(interactive,true,DynamicGridInfo.OperMenuType.none);
+        String contextName=interactive.getStringParameter("contextName","");
+        interactive.setRequestAttribute("contextName",contextName);
         return rootPath+"/popupMultipleChoose";
     }
 

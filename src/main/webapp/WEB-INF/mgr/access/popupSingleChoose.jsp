@@ -28,8 +28,6 @@
                     <div class="table-empty-tip">
                         <p>
                             <span class="text-muted">抱歉,展示没有任何数据。</span>
-                            <span class="text-muted">您现在可以 </span>
-                            <a href="${contextPath}${webPage.newEntityPage}${suffix}?${paginationCurrentPage}=1" class="btn btn-info"><i class="icon icon-plus"></i> 新增员工</a>
                         </p>
                     </div>
                 </c:otherwise>

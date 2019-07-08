@@ -2,6 +2,7 @@ package kaiyi.app.xhapp.entity.examination;
 
 import kaiyi.app.xhapp.entity.AbstractEntity;
 import kaiyi.app.xhapp.entity.examination.enums.QuestionType;
+import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.validate.Max;
 import kaiyi.puer.commons.validate.Min;
@@ -18,13 +19,17 @@ public class ExamQuestionItem extends AbstractEntity {
 
     public static final String TABLE_NAME="exam_question_item";
     private static final long serialVersionUID = -8189415348554828536L;
-    @PageField(label = "所属考试名称")
+    @PageField(label = "所属考试名称",type = FieldType.REFERENCE)
+    @FieldReference(fieldName = "name")
     private ExamQuestion examQuestion;
     @PageField(label = "试题题目",type = FieldType.AREATEXT,formColumnLength = 3,tableLength = 500)
     private String detail;
     @PageField(label = "题目类型",type = FieldType.CHOSEN)
     @FieldChosen
     private QuestionType questionType;
+    @PageField(label = "显示权重",type = FieldType.NUMBER)
+    @FieldNumber(type = FieldNumber.TYPE.INT)
+    private int weight;
     @Min(val = 1,hint = "问题分值最少需要指定1分")
     @Max(val = 99,hint = "问题分值不能超过99分")
     @PageField(label = "问题分值",type = FieldType.NUMBER)
@@ -40,7 +45,16 @@ public class ExamQuestionItem extends AbstractEntity {
     @FieldBoolean(values = {"正确","错误"})
     private boolean result;
 
+    @PageField(label = "完成答题",type = FieldType.BOOLEAN)
+    @FieldBoolean(values = {"已完成","未完成"})
+    private boolean finished;
+
     private Set<ExamChoiceAnswer> choiceAnswers;
+
+    @Override
+    public StreamArray<String> filterField() {
+        return new StreamArray<>(new String[]{"examQuestion"});
+    }
 
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.LAZY)
     @JoinColumn(name="examQuestion")
@@ -126,5 +140,21 @@ public class ExamQuestionItem extends AbstractEntity {
             return new StreamCollection<>(choiceAnswerList);
         }
         return new StreamCollection<>();
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
+
+    public boolean isFinished() {
+        return finished;
+    }
+
+    public void setFinished(boolean finished) {
+        this.finished = finished;
     }
 }
