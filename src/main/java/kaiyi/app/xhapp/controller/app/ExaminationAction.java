@@ -1,8 +1,10 @@
 package kaiyi.app.xhapp.controller.app;
 
+import kaiyi.app.xhapp.entity.examination.ExamQuestion;
 import kaiyi.app.xhapp.service.examination.ExamQuestionService;
 import kaiyi.puer.db.orm.ServiceException;
 import kaiyi.puer.json.creator.JsonMessageCreator;
+import kaiyi.puer.json.creator.MutilJsonCreator;
 import kaiyi.puer.web.servlet.WebInteractive;
 import kaiyi.puer.web.springmvc.IWebInteractive;
 import org.springframework.stereotype.Controller;
@@ -33,13 +35,16 @@ public class ExaminationAction extends SuperAction {
     public void generatorExamQuestionByTestPager(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
         String testPagerId=interactive.getStringParameter("testPagerId","");
         String accountId=interactive.getStringParameter("accountId","");
+        MutilJsonCreator mjc=new MutilJsonCreator();
         JsonMessageCreator jmc=getSuccessMessage();
+        mjc.addJsonCreator(jmc);
         try {
-            examQuestionService.generatorByTestPager(accountId,testPagerId);
+            ExamQuestion examQuestion=examQuestionService.generatorByTestPager(accountId,testPagerId);
+            mjc.addJsonCreator(defaultWriteObject(examQuestion));
         } catch (ServiceException e) {
             catchServiceException(jmc,e);
         }
-        interactive.writeUTF8Text(jmc.build());
+        interactive.writeUTF8Text(mjc.build());
     }
     /**
      * 根据类别ID来构建考试试题
@@ -48,13 +53,15 @@ public class ExaminationAction extends SuperAction {
     public void generatorExamQuestionByCategory(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
         String categoryId=interactive.getStringParameter("categoryId","");
         String accountId=interactive.getStringParameter("accountId","");
+        MutilJsonCreator mjc=new MutilJsonCreator();
         JsonMessageCreator jmc=getSuccessMessage();
         try {
-            examQuestionService.generatorByCategory(accountId,categoryId);
+            ExamQuestion examQuestion=examQuestionService.generatorByCategory(accountId,categoryId);
+            mjc.addJsonCreator(defaultWriteObject(examQuestion));
         } catch (ServiceException e) {
             catchServiceException(jmc,e);
         }
-        interactive.writeUTF8Text(jmc.build());
+        interactive.writeUTF8Text(mjc.build());
     }
 
     /**

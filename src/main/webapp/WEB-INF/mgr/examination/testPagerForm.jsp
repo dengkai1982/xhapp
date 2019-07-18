@@ -16,7 +16,7 @@
                 <input type="hidden" name="selectQuestionId"/>
                 <input type="hidden" name="selectQuestionDetail"/>
                 <%@include file="/WEB-INF/mgr/access/newOrEditForm.jsp"%>
-                <div id="testPagerQuestionContainer" style="padding: 0 0 0 142px;">
+                <div id="testPagerQuestionContainer">
                     <button type="button" id="newAnswerButton" class="btn btn-wide btn-danger">添加试题</button>
                     <table class="table table-striped table-bordered table-hover" style="margin-top:10px">
                         <thead>
@@ -50,9 +50,15 @@
     </div>
 </main>
 <%@include file="/WEB-INF/footerPage.jsp"%>
+<script type="text/javascript" src="${contextPath}/js/category.js"></script>
 <script type="text/javascript">
     var questionArray;
     function pageReady(doc) {
+        $("#categoryReference").removeClass("popupSingleChoose").click(function(){
+            queryCategory("选择试卷课程类别","category","categoryReference",function(){
+                console.log("close");
+            })
+        })
         $("#newAnswerButton").click(function(){
             var showName=$("input[name='selectQuestionDetail']");
             var showValue=$("input[name='selectQuestionId']");

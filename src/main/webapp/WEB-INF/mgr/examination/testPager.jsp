@@ -59,7 +59,7 @@
             label:"查看详情"
         }];
         var enableName="";
-        if(data.enable.name){
+        if(data.enable.name=="true"){
             enableName="停用试卷";
         }else{
             enableName="启用试卷";

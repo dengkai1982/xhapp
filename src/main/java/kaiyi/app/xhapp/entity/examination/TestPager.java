@@ -1,6 +1,8 @@
 package kaiyi.app.xhapp.entity.examination;
 
 import kaiyi.app.xhapp.entity.AbstractEntity;
+import kaiyi.app.xhapp.entity.curriculum.Category;
+import kaiyi.app.xhapp.entity.examination.enums.TestPagerType;
 import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.IDate;
@@ -21,6 +23,14 @@ public class TestPager extends AbstractEntity {
     @NotEmpty(hint = "试卷名称必须填写")
     @PageField(label = "试卷名称",tableLength = 200)
     private String name;
+    @NotEmpty(hint = "所属课程分类必须选择")
+    @PageField(label = "课程分类",type = FieldType.REFERENCE)
+    @FieldReference(fieldName = "name")
+    private Category category;
+    @NotEmpty(hint = "试卷分类必须选择")
+    @PageField(label = "试卷分类",type = FieldType.CHOSEN)
+    @FieldChosen
+    private TestPagerType testPagerType;
     @IDate
     @PageField(label = "创建时间",type = FieldType.DATETIME,showForm = false,tableLength = 160)
     private Date createTime;
@@ -109,5 +119,22 @@ public class TestPager extends AbstractEntity {
 
     public void setEnable(boolean enable) {
         this.enable = enable;
+    }
+    @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
+    @JoinColumn(name="category")
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+    @Enumerated(EnumType.STRING)
+    public TestPagerType getTestPagerType() {
+        return testPagerType;
+    }
+
+    public void setTestPagerType(TestPagerType testPagerType) {
+        this.testPagerType = testPagerType;
     }
 }

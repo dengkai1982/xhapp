@@ -12,7 +12,7 @@ public interface ExamQuestionService extends DatabaseQuery<ExamQuestion> , Datab
      * @param testPagerId
      * @throws ServiceException
      */
-    void generatorByTestPager(String accountId,String testPagerId)throws ServiceException;
+    ExamQuestion generatorByTestPager(String accountId,String testPagerId)throws ServiceException;
 
     /**
      * 根据试题类别构建考试题目
@@ -20,7 +20,7 @@ public interface ExamQuestionService extends DatabaseQuery<ExamQuestion> , Datab
      * @param categoryId
      * @throws ServiceException
      */
-    void generatorByCategory(String accountId,String categoryId)throws ServiceException;
+    ExamQuestion generatorByCategory(String accountId,String categoryId)throws ServiceException;
 
     /**
      * 完成答题

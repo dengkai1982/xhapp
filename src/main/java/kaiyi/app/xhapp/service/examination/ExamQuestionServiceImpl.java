@@ -38,7 +38,7 @@ public class ExamQuestionServiceImpl extends InjectDao<ExamQuestion> implements 
     @Resource
     private ExamQuestionItemService examQuestionItemService;
     @Override
-    public void generatorByTestPager(String accountId, String testPagerId) throws ServiceException {
+    public ExamQuestion generatorByTestPager(String accountId, String testPagerId) throws ServiceException {
         TestPager testPager=testPagerService.findForPrimary(testPagerId);
         Account account=accountService.findForPrimary(accountId);
         if(Objects.isNull(account)||Objects.isNull(testPager)){
@@ -57,7 +57,7 @@ public class ExamQuestionServiceImpl extends InjectDao<ExamQuestion> implements 
         }
         exam.setQuestionItems(items);
         saveObject(exam);
-
+        return exam;
     }
 
     private ExamQuestionItem createExamQuestionItem(ExamQuestion exam,Question question,int score,int weight){
@@ -85,7 +85,7 @@ public class ExamQuestionServiceImpl extends InjectDao<ExamQuestion> implements 
     }
 
     @Override
-    public void generatorByCategory(String accountId, String categoryId) throws ServiceException {
+    public ExamQuestion generatorByCategory(String accountId, String categoryId) throws ServiceException {
         Category category=categoryService.findForPrimary(categoryId);
         Account account=accountService.findForPrimary(accountId);
         if(Objects.isNull(account)||Objects.isNull(category)){
@@ -120,6 +120,7 @@ public class ExamQuestionServiceImpl extends InjectDao<ExamQuestion> implements 
         }
         exam.setQuestionItems(items);
         saveObject(exam);
+        return exam;
     }
 
     @Override

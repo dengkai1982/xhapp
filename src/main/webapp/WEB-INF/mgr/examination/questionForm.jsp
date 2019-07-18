@@ -20,7 +20,7 @@
                         <input type="text" validate="required:正确答案未选择" value="${entity.answer}" name="answer" class="form-control" id="answer" readonly>
                     </div>
                 </div>
-                <div id="answerContainer" style="display: none;padding: 0 0 0 142px;">
+                <div id="answerContainer" style="display: none;">
                     <button type="button" id="newAnswerButton" class="btn btn-wide btn-danger">新增答案</button>
                     <table class="table table-striped table-bordered table-hover" style="margin-top:10px">
                         <thead>
