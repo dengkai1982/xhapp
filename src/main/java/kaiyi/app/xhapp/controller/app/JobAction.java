@@ -193,6 +193,7 @@ public class JobAction extends SuperAction {
         String accountId=interactive.getStringParameter("accountId","");
         if(StringEditor.notEmpty(accountId)){
             Account owner=new Account();
+            owner.setEntityId(accountId);
             QueryExpress query=new CompareQueryExpress("owner", CompareQueryExpress.Compare.EQUAL,owner);
             StreamCollection<Resume> resumes=resumeService.getEntitys(query);
             if(resumes.assertNotEmpty()){
@@ -215,6 +216,7 @@ public class JobAction extends SuperAction {
         String accountId=interactive.getStringParameter("accountId","");
         if(StringEditor.notEmpty(accountId)){
             Account publisher=new Account();
+            publisher.setEntityId(accountId);
             QueryExpress query=new CompareQueryExpress("publisher", CompareQueryExpress.Compare.EQUAL,publisher);
             StreamCollection<Recruitment> recruitments=recruitmentService.getEntitys(query);
             if(recruitments.assertNotEmpty()){

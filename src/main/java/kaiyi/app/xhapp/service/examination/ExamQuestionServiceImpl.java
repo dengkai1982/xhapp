@@ -52,7 +52,7 @@ public class ExamQuestionServiceImpl extends InjectDao<ExamQuestion> implements 
         Set<ExamQuestionItem> items=new HashSet<>();
         for(TestPagerQuestion tpq:testPagerQuestions){
             Question question=tpq.getQuestion();
-            ExamQuestionItem item=createExamQuestionItem(exam,question,tpq.getScore(),tpq.getWeight());
+            ExamQuestionItem item=createExamQuestionItem(exam,question,tpq.getScore(),tpq.getWeight(),account);
             items.add(item);
         }
         exam.setQuestionItems(items);
@@ -60,7 +60,7 @@ public class ExamQuestionServiceImpl extends InjectDao<ExamQuestion> implements 
         return exam;
     }
 
-    private ExamQuestionItem createExamQuestionItem(ExamQuestion exam,Question question,int score,int weight){
+    private ExamQuestionItem createExamQuestionItem(ExamQuestion exam,Question question,int score,int weight,Account owner){
         ExamQuestionItem item=new ExamQuestionItem();
         item.setEntityId(randomIdentifier());
         item.setAnalysis(question.getAnalysis());
@@ -70,6 +70,7 @@ public class ExamQuestionServiceImpl extends InjectDao<ExamQuestion> implements 
         item.setScore(score);
         item.setStandardAnswer(question.getAnswer());
         item.setWeight(weight);
+        item.setOwner(owner);
         Set<ChoiceAnswer> choiceAnswers = question.getChoiceAnswers();
         Set<ExamChoiceAnswer> examChoiceAnswers=new HashSet<>();
         for(ChoiceAnswer answer:choiceAnswers){
@@ -104,17 +105,17 @@ public class ExamQuestionServiceImpl extends InjectDao<ExamQuestion> implements 
                 multipleQuestion.size(),answerQuestion.size());
         Set<ExamQuestionItem> items=new HashSet<>();
         for(Question question:singleQuestion){
-            ExamQuestionItem item=createExamQuestionItem(exam,question,question.getScore(),weight);
+            ExamQuestionItem item=createExamQuestionItem(exam,question,question.getScore(),weight,account);
             weight--;
             items.add(item);
         }
         for(Question question:multipleQuestion){
-            ExamQuestionItem item=createExamQuestionItem(exam,question,question.getScore(),weight);
+            ExamQuestionItem item=createExamQuestionItem(exam,question,question.getScore(),weight,account);
             weight--;
             items.add(item);
         }
         for(Question question:answerQuestion){
-            ExamQuestionItem item=createExamQuestionItem(exam,question,question.getScore(),weight);
+            ExamQuestionItem item=createExamQuestionItem(exam,question,question.getScore(),weight,account);
             weight--;
             items.add(item);
         }

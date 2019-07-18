@@ -1,6 +1,7 @@
 package kaiyi.app.xhapp.entity.examination;
 
 import kaiyi.app.xhapp.entity.AbstractEntity;
+import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.app.xhapp.entity.examination.enums.QuestionType;
 import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.collection.StreamCollection;
@@ -49,11 +50,14 @@ public class ExamQuestionItem extends AbstractEntity {
     @FieldBoolean(values = {"已完成","未完成"})
     private boolean finished;
 
+    private Account owner;
+
+
     private Set<ExamChoiceAnswer> choiceAnswers;
 
     @Override
     public StreamArray<String> filterField() {
-        return new StreamArray<>(new String[]{"examQuestion"});
+        return new StreamArray<>(new String[]{"examQuestion","owner"});
     }
 
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.LAZY)
@@ -156,5 +160,14 @@ public class ExamQuestionItem extends AbstractEntity {
 
     public void setFinished(boolean finished) {
         this.finished = finished;
+    }
+    @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.LAZY)
+    @JoinColumn(name="owner")
+    public Account getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Account owner) {
+        this.owner = owner;
     }
 }

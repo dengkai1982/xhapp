@@ -55,7 +55,7 @@
                                     <div  class="col-sm-2">
                                         <div class="input-group">
                                             <span class="input-group-addon">￥</span>
-                                            <input type="number" name="price" value="<currency:convert value='${privilege.price}'/>" class="form-control" placeholder="请输入金额">
+                                            <input type="number" name="memberShipPrice" value="<currency:convert value='${privilege.price}'/>" class="form-control" placeholder="请输入金额">
                                         </div>
                                     </div>
                                 </div>
@@ -75,7 +75,7 @@
                                     <div  class="col-sm-2">
                                         <div class="input-group">
                                             <span class="input-group-addon">￥</span>
-                                            <input type="number" name="price" class="form-control" placeholder="请输入金额">
+                                            <input type="number" name="memberShipPrice" class="form-control" placeholder="请输入金额">
                                         </div>
                                     </div>
                                 </div>
@@ -97,9 +97,9 @@
         $("select[name='free']").on('change', function(){
             var $this=$(this);
             if($this.val()=="true"){
-                $this.parents(".buyerPrivileges").find("input[name='price']").attr("disabled","disabled").val("0");
+                $this.parents(".buyerPrivileges").find("input[name='memberShipPrice']").attr("disabled","disabled").val("0");
             }else{
-                $this.parents(".buyerPrivileges").find("input[name='price']").removeAttr("disabled");
+                $this.parents(".buyerPrivileges").find("input[name='memberShipPrice']").removeAttr("disabled");
             }
         });
     }
@@ -109,7 +109,7 @@
             var $this=$(this);
             var memberShip=$this.attr("data-id");
             var free=$this.find("select[name='free']").val();
-            var price=$this.find("input[name='price']").val();
+            var price=$this.find("input[name='memberShipPrice']").val();
             buyerPrivileges.push({
                 memberShip:memberShip,
                 free:free,
