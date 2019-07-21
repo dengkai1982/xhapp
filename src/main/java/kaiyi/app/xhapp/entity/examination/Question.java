@@ -9,8 +9,6 @@ import kaiyi.puer.commons.validate.Max;
 import kaiyi.puer.commons.validate.Min;
 import kaiyi.puer.commons.validate.NotEmpty;
 import kaiyi.puer.h5ui.annotations.*;
-import org.apache.poi.ss.formula.functions.T;
-
 import javax.persistence.*;
 import java.util.Collections;
 import java.util.List;
@@ -25,8 +23,8 @@ public class Question extends AbstractEntity {
     @NotEmpty(hint = "题目必须填写")
     @PageField(label = "试题题目",type = FieldType.AREATEXT,formColumnLength = 3,tableLength = 500)
     private String detail;
-    @NotEmpty(hint = "所属类别必须选择")
-    @PageField(label = "所属类别",type = FieldType.REFERENCE)
+    @NotEmpty(hint = "所属类别名称必须选择")
+    @PageField(label = "所属类别名称",type = FieldType.REFERENCE,tableLength = 140)
     @FieldReference(fieldName = "name")
     private Category category;
     @NotEmpty(hint = "题目类型必须选择")
@@ -36,7 +34,7 @@ public class Question extends AbstractEntity {
     @NotEmpty(hint = "问题分值必须设置")
     @Min(val = 1,hint = "问题分值最少需要指定1分")
     @Max(val = 99,hint = "问题分值不能超过99分")
-    @PageField(label = "问题分值",type = FieldType.NUMBER)
+    @PageField(label = "试题分值",type = FieldType.NUMBER)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int score;
     @PageField(label = "问题解析",type = FieldType.AREATEXT,formColumnLength = 3,tableLength = 500)
@@ -131,4 +129,6 @@ public class Question extends AbstractEntity {
     public void setEnable(boolean enable) {
         this.enable = enable;
     }
+
+
 }

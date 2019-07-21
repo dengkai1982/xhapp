@@ -2,6 +2,8 @@ package kaiyi.app.tcsys.test;
 
 import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.exceptions.ClientException;
+import kaiyi.app.xhapp.entity.curriculum.Category;
+import kaiyi.app.xhapp.entity.examination.Question;
 import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
 import kaiyi.app.xhapp.service.AliyunVodHelper;
 import kaiyi.app.xhapp.service.access.AccountService;
@@ -9,11 +11,16 @@ import kaiyi.app.xhapp.service.access.VisitorRoleService;
 import kaiyi.app.xhapp.service.access.VisitorUserService;
 import kaiyi.app.xhapp.service.curriculum.CategoryService;
 import kaiyi.app.xhapp.service.examination.ExamQuestionService;
+import kaiyi.app.xhapp.service.examination.QuestionService;
 import kaiyi.app.xhapp.service.jobs.PositionService;
 import kaiyi.app.xhapp.service.log.ShortMessageSenderNoteService;
 import kaiyi.app.xhapp.service.pub.ConfigureService;
+import kaiyi.app.xhapp.service.sys.ConsultationService;
+import kaiyi.app.xhapp.service.sys.QNumberManagerService;
 import kaiyi.puer.commons.bean.SpringSelector;
+import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.*;
+import kaiyi.puer.commons.poi.ExcelUtils;
 import kaiyi.puer.commons.utils.CoderUtil;
 import kaiyi.puer.crypt.cipher.CipherOperator;
 import kaiyi.puer.crypt.cipher.RSACipher;
@@ -33,7 +40,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class ImportData {
     static ApplicationContext ctx;
@@ -44,6 +56,57 @@ public class ImportData {
             ctx=new ClassPathXmlApplicationContext("spring-context.xml");
             sel=new SpringSelector(ctx);
         }
+    }
+
+    @Test
+    public void excelImport() throws IOException {
+        CategoryService categoryService=sel.getBean(CategoryService.class);
+        QuestionService questionService=sel.getBean(QuestionService.class);
+        File file=new File("/Users/dengkai/金红/批量导入模板.xlsx");
+        AtomicReference<Question> questionReference=new AtomicReference<>();
+        StreamCollection<Category> categories=categoryService.getEntitys();
+        if(Objects.nonNull(file)&&file.exists()){
+            ExcelUtils.readExcel(file, line->{
+                if(!line.get(0).getData().stringValue().equals("试题题目")){
+                    //表头不做处理
+                    try {
+                        if(questionService.isQuestion(line)){
+                            Question existQuestion=questionReference.get();
+                            if(Objects.nonNull(existQuestion)){
+                                questionService.saveObject(existQuestion);
+                                questionReference.set(null);
+                            }
+                            questionReference.set(questionService.parseQuestion(line,categories));
+                        }else{
+                            Question question=questionReference.get();
+                            if(Objects.nonNull(question)){
+                                questionService.parseChoiceAnswer(question,line);
+                            }
+                        }
+                    } catch (ServiceException e) {
+                        questionReference.set(null);
+                    }
+                }
+            });
+        }
+        if(Objects.nonNull(questionReference.get())){
+            questionService.saveObject(questionReference.get());
+        }
+        //file.delete();
+    }
+
+
+    @Test
+    public void getRandomQQNumber(){
+        QNumberManagerService qNumberManagerService=sel.getBean(QNumberManagerService.class);
+        for(int i=0;i<10;i++){
+            System.out.println(qNumberManagerService.getRandomQQNumber());
+        }
+    }
+    @Test
+    public void commitConsultation() throws ServiceException {
+        ConsultationService consultationService=sel.getBean(ConsultationService.class);
+        consultationService.commitConsultation("15562127039610033","颠覆了计算机发牢骚");
     }
 
     @Test

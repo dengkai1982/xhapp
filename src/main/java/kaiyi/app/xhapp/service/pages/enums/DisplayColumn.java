@@ -1,5 +1,6 @@
 package kaiyi.app.xhapp.service.pages.enums;
 
+import kaiyi.app.xhapp.entity.jobs.Recruitment;
 import kaiyi.puer.commons.utils.PinyinUtils;
 import kaiyi.puer.h5ui.bean.H5ChosenInterface;
 
@@ -24,8 +25,51 @@ public enum DisplayColumn implements H5ChosenInterface {
         public String getHexColor() {
             return "#bd7b46";
         }
-    }
+    },
+    EXAM_INFO{
+        @Override
+        public String toString() {
+            return "考试资讯";
+        }
 
+        @Override
+        public String getHexColor() {
+            return "#ea644a";
+        }
+    },
+    RECRUITMENT{
+        @Override
+        public String toString() {
+            return "人才猎聘";
+        }
+
+        @Override
+        public String getHexColor() {
+            return "#38b03f";
+        }
+    },
+    ENTERPRISE_COLUMN{
+        @Override
+        public String toString() {
+            return "企业招聘栏目";
+        }
+
+        @Override
+        public String getHexColor() {
+            return "#009944";
+        }
+    },
+    QUESTION{
+        @Override
+        public String toString() {
+            return "习题练习";
+        }
+
+        @Override
+        public String getHexColor() {
+            return "#f60";
+        }
+    }
     ;
     @Override
     public String[] getSearchValues() {

@@ -2,6 +2,7 @@ package kaiyi.app.xhapp.controller.mgr;
 
 
 import kaiyi.app.xhapp.entity.curriculum.Category;
+import kaiyi.app.xhapp.entity.examination.Question;
 import kaiyi.app.xhapp.entity.examination.TestPager;
 import kaiyi.app.xhapp.entity.examination.TestPagerQuestion;
 import kaiyi.app.xhapp.service.curriculum.CategoryService;
@@ -12,6 +13,9 @@ import kaiyi.puer.commons.access.AccessControl;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.JavaDataTyper;
 import kaiyi.puer.commons.data.StringEditor;
+import kaiyi.puer.commons.poi.ExcelUtils;
+import kaiyi.puer.commons.utils.CoderUtil;
+import kaiyi.puer.db.orm.ServiceException;
 import kaiyi.puer.h5ui.bean.DynamicGridInfo;
 import kaiyi.puer.json.creator.JsonMessageCreator;
 import kaiyi.puer.web.servlet.WebInteractive;
@@ -22,8 +26,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Controller
 @RequestMapping(QuestionController.rootPath)
@@ -34,7 +42,8 @@ public class QuestionController extends ManagerController {
     private QuestionService questionService;
     @Resource
     private TestPagerService testPagerService;
-
+    @Resource
+    private CategoryService categoryService;
     @RequestMapping("/question")
     @AccessControl(name = "试题库", weight = 5.1f, detail = "管理试题库内容", code = rootPath+ "/question", parent = rootPath)
     public String question(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
@@ -76,6 +85,46 @@ public class QuestionController extends ManagerController {
         String entityId=interactive.getStringParameter("entityId","");
         questionService.changeEnable(entityId);
         interactive.writeUTF8Text(getSuccessMessage().build());
+    }
+    //批量导入实体
+    @PostMapping("/question/import")
+    public void importQuestion(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String hex=interactive.getStringParameter("hex","");
+        String path=CoderUtil.hexToString(hex,StringEditor.DEFAULT_CHARSET.displayName());
+        File file=new File(path);
+        JsonMessageCreator jmc=getSuccessMessage();
+        AtomicReference<Question> questionReference=new AtomicReference<>();
+        StreamCollection<Category> categories=categoryService.getEntitys();
+        if(Objects.nonNull(file)&&file.exists()){
+            ExcelUtils.readExcel(file, line->{
+                if(!line.get(0).getData().stringValue().equals("试题题目")){
+                    //表头不做处理
+                    try {
+                        if(questionService.isQuestion(line)){
+                            Question existQuestion=questionReference.get();
+                            if(Objects.nonNull(existQuestion)){
+                                questionService.saveObject(existQuestion);
+                                questionReference.set(null);
+                            }
+                            questionReference.set(questionService.parseQuestion(line,categories));
+                        }else{
+                            Question question=questionReference.get();
+                            if(Objects.nonNull(question)){
+                                questionService.parseChoiceAnswer(question,line);
+                            }
+                        }
+                    } catch (ServiceException e) {
+                        questionReference.set(null);
+                    }
+                }
+            });
+        }
+        if(Objects.nonNull(questionReference.get())){
+            questionService.saveObject(questionReference.get());
+        }
+        interactive.writeUTF8Text(jmc.build());
+        file.delete();
+
     }
 
     @PostMapping("/question/commit")

@@ -56,4 +56,10 @@ public class ServiceExceptionDefine {
 
     public static final ServiceException examQuestionExist=new ServiceException(
             ServiceException.CODE_FAIL,"尚有同类型考试未完成");
+
+    public static final ServiceException categoryError=new ServiceException(
+            ServiceException.CODE_FAIL,"所属类别错误");
+
+    public static final ServiceException questionType=new ServiceException(
+            ServiceException.CODE_FAIL,"所属类型错误");
 }

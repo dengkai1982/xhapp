@@ -1,11 +1,16 @@
 package kaiyi.app.xhapp.service.examination;
 
+import kaiyi.app.xhapp.ServiceExceptionDefine;
+import kaiyi.app.xhapp.entity.curriculum.Category;
 import kaiyi.app.xhapp.entity.examination.ChoiceAnswer;
 import kaiyi.app.xhapp.entity.examination.Question;
+import kaiyi.app.xhapp.entity.examination.enums.QuestionType;
 import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.JavaDataTyper;
+import kaiyi.puer.commons.data.StringEditor;
+import kaiyi.puer.commons.poi.ExcelData;
 import kaiyi.puer.db.orm.ServiceException;
 import kaiyi.puer.db.query.ContainQueryExpress;
 import kaiyi.puer.db.query.LinkQueryExpress;
@@ -20,6 +25,8 @@ import java.util.*;
 @Service("questionService")
 public class QuestionServiceImpl extends InjectDao<Question> implements QuestionService {
     private static final long serialVersionUID = 5129246458030105241L;
+
+
 
     @Override
     public void deleteChoiceAnswer(String choiceAnswerId) {
@@ -43,6 +50,86 @@ public class QuestionServiceImpl extends InjectDao<Question> implements Question
             updateObject(question);
         }
     }
+
+    @Override
+    public boolean isQuestion(List<ExcelData> line) {
+        return line.size()>=4;
+    }
+
+    @Override
+    public Question parseQuestion(List<ExcelData> line, StreamCollection<Category> categories) throws ServiceException {
+        Question question=new Question();
+        String detail = line.get(0).getData().stringValue();
+        String categoryName= line.get(1).getData().stringValue();
+        Category category=categories.find(h->{
+            return h.getName().equals(categoryName);
+        });
+        if(Objects.isNull(categories)){
+            throw ServiceExceptionDefine.categoryError;
+        }
+        String typeName=line.get(2).getData().stringValue();
+        QuestionType questionType=QuestionType.getByName(typeName);
+        if(Objects.isNull(questionType)){
+            throw ServiceExceptionDefine.questionType;
+        }
+        int score=line.get(3).getData().integerValue(0);
+        question.setDetail(detail);
+        question.setCategory(category);
+        question.setQuestionType(questionType);
+        question.setScore(score);
+        question.setEnable(true);
+        String analysis=null;
+        String answer=null;
+        if(questionType.equals(QuestionType.QuestionsAndAnswers)){
+            if(line.size()==5){
+                analysis=line.get(4).getData().stringValue();
+            }
+            if(line.size()==6){
+                answer=line.get(5).getData().stringValue();
+            }
+        }else{
+            analysis=line.get(4).getData().stringValue();
+            answer=line.get(5).getData().stringValue();
+        }
+        question.setAnalysis(analysis);
+        question.setAnswer(answer);
+        if(!question.getQuestionType().equals(QuestionType.QuestionsAndAnswers)){
+            question.setChoiceAnswers(new HashSet<>());
+            String optionName=line.get(6).getData().stringValue();
+            String detailValue=line.get(7).getData().stringValue();
+            parseChoiceAnswer(question,optionName,detailValue);
+        }
+        return question;
+    }
+
+    private void parseChoiceAnswer(Question question,String optionName,String detailValue){
+        ChoiceAnswer choiceAnswer=new ChoiceAnswer();
+        choiceAnswer.setQuestion(question);
+        choiceAnswer.setEntityId(randomIdentifier());
+        choiceAnswer.setOptionName(optionName);
+        choiceAnswer.setDetailValue(detailValue);
+        choiceAnswer.setChecked(false);
+        if(!question.getQuestionType().equals(QuestionType.QuestionsAndAnswers)){
+            String answer=question.getAnswer();
+            if(question.getQuestionType().equals(QuestionType.SingleChoice)&&answer.equals(optionName)){
+                choiceAnswer.setChecked(true);
+            }else{
+                StreamArray<String> answerArray=new StreamArray<>(answer.split(";"));
+                if(answerArray.contain(optionName)){
+                    choiceAnswer.setChecked(true);
+                }
+            }
+        }
+        question.getChoiceAnswers().add(choiceAnswer);
+    }
+
+    @Override
+    public void parseChoiceAnswer(Question question,List<ExcelData> line) throws ServiceException {
+        String optionName=line.get(0).getData().stringValue();
+        String detailValue=line.get(1).getData().stringValue();
+        parseChoiceAnswer(question,optionName,detailValue);
+    }
+
 
     @Override
     protected void objectBeforePersistHandler(Question question, Map<String, JavaDataTyper> params) throws ServiceException {
@@ -114,4 +201,14 @@ public class QuestionServiceImpl extends InjectDao<Question> implements Question
         }
         return queryExpress;
     }
+
+
+    /*
+    public static final boolean isQuestion(List<ExcelData> line){
+        return StringEditor.notEmpty(line.get(0).getData().stringValue());
+    }
+    public static final Question parseQuestion(List<ExcelData> line)throws ParseException {
+
+    }
+     */
 }

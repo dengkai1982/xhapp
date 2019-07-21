@@ -38,6 +38,9 @@ public class Course extends AbstractEntity {
     @PageField(label = "课程售价",type = FieldType.NUMBER)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int price;
+    @PageField(label = "首页推荐",type = FieldType.BOOLEAN,tableLength =120)
+    @FieldBoolean(values = {"推荐","不推荐"})
+    private boolean recommendMainPage;
     @PageField(label = "课程上架/下架",type = FieldType.BOOLEAN,showForm = false,tableLength =120)
     @FieldBoolean(values = {"上架","下架"})
     private boolean sale;
@@ -206,9 +209,17 @@ public class Course extends AbstractEntity {
         return new StreamCollection<>();
     }
 
+    public boolean isRecommendMainPage() {
+        return recommendMainPage;
+    }
+
+    public void setRecommendMainPage(boolean recommendMainPage) {
+        this.recommendMainPage = recommendMainPage;
+    }
+
     /*
-    计算课程售价
-     */
+        计算课程售价
+         */
     @Transient
     public int computerCoursePrice(Account account){
         int price=getPrice();
