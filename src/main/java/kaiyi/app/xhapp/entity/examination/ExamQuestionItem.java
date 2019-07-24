@@ -49,7 +49,8 @@ public class ExamQuestionItem extends AbstractEntity {
     @PageField(label = "完成答题",type = FieldType.BOOLEAN)
     @FieldBoolean(values = {"已完成","未完成"})
     private boolean finished;
-
+    @PageField(label = "所有人",type = FieldType.REFERENCE)
+    @FieldReference(fieldName = "phone")
     private Account owner;
 
 

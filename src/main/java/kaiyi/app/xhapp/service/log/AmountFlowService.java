@@ -9,6 +9,6 @@ import kaiyi.puer.db.orm.DatabaseQuery;
 
 public interface AmountFlowService extends DatabaseQuery<AmountFlow>,DatabaseFastOper<AmountFlow> {
 
-    void saveNote(Account account, AmountType amountType, String orderId, int amount,
-                  BorrowLend borrowLend);
+    void saveNote(Account account, AmountType amountType, String orderId,int beforeAmount, int amount,
+                  int afterAmount,BorrowLend borrowLend);
 }

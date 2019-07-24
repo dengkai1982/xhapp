@@ -11,10 +11,10 @@
     <script type="text/javascript">
         queryDataOfOrderBySetUrl("${contextPath}/app/query/pagination${suffix}","examQuestionItemService",
             [{
-                field:"examQuestion",
+                field:"owner",
                 condition:"0",
-                value:"15626016943550090"
-            }],0,100,"entityId","ase",function(d){
+                value:"15562127039610033"
+            }],0,100,"weight","ase",function(d){
                 console.log(d);
             })
     </script>

@@ -9,6 +9,7 @@ import kaiyi.app.xhapp.entity.log.ShortMessageSenderNote;
 import kaiyi.app.xhapp.entity.pages.DisplayMap;
 import kaiyi.app.xhapp.entity.pub.Configure;
 import kaiyi.app.xhapp.entity.pub.Notice;
+import kaiyi.app.xhapp.entity.sys.QNumberManager;
 import kaiyi.puer.commons.bean.BeanSyntacticSugar;
 import kaiyi.puer.commons.utils.CoderUtil;
 import kaiyi.puer.crypt.cipher.RSACipher;
@@ -73,6 +74,7 @@ public class daima {
         BeanSyntacticSugar.printEntity(Notice.class);
         BeanSyntacticSugar.printEntity(Position.class);
         BeanSyntacticSugar.printEntity(Question.class);
+        BeanSyntacticSugar.printEntity(QNumberManager.class);
     }
 
     @Test

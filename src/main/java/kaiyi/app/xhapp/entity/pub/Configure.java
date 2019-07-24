@@ -2,10 +2,7 @@ package kaiyi.app.xhapp.entity.pub;
 import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
 import kaiyi.puer.commons.bean.Identify;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 
 
@@ -25,7 +22,7 @@ public class Configure {
 	public void setItem(ConfigureItem item) {
 		this.item = item;
 	}
-
+	@Lob
 	public String getValue() {
 		return value;
 	}

@@ -13,7 +13,6 @@ public interface CourseOrderService extends DatabaseQuery<CourseOrder> {
      */
     CourseOrder generatorOrder(StreamCollection<String> courseIdStream,
                                String accountId, CapitalType capitalType)throws ServiceException;
-
     /**
      * 完成付款通知
      * @param paymentNotify

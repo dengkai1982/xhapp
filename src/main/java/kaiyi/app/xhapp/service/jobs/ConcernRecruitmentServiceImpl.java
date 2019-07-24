@@ -67,7 +67,7 @@ public class ConcernRecruitmentServiceImpl extends InjectDao<ConcernRecruitment>
                                 ObjectJsonCreator<Account> ojc = new ObjectJsonCreator(account,fields,
                                         account.jsonFieldReplacePolicy(),new DefaultJsonValuePolicy(null));
                                 return ojc;
-                            }else if(field.equals("enterprise")){
+                            }else if(field.equals("recruitment")){
                                 Recruitment recruitment=entity.getRecruitment();
                                 String fields[]=BeanSyntacticSugar.getFieldStringNotStatic(recruitment.getClass(),
                                         recruitment.filterField().getArray());

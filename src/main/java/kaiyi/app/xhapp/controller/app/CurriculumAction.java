@@ -1,27 +1,41 @@
 package kaiyi.app.xhapp.controller.app;
 
+import com.alipay.api.AlipayApiException;
+import com.alipay.api.AlipayClient;
+import com.alipay.api.DefaultAlipayClient;
+import com.alipay.api.domain.AlipayTradeWapPayModel;
+import com.alipay.api.internal.util.AlipaySignature;
+import com.alipay.api.request.AlipayTradePagePayRequest;
+import com.alipay.api.request.AlipayTradeWapPayRequest;
 import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.exceptions.ClientException;
+import kaiyi.app.xhapp.entity.access.enums.CapitalType;
 import kaiyi.app.xhapp.entity.curriculum.*;
+import kaiyi.app.xhapp.entity.curriculum.enums.PayPlatform;
 import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
+import kaiyi.app.xhapp.executor.NotifyCourseOrder;
 import kaiyi.app.xhapp.service.AliyunVodHelper;
 import kaiyi.app.xhapp.service.curriculum.*;
 import kaiyi.app.xhapp.service.log.CourseBrowseService;
 import kaiyi.app.xhapp.service.pages.ExamInfoService;
 import kaiyi.app.xhapp.service.pub.ConfigureService;
 import kaiyi.puer.commons.bean.BeanSyntacticSugar;
+import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.collection.StreamCollection;
+import kaiyi.puer.commons.data.Currency;
+import kaiyi.puer.commons.log.Logger;
+import kaiyi.puer.commons.utils.RandomUtils;
 import kaiyi.puer.db.orm.ServiceException;
 import kaiyi.puer.db.query.CompareQueryExpress;
 import kaiyi.puer.db.query.OrderBy;
 import kaiyi.puer.db.query.QueryExpress;
+import kaiyi.puer.h5ui.service.ApplicationService;
 import kaiyi.puer.json.DefaultJsonValuePolicy;
 import kaiyi.puer.json.JsonCreator;
+import kaiyi.puer.json.JsonObjectCreator;
 import kaiyi.puer.json.JsonValuePolicy;
-import kaiyi.puer.json.creator.CollectionJsonCreator;
-import kaiyi.puer.json.creator.JsonMessageCreator;
-import kaiyi.puer.json.creator.ObjectJsonCreator;
-import kaiyi.puer.json.creator.StringJsonCreator;
+import kaiyi.puer.json.creator.*;
+import kaiyi.puer.web.servlet.ServletUtils;
 import kaiyi.puer.web.servlet.WebInteractive;
 import kaiyi.puer.web.springmvc.IWebInteractive;
 import org.springframework.stereotype.Controller;
@@ -32,8 +46,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Objects;
+import java.util.*;
 
 @Controller
 @RequestMapping(CurriculumAction.rootPath)
@@ -62,6 +75,10 @@ public class CurriculumAction extends SuperAction {
     private FaceToFaceService faceToFaceService;
     @Resource
     private ExamInfoService examInfoService;
+    @Resource
+    private CourseOrderService courseOrderService;
+    @Resource
+    private ApplicationService applicationService;
     /**
      * 根据ID获取课程信息
      * @param interactive
@@ -294,5 +311,147 @@ public class CurriculumAction extends SuperAction {
         String entityId=interactive.getStringParameter("entityId","");
         examInfoService.readExamInfo(entityId);
         interactive.writeUTF8Text(getSuccessMessage().build());
+    }
+
+    /**
+     * 构建课程购买订单
+     * courseIdArray 课程ID、数组
+     * accountId 用户ID
+     * capitalType 付款方式
+     */
+    @PostMapping("/generatorOrder")
+    public void generatorOrder(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        StreamArray<String> courseIdArray=interactive.getStringStreamArray("courseIdArray",";");
+        String accountId=interactive.getStringParameter("accountId","");
+        CapitalType capitalType=interactive.getEnumParameterByOrdinal(CapitalType.class,"capitalType");
+        JsonMessageCreator jmc=getSuccessMessage();
+        MutilJsonCreator mjc=new MutilJsonCreator();
+        try {
+            CourseOrder courseOrder=courseOrderService.generatorOrder(new StreamCollection<>(courseIdArray.toList()),accountId, capitalType);
+            JsonCreator jsonCreator=defaultWriteObject(courseOrder);
+            mjc.addJsonCreator(jsonCreator);
+        } catch (ServiceException e) {
+            catchServiceException(jmc,e);
+        }
+        interactive.writeUTF8Text(mjc.build());
+    }
+    /**
+     * 调用支付宝支付
+     * @param interactive
+     * @param response
+     * @return
+     */
+    @PostMapping("/generatorWebAlipayPayment")
+    public void generatorWebAlipayPayment(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String orderId=interactive.getStringParameter("orderId","");
+        CourseOrder courseOrder=courseOrderService.findForPrimary(orderId);
+        if(Objects.nonNull(courseOrder)){
+            String gatewayUrl=configureService.getStringValue(ConfigureItem.ALIPAY_GATEWAY_URL);
+            String appid=configureService.getStringValue(ConfigureItem.ALIPAY_APPID);
+            String privateKey=configureService.getStringValue(ConfigureItem.MY_PRIVATE_KEY);
+            String format=configureService.getStringValue(ConfigureItem.ALIPAY_FORMAT);
+            String charset=configureService.getStringValue(ConfigureItem.CHARSET);
+            String alypayPublicKey=configureService.getStringValue(ConfigureItem.ALIPAY_PUBLIC_KEY);
+            String signtype=configureService.getStringValue(ConfigureItem.ALIPAY_SIGNTYPE);
+            AlipayClient client = new DefaultAlipayClient(gatewayUrl, appid,
+                    privateKey, format, charset,
+                    alypayPublicKey,signtype);
+            AlipayTradeWapPayRequest alipay_request=new AlipayTradeWapPayRequest();
+            AlipayTradeWapPayModel model=new AlipayTradeWapPayModel();
+            model.setOutTradeNo(courseOrder.getOrderId());
+            model.setSubject("鑫鸿教育课程支付订单");
+            model.setTotalAmount(Currency.noDecimalBuild(courseOrder.getAmount(),2).toString());
+            model.setBody("课程支付");
+            model.setTimeoutExpress("3m");
+            model.setProductCode("product_code");
+            alipay_request.setBizModel(model);
+            String prefix=ServletUtils.getRequestHostContainerProtolAndPort(interactive.getHttpServletRequest());
+            alipay_request.setReturnUrl(prefix+interactive.generatorRequestUrl(rootPath+"/alipayNotify",null));
+            alipay_request.setNotifyUrl(prefix+interactive.generatorRequestUrl(rootPath+"/alipaySyncNotify",null));
+            // form表单生产
+            try {
+                // 调用SDK生成表单
+                String body = client.pageExecute(alipay_request).getBody();
+                interactive.writeUTF8Text(body);
+            } catch (AlipayApiException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 完成站内支付
+     * @param interactive
+     * @param response
+     * @throws IOException
+     */
+    @PostMapping("/finishGoldPayment")
+    public void finishGoldPayment(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String orderId=interactive.getStringParameter("orderId","");
+        CourseOrder courseOrder=courseOrderService.signleQuery("orderId",orderId);
+        JsonMessageCreator jmc=getSuccessMessage();
+        if(Objects.nonNull(courseOrder)){
+            Currency actualAmount=Currency.noDecimalBuild(courseOrder.getAmount(),2);
+            PaymentNotify paymentNotify=new PaymentNotify(courseOrder.getOrderId(),PayPlatform.INSIDE,
+                    "完成订单","使用金币支付","金币支付",actualAmount.toString(),
+                    "none",RandomUtils.getRandomString(),new Date(),true);
+            applicationService.syncExecute(new NotifyCourseOrder(applicationService,paymentNotify));
+        }else{
+            jmc.setMsg("支付订单不存在");
+            jmc.setCode(JsonMessageCreator.FAIL);
+        }
+        interactive.writeUTF8Text(jmc.build());
+    }
+
+    /**
+     * 支付宝异步回调
+     * @param interactive
+     * @param response
+     * @throws AlipayApiException
+     * @throws IOException
+     */
+    @RequestMapping("/alipaySyncNotify")
+    public void alipaySyncNotify(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws AlipayApiException, IOException {
+        Map<String,String> params = getAlipayNotifyParams(interactive);
+        String alypayPublicKey=configureService.getStringValue(ConfigureItem.ALIPAY_PUBLIC_KEY);
+        String charset=configureService.getStringValue(ConfigureItem.CHARSET);
+        String signtype=configureService.getStringValue(ConfigureItem.ALIPAY_SIGNTYPE);
+        boolean verify_result = AlipaySignature.rsaCheckV1(params,alypayPublicKey, charset, signtype);
+        if(verify_result){
+            String out_trade_no = new String(interactive.getHttpServletRequest().getParameter("out_trade_no").getBytes("ISO-8859-1"),"UTF-8");
+            //支付宝交易号
+            String trade_no = new String(interactive.getHttpServletRequest().getParameter("trade_no").getBytes("ISO-8859-1"),"UTF-8");
+            //交易状态
+            String trade_status = new String(interactive.getHttpServletRequest().getParameter("trade_status").getBytes("ISO-8859-1"),"UTF-8");
+            if (trade_status.equals("TRADE_SUCCESS")){
+                CourseOrder courseOrder=courseOrderService.signleQuery("orderId",out_trade_no);
+                if(Objects.nonNull(courseOrder)){
+                    Currency actualAmount=Currency.noDecimalBuild(courseOrder.getAmount(),2);
+                    PaymentNotify paymentNotify=new PaymentNotify(courseOrder.getOrderId(),PayPlatform.ALIPAY,
+                            "完成订单","在线支付","在线支付",actualAmount.toString(),
+                            "none",trade_no,new Date(),true);
+                    applicationService.syncExecute(new NotifyCourseOrder(applicationService,paymentNotify));
+                    //courseOrderService.paymentSaleOrder(paymentNotify);
+                    interactive.writeUTF8Text("success");
+                }
+            }
+        }
+        interactive.writeUTF8Text("fail");
+    }
+
+    private Map<String,String> getAlipayNotifyParams(WebInteractive interactive){
+        Map<String,String> params = new HashMap<String,String>();
+        Map requestParams = interactive.getHttpServletRequest().getParameterMap();
+        for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext();) {
+            String name = (String) iter.next();
+            String[] values = (String[]) requestParams.get(name);
+            String valueStr = "";
+            for (int i = 0; i < values.length; i++) {
+                valueStr = (i == values.length - 1) ? valueStr + values[i]
+                        : valueStr + values[i] + ",";
+            }
+            params.put(name, valueStr);
+        }
+        return params;
     }
 }

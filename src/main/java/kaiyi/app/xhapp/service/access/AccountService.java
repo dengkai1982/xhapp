@@ -2,6 +2,7 @@ package kaiyi.app.xhapp.service.access;
 
 import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.app.xhapp.entity.access.enums.MemberShip;
+import kaiyi.app.xhapp.entity.curriculum.CourseOrder;
 import kaiyi.puer.db.orm.DatabaseFastOper;
 import kaiyi.puer.db.orm.DatabaseQuery;
 import kaiyi.puer.db.orm.ServiceException;
@@ -46,4 +47,10 @@ public interface AccountService extends DatabaseQuery<Account>,DatabaseFastOper<
      * @param memberShip
      */
     void changeMemberShip(String entityId, MemberShip memberShip);
+
+    /**
+     * 使用余额支付
+     * @param courseOrder
+     */
+    void usageGoldPayment(CourseOrder courseOrder);
 }

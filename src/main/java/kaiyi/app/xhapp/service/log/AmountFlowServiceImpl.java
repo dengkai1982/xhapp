@@ -13,8 +13,9 @@ public class AmountFlowServiceImpl extends InjectDao<AmountFlow> implements Amou
 
 
     @Override
-    public void saveNote(Account account, AmountType amountType, String orderId, int amount, BorrowLend borrowLend) {
-        AmountFlow flow=new AmountFlow(account,amountType,orderId,amount,borrowLend);
+    public void saveNote(Account account, AmountType amountType, String orderId,int beforeAmount, int amount,
+                         int afterAmount,BorrowLend borrowLend) {
+        AmountFlow flow=new AmountFlow(account,amountType,orderId,beforeAmount,amount,afterAmount,borrowLend);
         saveObject(flow);
 
     }

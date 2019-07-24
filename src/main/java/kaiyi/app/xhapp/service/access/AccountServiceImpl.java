@@ -3,7 +3,11 @@ package kaiyi.app.xhapp.service.access;
 import kaiyi.app.xhapp.ServiceExceptionDefine;
 import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.app.xhapp.entity.access.enums.MemberShip;
+import kaiyi.app.xhapp.entity.curriculum.CourseOrder;
+import kaiyi.app.xhapp.entity.log.enums.AmountType;
+import kaiyi.app.xhapp.entity.log.enums.BorrowLend;
 import kaiyi.app.xhapp.service.InjectDao;
+import kaiyi.app.xhapp.service.log.AmountFlowService;
 import kaiyi.app.xhapp.service.log.ShortMessageSenderNoteService;
 import kaiyi.puer.commons.data.StringEditor;
 import kaiyi.puer.commons.validate.VariableVerifyUtils;
@@ -21,6 +25,8 @@ public class AccountServiceImpl extends InjectDao<Account> implements AccountSer
     private ApplicationService applicationService;
     @Resource
     private ShortMessageSenderNoteService shortMessageSenderNoteService;
+    @Resource
+    private AmountFlowService amountFlowService;
     @Override
     public void register(String phone, String password,String validateCode) throws ServiceException {
         if(!shortMessageSenderNoteService.validateCode(phone,validateCode)){
@@ -85,5 +91,16 @@ public class AccountServiceImpl extends InjectDao<Account> implements AccountSer
         if(Objects.nonNull(account)){
            account.setMemberShip(memberShip);
         }
+    }
+
+    @Override
+    public void usageGoldPayment(CourseOrder courseOrder) {
+        Account account=findForPrimary(courseOrder.getAccount().getEntityId());
+        int before=account.getGold();
+        account.setGold(account.getGold()-courseOrder.getAmount());
+        updateObject(account);
+        amountFlowService.saveNote(account,AmountType.GOLD,
+                courseOrder.getOrderId(),before,courseOrder.getAmount(),account.getGold(),
+                BorrowLend.expenditure);
     }
 }

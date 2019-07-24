@@ -1,8 +1,14 @@
 package kaiyi.app.tcsys.test;
 
+import com.alipay.api.AlipayApiException;
+import com.alipay.api.AlipayClient;
+import com.alipay.api.DefaultAlipayClient;
+import com.alipay.api.domain.AlipayTradeWapPayModel;
+import com.alipay.api.request.AlipayTradeWapPayRequest;
 import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.exceptions.ClientException;
 import kaiyi.app.xhapp.entity.curriculum.Category;
+import kaiyi.app.xhapp.entity.curriculum.CourseOrder;
 import kaiyi.app.xhapp.entity.examination.Question;
 import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
 import kaiyi.app.xhapp.service.AliyunVodHelper;
@@ -32,6 +38,7 @@ import kaiyi.puer.http.connect.HttpConnector;
 import kaiyi.puer.http.connect.OKHttpConnection;
 import kaiyi.puer.http.parse.TextParser;
 import kaiyi.puer.http.request.HttpGetRequest;
+import kaiyi.puer.web.servlet.ServletUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -252,5 +259,40 @@ public class ImportData {
             }
             System.out.println("=============");
         });
+    }
+
+    @Test
+    public void callAlipay(){
+        ConfigureService configureService=sel.getBean(ConfigureService.class);
+        String gatewayUrl=configureService.getStringValue(ConfigureItem.ALIPAY_GATEWAY_URL);
+        String appid=configureService.getStringValue(ConfigureItem.ALIPAY_APPID);
+        String privateKey=configureService.getStringValue(ConfigureItem.MY_PRIVATE_KEY);
+        String format=configureService.getStringValue(ConfigureItem.ALIPAY_FORMAT);
+        String charset=configureService.getStringValue(ConfigureItem.CHARSET);
+        String alypayPublicKey=configureService.getStringValue(ConfigureItem.ALIPAY_PUBLIC_KEY);
+        String signtype=configureService.getStringValue(ConfigureItem.ALIPAY_SIGNTYPE);
+        AlipayClient client = new DefaultAlipayClient(gatewayUrl, appid,
+                privateKey, format, charset,
+                alypayPublicKey,signtype);
+        AlipayTradeWapPayRequest alipay_request=new AlipayTradeWapPayRequest();
+        AlipayTradeWapPayModel model=new AlipayTradeWapPayModel();
+        model.setOutTradeNo("328049809849230");
+        model.setSubject("鑫鸿教育课程支付订单");
+        model.setTotalAmount(Currency.noDecimalBuild(3000,2).toString());
+        model.setBody("课程支付");
+        model.setTimeoutExpress("3m");
+        model.setProductCode("product_code");
+        alipay_request.setBizModel(model);
+        String prefix="http://http://www.xinhongapp.cn/xhapp";//ServletUtils.getRequestHostContainerProtolAndPort(interactive.getHttpServletRequest());
+        alipay_request.setReturnUrl(prefix+"/alipayNotify.xhtml");
+        alipay_request.setNotifyUrl(prefix+"/alipaySyncNotify");
+        // form表单生产
+        try {
+            // 调用SDK生成表单
+            String body = client.pageExecute(alipay_request).getBody();
+            System.out.println(body);
+        } catch (AlipayApiException e) {
+            e.printStackTrace();
+        }
     }
 }

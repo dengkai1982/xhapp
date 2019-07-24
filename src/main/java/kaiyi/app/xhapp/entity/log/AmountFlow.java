@@ -25,9 +25,17 @@ public class AmountFlow extends AbstractEntity {
     @PageField(label = "流水单号",tableLength = 160)
     private String orderId;
     @ICurrency
+    @PageField(label = "之前金额",type = FieldType.NUMBER,tableLength = 120)
+    @FieldNumber(type = FieldNumber.TYPE.LONG)
+    private int beforeAmount;
+    @ICurrency
     @PageField(label = "发生额",type = FieldType.NUMBER,tableLength = 120)
     @FieldNumber(type = FieldNumber.TYPE.LONG)
     private int amount;
+    @ICurrency
+    @PageField(label = "之后金额",type = FieldType.NUMBER,tableLength = 120)
+    @FieldNumber(type = FieldNumber.TYPE.LONG)
+    private int afterAmount;
     @IDate
     @PageField(label = "发生时间",type = FieldType.DATETIME,tableLength = 160)
     private Date createTime;
@@ -87,13 +95,31 @@ public class AmountFlow extends AbstractEntity {
     public AmountFlow() {
     }
 
-    public AmountFlow(Account account, AmountType amountType, String orderId, int amount,
-                      BorrowLend borrowLend) {
+    public AmountFlow(Account account, AmountType amountType, String orderId,int beforeAmount, int amount,
+                      int afterAmount,BorrowLend borrowLend) {
         this.account = account;
         this.amountType = amountType;
         this.orderId = orderId;
         this.amount = amount;
         this.borrowLend = borrowLend;
         this.createTime=new Date();
+        this.beforeAmount=beforeAmount;
+        this.afterAmount=afterAmount;
+    }
+
+    public int getBeforeAmount() {
+        return beforeAmount;
+    }
+
+    public void setBeforeAmount(int beforeAmount) {
+        this.beforeAmount = beforeAmount;
+    }
+
+    public int getAfterAmount() {
+        return afterAmount;
+    }
+
+    public void setAfterAmount(int afterAmount) {
+        this.afterAmount = afterAmount;
     }
 }

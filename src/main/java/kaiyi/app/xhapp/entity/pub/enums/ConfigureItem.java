@@ -57,14 +57,14 @@ public enum ConfigureItem {
 		}
 	},
 	WEIXIN_APPID{
-		//wx32c8bcbddd3ae5a7
+		//wxb9c1bafe582b1125 鑫鸿的
 		@Override
 		public String toString() {
 			return "微信Appid";
 		}
 	},
 	WEIXIN_SECRET{
-		//77dcf484da7cb77dab73bbb496f58bbc
+		//bafcd83a39b653887afdea4abbb1bd79 鑫鸿的
 		@Override
 		public String toString() {
 			return "微信Secret";
@@ -155,5 +155,55 @@ public enum ConfigureItem {
 		public String toString() {
 			return "问答题数量";
 		}
+	},
+	ALIPAY_APPID{
+		//2018013102118231
+		@Override
+		public String toString() {
+			return "支付宝APPID";
+		}
+	},
+	MY_PRIVATE_KEY{
+		@Override
+		public String toString() {
+			return "我的私钥";
+		}
+	},
+	MY_PUBLIC_KEY{
+		@Override
+		public String toString() {
+			return "我的公钥";
+		}
+	},
+	CHARSET{
+		@Override
+		public String toString() {
+			return "字符编码";
+		}
+	},
+	ALIPAY_FORMAT{
+		@Override
+		public String toString() {
+			return "编码格式";
+		}
+	},
+	ALIPAY_PUBLIC_KEY{
+		@Override
+		public String toString() {
+			return "支付宝公钥";
+		}
+	},
+	ALIPAY_SIGNTYPE{
+		@Override
+		public String toString() {
+			return "支付宝签名类型";
+		}
+	},
+	ALIPAY_GATEWAY_URL{
+		@Override
+		public String toString() {
+			return "支付宝支付网关";
+		}
 	}
+
 }

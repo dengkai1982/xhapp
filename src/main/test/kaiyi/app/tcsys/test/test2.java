@@ -11,18 +11,38 @@ import com.aliyuncs.vod.model.v20170321.GetPlayInfoResponse;
 import kaiyi.app.xhapp.service.AliyunVodHelper;
 import kaiyi.app.xhapp.service.SMSSender;
 import kaiyi.puer.commons.utils.CoderUtil;
+import kaiyi.puer.crypt.key.KeyGeneratorUtils;
 import kaiyi.puer.http.HttpException;
 import org.junit.Test;
 
+import java.security.KeyPair;
 import java.util.List;
 
 public class test2 {
+
     @Test
     public void sendsms() throws HttpException {
         SMSSender sender=new SMSSender("http://smssh1.253.com/msg/send/json",
                 "N3254716","OZzKkrxYuQ1616");
         sender.send("13350672881","【253云通讯】您的验证码为338911请在5分钟内输入。感谢您对鑫鸿教育的支持，祝您生活愉快");
     }
+
+    /**
+     * 我的秘钥
+     * MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArJNOCEqI1hOHSa2KGgNJT9MzNJWF85TRa1ppO7Ch98MSXYCGV6CU/Lb9wPH3MZ25p8yOzLlbAaEFMXEUZqinJBBW7alUK4+MbWsoRzU9Svx0lgWnywwoDTJFX2gj2wZeAkgHFGSbeL7wRJRVE8A0yCC4tu0QAWaEhOrSi3OLb0Ay7Njw/Afw0eKFWx11S7wXtVyAPGe2K55aELkEFq/WsJVpkR05wvzzs3F5qAoQSga/i52EzaQEPRcucbhBfQYkPdgF6xU4zxAc8cp/CaSLb2FK++c40v51/7Qqnpe56iCQwKAbOUB1BRmgqBuETh2McKGvkPwL9GKGg+VroHRzRQIDAQAB
+     * MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCsk04ISojWE4dJrYoaA0lP0zM0lYXzlNFrWmk7sKH3wxJdgIZXoJT8tv3A8fcxnbmnzI7MuVsBoQUxcRRmqKckEFbtqVQrj4xtayhHNT1K/HSWBafLDCgNMkVfaCPbBl4CSAcUZJt4vvBElFUTwDTIILi27RABZoSE6tKLc4tvQDLs2PD8B/DR4oVbHXVLvBe1XIA8Z7YrnloQuQQWr9awlWmRHTnC/POzcXmoChBKBr+LnYTNpAQ9Fy5xuEF9BiQ92AXrFTjPEBzxyn8JpItvYUr75zjS/nX/tCqel7nqIJDAoBs5QHUFGaCoG4ROHYxwoa+Q/Av0YoaD5WugdHNFAgMBAAECggEAGu9+7XJcuzUfF5Pbi0XaCniHdHymBKfErAHXjPZ7wUUUN73YuhKZTnxtTNE3aOoaUSNvYmrH1pBAVEA3E/Lc65cVSlD0jzv/ihCAn+SiZXLT65qEXv/NvImNJGAHwKbUw3xkhn1Ret4qeDnCsat9UYMx8XM83UsYAfr408U8DSfwSodsnmYe1yx0leS0JqNDviJuGLGRbh6avfILgiCKn3TU9stPbhQzRNEc0Ac1az1TngGPLQ5zJ8wckb1tzoKvxFKtqhOrNOXhE9WOz/wWjK/cuHgWuqm8kC0vLG8lNlAtoGQM5Jl5M4SeA7GK0WH+7WNZlGUdQ2c/buQQtxaR3QKBgQD9JlNjiTVyoCkF3bhYrV+rtoz01zlRGbA1n7eaqH6rw8muxv8urQgZbeecS5RfZZrwOLngBs+1cu/dp22c73JOQYqw+98C4DT0h88eKDRrRNheVMadrBBCyXciHCfUbzaqP8EXH4cLBsgoKFEarwoiQcE+ptqkG2CqIOuEkO2jRwKBgQCuhLuulqrRwGulOL0uJ2XY89HQ8R1saSXn3NOgVcojZFZ+QkO6ahTA0aEmIsWw1LxTLp7wt8XDCIn2Xy0yjp3DvZ+lQHc5MobRYK5awq60WyBztvL6IqOjqOr8gZQE4Jz4IhPQzdvOU5B5nhv8yAZElUegsoDd4vSGkONWk5yDEwKBgQCEwNR6HjopIlRg/yTtW/4Pzmuc+kDUhuQhOuDN+g5zhPj+7txjXdohe8E59WiZnm7iCt1u3iOOw/eGBYc2BVusLjLNHUiV+X3LvmyfI/ZZSoEs9sgxZ0ofvAb9nEZG4QuJvGVF+wKWhbfxVzMxCxoFXPY6JMYDyVen4BuiKV51gQKBgQCSMBnPa+J3hcomQtsl+Fa2X7eYYQGWuJXKHg8gNfz3nKtfZD67vvTXeEKXYXVcZTfELj9xwV9lupdmy99ehFzfhM5gbRnxzcNlTKmA2afi6JrMk6oBolaVV4BQOHM3ireym0kiFe9UbGePmMQ1AZFOjgXMNPsB44WV23S0Jz5qBQKBgFUkSIAbCTN8+1cPzdQwzQRLTKAi0u9IT2nEfBSRD2/BZ2NtWdrYt71AVRc+NoWKV1Esnz4sCNI6+F5aPlupRvjGLxpqWAlKAMXEgTFxvPGMFi9zYy8KQQKhQTcs89WCbKCglgxZPleBVv4zmsvpie58hBOEnPhliWHQaZzJtiMC
+       支付宝公钥
+       MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAz64aDBM7gh/1rDi7xJd1hraad334uUx6pp5sEXrY0DAFaTQP6pgtAmFBYrqYcqi5QVC7M+ftEdm+wxpRGtyV1r+qbH75pkqbTEL6A7B6X9RHwRVOCIlxUpnwsbeouQ4/T2gfOCdXMejraULt+qP0V0YcfCwcL83rTTUnNe20az2M9kw32X05nc123u+s9DbMDtuEdEkykvfpctp4vgVQALBMoM8ME7hgcS2WwxRDsHULI0//vDJmdWbKlVWqakZBSTbW/eAZ7gtevjOwId0o0ZyUSvNSe6hNIdxun6Bh+4q/nH3YjqApbdAJtCLEbGNJr6F/a9ETBTD1r5vYRhA+UQIDAQAB
+       支付宝AES秘钥
+       e+Fz6+Bo/5Mbbnze6fbq6g==
+     */
+    @Test
+    public void key(){
+        KeyPair keyPair=KeyGeneratorUtils.generatorRSAKey(2048);
+        System.out.println(CoderUtil.base64Encode(keyPair.getPublic().getEncoded()));
+        System.out.println(CoderUtil.base64Encode(keyPair.getPrivate().getEncoded()));
+    }
+
     @Test
     public void alivod() throws Exception {
         DefaultAcsClient client=AliyunVodHelper.initVodClient("LTAIrqzREtcK5vSq","E6UdEzJxsyZ0E28iqdyIazR4JNLlTr");
