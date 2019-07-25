@@ -1,10 +1,12 @@
 package kaiyi.app.xhapp.service.curriculum;
 
 import kaiyi.app.xhapp.ServiceExceptionDefine;
+import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.app.xhapp.entity.access.VisitorUser;
 import kaiyi.app.xhapp.entity.curriculum.CourseProblem;
 import kaiyi.app.xhapp.entity.curriculum.FaceToFace;
 import kaiyi.app.xhapp.service.InjectDao;
+import kaiyi.app.xhapp.service.access.AccountService;
 import kaiyi.app.xhapp.service.access.VisitorUserService;
 import kaiyi.puer.db.orm.ServiceException;
 import org.springframework.stereotype.Service;
@@ -17,9 +19,12 @@ import java.util.Objects;
 public class FaceToFaceServiceImpl extends InjectDao<FaceToFace> implements FaceToFaceService {
     @Resource
     private VisitorUserService visitorUserSerivce;
+    @Resource
+    private AccountService accountService;
     @Override
-    public void make(String name, String phone, String course, Date faceTime) {
-        FaceToFace faceToFace=new FaceToFace(name,phone,course,faceTime);
+    public void make(String accountId,String name, String phone, String course, Date faceTime) {
+        Account account=accountService.findForPrimary(accountId);
+        FaceToFace faceToFace=new FaceToFace(account,name,phone,course,faceTime);
         saveObject(faceToFace);
     }
 

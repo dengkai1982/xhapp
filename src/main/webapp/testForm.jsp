@@ -9,12 +9,12 @@
     <h1>测试</h1>
     <script src="${contextPath}/js/app.js" type="text/javascript"></script>
     <script type="text/javascript">
-        queryDataOfOrderBySetUrl("${contextPath}/app/query/pagination${suffix}","examQuestionItemService",
+        queryDataOfOrderBySetUrl("${contextPath}/app/query/pagination${suffix}","shopCarService",
             [{
-                field:"owner",
+                field:"account",
                 condition:"0",
-                value:"15562127039610033"
-            }],0,100,"weight","ase",function(d){
+                value:"15577347786510046"
+            }],0,100,"joinTime","ase",function(d){
                 console.log(d);
             })
     </script>

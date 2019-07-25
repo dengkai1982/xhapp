@@ -4,6 +4,7 @@ import kaiyi.app.xhapp.entity.AbstractEntity;
 import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.app.xhapp.entity.access.enums.CapitalType;
 import kaiyi.app.xhapp.entity.curriculum.enums.CourseOrderStatus;
+import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.data.ICurrency;
 import kaiyi.puer.commons.data.IDate;
 import kaiyi.puer.h5ui.annotations.*;
@@ -19,7 +20,7 @@ public class CourseOrder extends AbstractEntity {
     private static final long serialVersionUID = -6133783542944108049L;
 
     @PageField(label = "下单会员",type = FieldType.REFERENCE)
-    @FieldReference(fieldName = "phone")
+    @FieldReference(fieldName = "showAccountName")
     private Account account;
     @PageField(label = "订单号")
     private String orderId;
@@ -37,12 +38,17 @@ public class CourseOrder extends AbstractEntity {
     @FieldChosen
     private CourseOrderStatus status;
     @IDate
-    @PageField(label = "付款时间",type = FieldType.REFERENCE)
+    @PageField(label = "付款时间",type = FieldType.DATETIME)
     private Date paymentDate;
     @PageField(label = "支付单号",tableLength = 160)
     private String platformOrderId;
 
     private Set<OrderItem> orderItems;
+
+    @Override
+    public StreamArray<String> filterField() {
+        return new StreamArray<>(new String[]{"orderItems"});
+    }
 
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
     @JoinColumn(name="account")
@@ -110,7 +116,7 @@ public class CourseOrder extends AbstractEntity {
         this.orderId = orderId;
     }
 
-    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER,mappedBy = "courseOrder")
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,mappedBy = "courseOrder")
     public Set<OrderItem> getOrderItems() {
         return orderItems;
     }

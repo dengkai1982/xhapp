@@ -46,12 +46,12 @@ public class ConcernResumeServiceImpl extends InjectDao<ConcernResume> implement
                         public JsonCreator getCreator(ConcernResume entity, String field, Object fieldValue) {
                             if(field.equals("createTime")){
                                 return new StringJsonCreator(DateTimeUtil.yyyyMMddHHmmss.format(entity.getCreateTime()));
-                            }else if(field.equals("account")){
-                                Account account=entity.getAccount();
-                                String fields[]= BeanSyntacticSugar.getFieldStringNotStatic(account.getClass(),
-                                        account.filterField().getArray());
-                                ObjectJsonCreator<Account> ojc = new ObjectJsonCreator(account,fields,
-                                        account.jsonFieldReplacePolicy(),new DefaultJsonValuePolicy(null));
+                            }else if(field.equals("enterprise")){
+                                Enterprise enterprise=entity.getEnterprise();
+                                String fields[]= BeanSyntacticSugar.getFieldStringNotStatic(enterprise.getClass(),
+                                        enterprise.filterField().getArray());
+                                ObjectJsonCreator<Account> ojc = new ObjectJsonCreator(enterprise,fields,
+                                        enterprise.jsonFieldReplacePolicy(),new DefaultJsonValuePolicy(null));
                                 return ojc;
                             }else if(field.equals("resume")){
                                 Resume resume=entity.getResume();
@@ -75,8 +75,8 @@ public class ConcernResumeServiceImpl extends InjectDao<ConcernResume> implement
     @Override
     protected void objectBeforePersistHandler(ConcernResume concernResume, Map<String, JavaDataTyper> params) throws ServiceException {
         concernResume.setCreateTime(new Date());
-        QueryExpress query=new CompareQueryExpress("account",CompareQueryExpress.Compare.EQUAL,
-                concernResume.getAccount());
+        QueryExpress query=new CompareQueryExpress("enterprise",CompareQueryExpress.Compare.EQUAL,
+                concernResume.getEnterprise());
         query=new LinkQueryExpress(query, LinkQueryExpress.LINK.AND,new CompareQueryExpress("resume",
                 CompareQueryExpress.Compare.EQUAL,concernResume.getResume()));
         if(exist(query)){

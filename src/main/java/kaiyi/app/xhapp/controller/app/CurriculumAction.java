@@ -296,11 +296,12 @@ public class CurriculumAction extends SuperAction {
      */
     @PostMapping("/faceToFace")
     public void faceToFace(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        String accountId=interactive.getStringParameter("accountId","");
         String name=interactive.getStringParameter("name","");
         String phone=interactive.getStringParameter("phone","");
         String course=interactive.getStringParameter("course","");
         Date faceTime=interactive.getDateParameter("faceTime",new SimpleDateFormat("yyyy-MM-dd"));
-        faceToFaceService.make(name,phone,course,faceTime);
+        faceToFaceService.make(accountId,name,phone,course,faceTime);
     }
 
     /**

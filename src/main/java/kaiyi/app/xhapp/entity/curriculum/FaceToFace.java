@@ -1,6 +1,7 @@
 package kaiyi.app.xhapp.entity.curriculum;
 
 import kaiyi.app.xhapp.entity.AbstractEntity;
+import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.app.xhapp.entity.access.VisitorUser;
 import kaiyi.puer.commons.data.IDate;
 import kaiyi.puer.h5ui.annotations.*;
@@ -14,6 +15,9 @@ public class FaceToFace extends AbstractEntity {
 
     public static final String TABLE_NAME="face_to_face";
     private static final long serialVersionUID = 382207949594296164L;
+    @PageField(label = "提交人",type = FieldType.REFERENCE,tableLength = 140)
+    @FieldReference(fieldName = "showAccountName")
+    private Account account;
     @PageField(label = "预约人")
     private String name;
     @PageField(label = "联系电话")
@@ -104,10 +108,19 @@ public class FaceToFace extends AbstractEntity {
     public FaceToFace() {
     }
 
-    public FaceToFace(String name, String phone, String course, Date faceTime) {
+    public FaceToFace(Account account,String name, String phone, String course, Date faceTime) {
         this.name = name;
         this.phone = phone;
         this.course = course;
         this.faceTime = faceTime;
+        this.account=account;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
     }
 }

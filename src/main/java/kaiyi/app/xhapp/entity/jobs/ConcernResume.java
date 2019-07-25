@@ -16,9 +16,9 @@ import java.util.Date;
 public class ConcernResume extends AbstractEntity {
     public static final String TABLE_NAME="concern_resume";
     private static final long serialVersionUID = 477782534036162556L;
-    @PageField(label = "关注人",type = FieldType.REFERENCE)
-    @FieldReference(fieldName = "phone")
-    private Account account;
+    @PageField(label = "企业名称",type = FieldType.REFERENCE)
+    @FieldReference(fieldName = "enterpriseName")
+    private Enterprise enterprise;
     @PageField(label = "简历人员姓名",type = FieldType.REFERENCE)
     @FieldReference(fieldName = "name")
     private Resume resume;
@@ -26,14 +26,15 @@ public class ConcernResume extends AbstractEntity {
     @PageField(label = "关注时间",type = FieldType.DATETIME)
     private Date createTime;
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
-    @JoinColumn(name="account")
-    public Account getAccount() {
-        return account;
+    @JoinColumn(name="enterprise")
+    public Enterprise getEnterprise() {
+        return enterprise;
     }
 
-    public void setAccount(Account account) {
-        this.account = account;
+    public void setEnterprise(Enterprise enterprise) {
+        this.enterprise = enterprise;
     }
+
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
     @JoinColumn(name="resume")
     public Resume getResume() {
