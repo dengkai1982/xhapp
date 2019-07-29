@@ -4,6 +4,7 @@ import kaiyi.app.xhapp.ServiceExceptionDefine;
 import kaiyi.app.xhapp.entity.curriculum.Category;
 import kaiyi.app.xhapp.entity.examination.ChoiceAnswer;
 import kaiyi.app.xhapp.entity.examination.Question;
+import kaiyi.app.xhapp.entity.examination.QuestionCategory;
 import kaiyi.app.xhapp.entity.examination.enums.QuestionType;
 import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.puer.commons.collection.StreamArray;
@@ -57,11 +58,11 @@ public class QuestionServiceImpl extends InjectDao<Question> implements Question
     }
 
     @Override
-    public Question parseQuestion(List<ExcelData> line, StreamCollection<Category> categories) throws ServiceException {
+    public Question parseQuestion(List<ExcelData> line, StreamCollection<QuestionCategory> categories) throws ServiceException {
         Question question=new Question();
         String detail = line.get(0).getData().stringValue();
         String categoryName= line.get(1).getData().stringValue();
-        Category category=categories.find(h->{
+        QuestionCategory category=categories.find(h->{
             return h.getName().equals(categoryName);
         });
         if(Objects.isNull(categories)){

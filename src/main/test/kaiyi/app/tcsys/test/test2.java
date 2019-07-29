@@ -13,6 +13,8 @@ import kaiyi.app.xhapp.service.SMSSender;
 import kaiyi.puer.commons.utils.CoderUtil;
 import kaiyi.puer.crypt.key.KeyGeneratorUtils;
 import kaiyi.puer.http.HttpException;
+import kaiyi.puer.json.creator.MapJsonCreator;
+import kaiyi.puer.json.creator.StringJsonCreator;
 import org.junit.Test;
 
 import java.security.KeyPair;
@@ -23,10 +25,22 @@ public class test2 {
     @Test
     public void sendsms() throws HttpException {
         SMSSender sender=new SMSSender("http://smssh1.253.com/msg/send/json",
-                "N3254716","OZzKkrxYuQ1616");
-        sender.send("13350672881","【253云通讯】您的验证码为338911请在5分钟内输入。感谢您对鑫鸿教育的支持，祝您生活愉快");
+                "N0300104","4tVpf5G7yM42e5");
+        sender.send("13350672881","【鑫鸿学校】您的验证码为338911请在5分钟内输入。感谢您对鑫鸿教育的支持，祝您生活愉快");
     }
 
+    @Test
+    public void weixinJosn(){
+        MapJsonCreator json=new MapJsonCreator();
+        json.put("appid",new StringJsonCreator("3242143421"));
+        json.put("partnerid",new StringJsonCreator("3242143421"));
+        json.put("noncestr",new StringJsonCreator("3242143421"));
+        json.put("package",new StringJsonCreator("3242143421"));
+        json.put("prepayid",new StringJsonCreator("3242143421"));
+        json.put("timestamp",new StringJsonCreator("3242143421"));
+        json.put("sign",new StringJsonCreator("3242143421"));
+        System.out.println(json.build());
+    }
     /**
      * 我的秘钥
      * MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArJNOCEqI1hOHSa2KGgNJT9MzNJWF85TRa1ppO7Ch98MSXYCGV6CU/Lb9wPH3MZ25p8yOzLlbAaEFMXEUZqinJBBW7alUK4+MbWsoRzU9Svx0lgWnywwoDTJFX2gj2wZeAkgHFGSbeL7wRJRVE8A0yCC4tu0QAWaEhOrSi3OLb0Ay7Njw/Afw0eKFWx11S7wXtVyAPGe2K55aELkEFq/WsJVpkR05wvzzs3F5qAoQSga/i52EzaQEPRcucbhBfQYkPdgF6xU4zxAc8cp/CaSLb2FK++c40v51/7Qqnpe56iCQwKAbOUB1BRmgqBuETh2McKGvkPwL9GKGg+VroHRzRQIDAQAB

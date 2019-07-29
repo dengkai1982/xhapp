@@ -107,7 +107,7 @@
     function pageReady(doc) {
         var single=false;
         $("#categoryReference").removeClass("popupSingleChoose").click(function(){
-            queryCategory("选择试题所属类别","category","categoryReference",function(){
+            queryQuestionCategory("选择试题所属类别","category","categoryReference",function(){
                 console.log("close");
             })
         })

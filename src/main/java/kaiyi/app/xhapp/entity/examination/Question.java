@@ -26,7 +26,7 @@ public class Question extends AbstractEntity {
     @NotEmpty(hint = "所属类别名称必须选择")
     @PageField(label = "所属类别名称",type = FieldType.REFERENCE,tableLength = 140)
     @FieldReference(fieldName = "name")
-    private Category category;
+    private QuestionCategory category;
     @NotEmpty(hint = "题目类型必须选择")
     @PageField(label = "题目类型",type = FieldType.CHOSEN)
     @FieldChosen
@@ -62,11 +62,11 @@ public class Question extends AbstractEntity {
     }
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
     @JoinColumn(name="category")
-    public Category getCategory() {
+    public QuestionCategory getCategory() {
         return category;
     }
 
-    public void setCategory(Category category) {
+    public void setCategory(QuestionCategory category) {
         this.category = category;
     }
     @Lob

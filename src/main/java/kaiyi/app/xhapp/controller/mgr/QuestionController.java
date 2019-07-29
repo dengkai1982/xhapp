@@ -3,21 +3,29 @@ package kaiyi.app.xhapp.controller.mgr;
 
 import kaiyi.app.xhapp.entity.curriculum.Category;
 import kaiyi.app.xhapp.entity.examination.Question;
+import kaiyi.app.xhapp.entity.examination.QuestionCategory;
 import kaiyi.app.xhapp.entity.examination.TestPager;
 import kaiyi.app.xhapp.entity.examination.TestPagerQuestion;
 import kaiyi.app.xhapp.service.curriculum.CategoryService;
 import kaiyi.app.xhapp.service.examination.ExamQuestionService;
+import kaiyi.app.xhapp.service.examination.QuestionCategoryService;
 import kaiyi.app.xhapp.service.examination.QuestionService;
 import kaiyi.app.xhapp.service.examination.TestPagerService;
 import kaiyi.puer.commons.access.AccessControl;
+import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.JavaDataTyper;
 import kaiyi.puer.commons.data.StringEditor;
 import kaiyi.puer.commons.poi.ExcelUtils;
 import kaiyi.puer.commons.utils.CoderUtil;
 import kaiyi.puer.db.orm.ServiceException;
+import kaiyi.puer.db.query.CompareQueryExpress;
+import kaiyi.puer.db.query.NullQueryExpress;
+import kaiyi.puer.db.query.QueryExpress;
 import kaiyi.puer.h5ui.bean.DynamicGridInfo;
+import kaiyi.puer.json.JsonCreator;
 import kaiyi.puer.json.creator.JsonMessageCreator;
+import kaiyi.puer.web.elements.FormElementHidden;
 import kaiyi.puer.web.servlet.WebInteractive;
 import kaiyi.puer.web.springmvc.IWebInteractive;
 import org.springframework.stereotype.Controller;
@@ -28,6 +36,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -43,7 +52,7 @@ public class QuestionController extends ManagerController {
     @Resource
     private TestPagerService testPagerService;
     @Resource
-    private CategoryService categoryService;
+    private QuestionCategoryService questionCategoryService;
     @RequestMapping("/question")
     @AccessControl(name = "试题库", weight = 5.1f, detail = "管理试题库内容", code = rootPath+ "/question", parent = rootPath)
     public String question(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
@@ -94,7 +103,7 @@ public class QuestionController extends ManagerController {
         File file=new File(path);
         JsonMessageCreator jmc=getSuccessMessage();
         AtomicReference<Question> questionReference=new AtomicReference<>();
-        StreamCollection<Category> categories=categoryService.getEntitys();
+        StreamCollection<QuestionCategory> categories=questionCategoryService.getEntitys();
         if(Objects.nonNull(file)&&file.exists()){
             ExcelUtils.readExcel(file, line->{
                 if(!line.get(0).getData().stringValue().equals("试题题目")){
@@ -217,4 +226,96 @@ public class QuestionController extends ManagerController {
         testPagerService.removeQuestion(entityId);
         interactive.writeUTF8Text(getSuccessMessage().build());
     }
+
+    @RequestMapping("/questionCategory")
+    @AccessControl(name = "试题分类", weight = 5.3f, detail = "试题分类", code = rootPath+ "/questionCategory", parent = rootPath)
+    public String questionCategory(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        setDefaultPage(interactive,rootPath+"/questionCategory");
+        String parent=interactive.getStringParameter("parent","");
+        interactive.setRequestAttribute("parent",parent);
+        QueryExpress queryExpress=null;
+        FormElementHidden[] hiddens=null;
+        if(StringEditor.notEmpty(parent)){
+            QuestionCategory questionCategory=questionCategoryService.findForPrimary(parent);
+            hiddens=new FormElementHidden[]{
+                    new FormElementHidden("parent",parent)
+            };
+            queryExpress=new CompareQueryExpress("parent",CompareQueryExpress.Compare.EQUAL,questionCategory);
+            if(Objects.nonNull(questionCategory)){
+                Map<String,Object> params=new HashMap<>();
+                StreamArray<Integer> pageNumbers=getPageNumberStack(interactive);
+                boolean isback=interactive.getBoolean("isback","true",false);
+                int previous=pageNumbers.getLast();
+                if(isback){
+                    pageNumbers.removeLast();
+                    previous=pageNumbers.getLast();
+                }else{
+                    interactive.setCurrentPage(1);
+                }
+                String pageNumber=pageNumbers.joinString(m->{
+                    return m.toString();
+                },",");
+                interactive.setRequestAttribute("pageNumber",pageNumber);
+                params.put(WebInteractive.PAGINATION_PARAMETER_CURRENT_PAGE,previous);
+                params.put("pageNumber",pageNumber);
+                params.put("isback",true);
+                if(questionCategory.getParent()!=null){
+                    params.put("parent",questionCategory.getParent().getEntityId());
+                }
+                interactive.getWebPage().setBackPage(rootPath+"/questionCategory",params);
+                interactive.setRequestAttribute("hasParent",true);
+            }
+        }else{
+            queryExpress=new NullQueryExpress("parent",NullQueryExpress.NullCondition.IS_NULL);
+            hiddens=new FormElementHidden[]{
+                    new FormElementHidden("topParent","topParent"),
+                    new FormElementHidden("deliver","true")
+            };
+        }
+        mainTablePage(interactive,questionCategoryService,queryExpress,hiddens,new DynamicGridInfo(false,DynamicGridInfo.OperMenuType.popup));
+        return rootPath+"/questionCategory";
+    }
+
+    @RequestMapping("/questionCategory/new")
+    @AccessControl(name = "新增试题分类", weight = 5.31f,code = rootPath+ "/questionCategory/new", parent = rootPath+"/questionCategory")
+    public String questionCategoryNew(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        String parent=interactive.getStringParameter("parent","");
+        if(Objects.nonNull(parent)){
+            interactive.setRequestAttribute("parent",questionCategoryService.findForPrimary(parent));
+        }
+        newOrEditPage(interactive,questionCategoryService,3);
+        setDefaultPage(interactive,rootPath+"/questionCategory");
+        return rootPath+"/questionCategoryForm";
+    }
+    @RequestMapping("/questionCategory/modify")
+    @AccessControl(name = "编辑试题分类", weight = 5.32f,code = rootPath+ "/questionCategory/modify", parent = rootPath+"/questionCategory")
+    public String questionCategoryModify(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        newOrEditPage(interactive,questionCategoryService,3);
+        setDefaultPage(interactive,rootPath+"/questionCategory");
+        String parent=interactive.getStringParameter("parent","");
+        if(Objects.nonNull(parent)){
+            interactive.setRequestAttribute("parent",questionCategoryService.findForPrimary(parent));
+        }
+        return rootPath+"/questionCategoryForm";
+    }
+    @PostMapping("/questionCategory/commit")
+    public void questionCategoryCommit(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        JsonMessageCreator msg=executeNewOrUpdate(interactive,questionCategoryService);
+        interactive.writeUTF8Text(msg.build());
+    }
+
+    @RequestMapping("/categoryEnableQuery")
+    public String categoryEnableQuery(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        StreamCollection<QuestionCategory> categories=questionCategoryService.getEnableRootCategory();
+        String treeData=questionCategoryService.toJsonTree(categories,"categoryQueryTree.ftlh");
+        if(StringEditor.isEmpty(treeData)){
+            treeData=JsonCreator.EMPTY_JSON;
+        }
+        interactive.setRequestAttribute("referenceQueryName",interactive.getStringParameter("referenceQueryName",""));
+        interactive.setRequestAttribute("referenceQueryId",interactive.getStringParameter("referenceQueryId",""));
+        interactive.setRequestAttribute("treeData",treeData);
+        return rootPath+"/questionCategoryQuery";
+    }
+
+    //categoryEnableQuery
 }

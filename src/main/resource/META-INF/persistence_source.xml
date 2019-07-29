@@ -5,54 +5,55 @@
 		http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd" version="2.0">
   <persistence-unit name="pc_unit" transaction-type="RESOURCE_LOCAL">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+    <class>kaiyi.app.xhapp.entity.access.RoleAuthorizationMenu</class>
     <class>kaiyi.app.xhapp.entity.access.VisitorUser</class>
+    <class>kaiyi.app.xhapp.entity.access.Account</class>
     <class>kaiyi.app.xhapp.entity.access.VisitorMenu</class>
     <class>kaiyi.app.xhapp.entity.access.VisitorRole</class>
-    <class>kaiyi.app.xhapp.entity.access.RoleAuthorizationMenu</class>
-    <class>kaiyi.app.xhapp.entity.access.Account</class>
-    <class>kaiyi.app.xhapp.entity.curriculum.CourseComment</class>
-    <class>kaiyi.app.xhapp.entity.curriculum.Teacher</class>
-    <class>kaiyi.app.xhapp.entity.curriculum.CourseProblem</class>
-    <class>kaiyi.app.xhapp.entity.curriculum.Course</class>
-    <class>kaiyi.app.xhapp.entity.curriculum.ShopCar</class>
-    <class>kaiyi.app.xhapp.entity.curriculum.OrderItem</class>
     <class>kaiyi.app.xhapp.entity.curriculum.CourseOrder</class>
-    <class>kaiyi.app.xhapp.entity.curriculum.MediaLibrary</class>
-    <class>kaiyi.app.xhapp.entity.curriculum.CourseFavorites</class>
-    <class>kaiyi.app.xhapp.entity.curriculum.CourseBuyerPrivilege</class>
-    <class>kaiyi.app.xhapp.entity.curriculum.FaceToFace</class>
-    <class>kaiyi.app.xhapp.entity.curriculum.PaymentNotify</class>
-    <class>kaiyi.app.xhapp.entity.curriculum.AlreadyCourse</class>
     <class>kaiyi.app.xhapp.entity.curriculum.Chapter</class>
     <class>kaiyi.app.xhapp.entity.curriculum.CourseMovie</class>
+    <class>kaiyi.app.xhapp.entity.curriculum.Teacher</class>
+    <class>kaiyi.app.xhapp.entity.curriculum.ShopCar</class>
+    <class>kaiyi.app.xhapp.entity.curriculum.FaceToFace</class>
+    <class>kaiyi.app.xhapp.entity.curriculum.AlreadyCourse</class>
+    <class>kaiyi.app.xhapp.entity.curriculum.CourseComment</class>
+    <class>kaiyi.app.xhapp.entity.curriculum.PaymentNotify</class>
+    <class>kaiyi.app.xhapp.entity.curriculum.CourseProblem</class>
+    <class>kaiyi.app.xhapp.entity.curriculum.CourseFavorites</class>
+    <class>kaiyi.app.xhapp.entity.curriculum.OrderItem</class>
+    <class>kaiyi.app.xhapp.entity.curriculum.MediaLibrary</class>
     <class>kaiyi.app.xhapp.entity.curriculum.Category</class>
+    <class>kaiyi.app.xhapp.entity.curriculum.CourseBuyerPrivilege</class>
+    <class>kaiyi.app.xhapp.entity.curriculum.Course</class>
     <class>kaiyi.app.xhapp.entity.pub.Notice</class>
     <class>kaiyi.app.xhapp.entity.pub.Configure</class>
-    <class>kaiyi.app.xhapp.entity.log.AmountFlow</class>
-    <class>kaiyi.app.xhapp.entity.log.ShortMessageSenderNote</class>
     <class>kaiyi.app.xhapp.entity.log.CourseBrowse</class>
+    <class>kaiyi.app.xhapp.entity.log.ShortMessageSenderNote</class>
+    <class>kaiyi.app.xhapp.entity.log.AmountFlow</class>
     <class>kaiyi.app.xhapp.entity.pages.ExamInfo</class>
     <class>kaiyi.app.xhapp.entity.pages.DisplayMap</class>
     <class>kaiyi.app.xhapp.entity.pub.Notice</class>
     <class>kaiyi.app.xhapp.entity.pub.Configure</class>
+    <class>kaiyi.app.xhapp.entity.jobs.Resume</class>
+    <class>kaiyi.app.xhapp.entity.jobs.ConcernResume</class>
     <class>kaiyi.app.xhapp.entity.jobs.Position</class>
     <class>kaiyi.app.xhapp.entity.jobs.Enterprise</class>
-    <class>kaiyi.app.xhapp.entity.jobs.ConcernResume</class>
+    <class>kaiyi.app.xhapp.entity.jobs.Certificate</class>
+    <class>kaiyi.app.xhapp.entity.jobs.WorkExperience</class>
     <class>kaiyi.app.xhapp.entity.jobs.ConcernRecruitment</class>
     <class>kaiyi.app.xhapp.entity.jobs.Recruitment</class>
-    <class>kaiyi.app.xhapp.entity.jobs.Certificate</class>
     <class>kaiyi.app.xhapp.entity.jobs.ConcernEnterprise</class>
-    <class>kaiyi.app.xhapp.entity.jobs.WorkExperience</class>
-    <class>kaiyi.app.xhapp.entity.jobs.Resume</class>
+    <class>kaiyi.app.xhapp.entity.examination.QuestionCategory</class>
     <class>kaiyi.app.xhapp.entity.examination.Question</class>
-    <class>kaiyi.app.xhapp.entity.examination.TestPagerQuestion</class>
-    <class>kaiyi.app.xhapp.entity.examination.ExamQuestionItem</class>
-    <class>kaiyi.app.xhapp.entity.examination.ChoiceAnswer</class>
     <class>kaiyi.app.xhapp.entity.examination.ExamChoiceAnswer</class>
     <class>kaiyi.app.xhapp.entity.examination.ExamQuestion</class>
     <class>kaiyi.app.xhapp.entity.examination.TestPager</class>
-    <class>kaiyi.app.xhapp.entity.sys.QNumberManager</class>
+    <class>kaiyi.app.xhapp.entity.examination.ChoiceAnswer</class>
+    <class>kaiyi.app.xhapp.entity.examination.TestPagerQuestion</class>
+    <class>kaiyi.app.xhapp.entity.examination.ExamQuestionItem</class>
     <class>kaiyi.app.xhapp.entity.sys.Consultation</class>
+    <class>kaiyi.app.xhapp.entity.sys.QNumberManager</class>
 	  <properties>
          <property name="hibernate.dialect" value="kaiyi.puer.db.MySQL5DialectUseInnoDB"/>
          <property name="hibernate.max_fetch_depth" value="3"/>

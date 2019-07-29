@@ -220,14 +220,16 @@ public class Course extends AbstractEntity {
 
     /*
         计算课程售价
-         */
+    */
     @Transient
     public int computerCoursePrice(Account account){
         int price=getPrice();
         StreamCollection<CourseBuyerPrivilege> privileges=getPrivilegeStream();
-        for(CourseBuyerPrivilege privilege:privileges){
-            if(privilege.getMemberShip().getItemNumber()==account.getMemberShip().getItemNumber()){
-                return privilege.getPrice();
+        if(account.getMemberShip()!=null){
+            for(CourseBuyerPrivilege privilege:privileges){
+                if(privilege.getMemberShip().getItemNumber()==account.getMemberShip().getItemNumber()){
+                    return privilege.getPrice();
+                }
             }
         }
         return price;

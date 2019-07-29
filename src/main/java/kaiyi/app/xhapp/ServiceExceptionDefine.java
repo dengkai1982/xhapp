@@ -1,5 +1,6 @@
 package kaiyi.app.xhapp;
 
+import kaiyi.app.xhapp.entity.curriculum.AlreadyCourse;
 import kaiyi.puer.db.orm.ServiceException;
 
 /**
@@ -62,4 +63,12 @@ public class ServiceExceptionDefine {
 
     public static final ServiceException questionType=new ServiceException(
             ServiceException.CODE_FAIL,"所属类型错误");
+
+    public static final ServiceException courseNotFree=new ServiceException(
+            ServiceException.CODE_FAIL,"所选课程非免费课程");
+
+    public static final ServiceException alreadyCourseExist=new ServiceException(
+            ServiceException.CODE_FAIL,"所选课程已加入到已购清单");
+
+
 }

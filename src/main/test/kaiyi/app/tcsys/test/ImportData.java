@@ -65,7 +65,7 @@ public class ImportData {
         }
     }
 
-    @Test
+    /*@Test
     public void excelImport() throws IOException {
         CategoryService categoryService=sel.getBean(CategoryService.class);
         QuestionService questionService=sel.getBean(QuestionService.class);
@@ -100,7 +100,7 @@ public class ImportData {
             questionService.saveObject(questionReference.get());
         }
         //file.delete();
-    }
+    }*/
 
 
     @Test

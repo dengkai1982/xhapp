@@ -3,6 +3,7 @@ package kaiyi.app.xhapp.service.examination;
 import kaiyi.app.xhapp.entity.curriculum.Category;
 import kaiyi.app.xhapp.entity.examination.ChoiceAnswer;
 import kaiyi.app.xhapp.entity.examination.Question;
+import kaiyi.app.xhapp.entity.examination.QuestionCategory;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.poi.ExcelData;
 import kaiyi.puer.db.orm.DatabaseFastOper;
@@ -31,7 +32,7 @@ public interface QuestionService extends DatabaseQuery<Question>, DatabaseFastOp
     boolean isQuestion(List<ExcelData> line);
 
 
-    Question parseQuestion(List<ExcelData> line,StreamCollection<Category> categories)throws ServiceException;
+    Question parseQuestion(List<ExcelData> line,StreamCollection<QuestionCategory> categories)throws ServiceException;
 
     void parseChoiceAnswer(Question question,List<ExcelData> line)throws ServiceException;
 }

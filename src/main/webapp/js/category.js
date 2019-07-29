@@ -24,3 +24,22 @@ function queryCategory(windowTitle,referenceQueryId,referenceQueryName,windowClo
             $("#triggerModal").remove();
         }});
 }
+function queryQuestionCategory(windowTitle,referenceQueryId,referenceQueryName,windowClose){
+    var time=new Date().getTime();
+    var url=contextPath+"/mgr/examination/categoryEnableQuery"+suffix+"?referenceQueryId="+referenceQueryId+"&referenceQueryName="+referenceQueryName+"&t="+time;
+    queryCategoryQueryModalTrigger = new $.zui.ModalTrigger({
+        url:url,
+        size:'sm',
+        title:windowTitle,
+        backdrop:'static',
+        type:'iframe',
+        width:400,
+        height:280
+    });
+    queryCategoryQueryModalTrigger.show({hidden: function() {
+            if(typeof windowClose=='function'){
+                windowClose();
+            }
+            $("#triggerModal").remove();
+        }});
+}
