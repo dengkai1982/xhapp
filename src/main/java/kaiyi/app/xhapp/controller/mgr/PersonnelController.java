@@ -1,9 +1,6 @@
 package kaiyi.app.xhapp.controller.mgr;
 
-import kaiyi.app.xhapp.entity.jobs.Position;
-import kaiyi.app.xhapp.entity.jobs.Recruitment;
-import kaiyi.app.xhapp.entity.jobs.Resume;
-import kaiyi.app.xhapp.entity.jobs.WorkExperience;
+import kaiyi.app.xhapp.entity.jobs.*;
 import kaiyi.app.xhapp.service.jobs.*;
 import kaiyi.puer.commons.access.AccessControl;
 import kaiyi.puer.commons.collection.StreamArray;
@@ -25,6 +22,8 @@ import kaiyi.puer.web.springmvc.IWebInteractive;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -49,6 +48,12 @@ public class PersonnelController extends ManagerController{
     private WorkExperienceService workExperienceService;
     @Resource
     private CertificateService certificateService;
+    @Resource
+    private ConcernEnterpriseService concernEnterpriseService;
+    @Resource
+    private ConcernRecruitmentService concernRecruitmentService;
+    @Resource
+    private ConcernResumeService concernResumeService;
     @RequestMapping("/position")
     @AccessControl(name = "招聘职位", weight = 4.1f, detail = "管理招聘职位", code = rootPath+ "/position", parent = rootPath)
     public String position(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
@@ -155,7 +160,7 @@ public class PersonnelController extends ManagerController{
         interactive.writeUTF8Text(jmc.build());
     }
 
-    @AccessControl(name = "企业认证", weight = 4.22f, detail = "设置企业的认证状态", code = rootPath
+    @AccessControl(name = "企业认证", weight = 4.23f, detail = "设置企业的认证状态", code = rootPath
             + "/enterprise/verify", parent = rootPath+"/enterprise")
     @RequestMapping("/enterprise/verify")
     public void enterpriseVerify(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
@@ -225,4 +230,56 @@ public class PersonnelController extends ManagerController{
         setDefaultPage(interactive,rootPath+"/certificate");
         return rootPath+"/certificateDetail";
     }
+
+    /*@RequestMapping("/concernEnterprise")
+    @AccessControl(name = "企业关注", weight = 4.6f, detail = "企业关注", code = rootPath+ "/concernEnterprise", parent = rootPath)
+    public String concernEnterprise(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        setDefaultPage(interactive,rootPath+"/concernEnterprise");
+        mainTablePage(interactive,concernEnterpriseService,null,null,
+                new DynamicGridInfo(false,DynamicGridInfo.OperMenuType.popup));
+        return rootPath+"/concernEnterprise";
+    }
+    @RequestMapping("/concernEnterprise/detail")
+    @AccessControl(name = "企业关注详情", weight = 4.61f, detail = "招聘详情",
+            code = rootPath+ "/concernEnterprise/detail", parent = rootPath+"/concernEnterprise")
+    public String concernEnterpriseDetail(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        detailPage(interactive,concernEnterpriseService,3);
+        setDefaultPage(interactive,rootPath+"/concernEnterprise");
+        return rootPath+"/concernEnterpriseDetail";
+    }*/
+    @RequestMapping("/concernRecruitment")
+    @AccessControl(name = "招聘信息关注", weight = 4.7f, detail = "招聘信息关注", code = rootPath+ "/concernRecruitment", parent = rootPath)
+    public String concernRecruitment(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        setDefaultPage(interactive,rootPath+"/concernRecruitment");
+        mainTablePage(interactive,concernRecruitmentService,null,null,
+                new DynamicGridInfo(false,DynamicGridInfo.OperMenuType.popup));
+        return rootPath+"/concernRecruitment";
+    }
+    @RequestMapping("/concernRecruitment/detail")
+    @AccessControl(name = "招聘信息关注详情", weight = 4.71f, detail = "招聘详情",
+            code = rootPath+ "/concernRecruitment/detail", parent = rootPath+"/concernRecruitment")
+    public String concernRecruitmentDetail(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        ConcernRecruitment concernRecruitment=detailPage(interactive,concernRecruitmentService,3);
+        interactive.setRequestAttribute("entity",concernRecruitment);
+        setDefaultPage(interactive,rootPath+"/concernRecruitment");
+        return rootPath+"/concernRecruitmentDetail";
+    }
+    @RequestMapping("/concernResume")
+    @AccessControl(name = "简历关注", weight = 4.8f, detail = "简历关注", code = rootPath+ "/concernResume", parent = rootPath)
+    public String concernResume(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        setDefaultPage(interactive,rootPath+"/concernResume");
+        mainTablePage(interactive,concernResumeService,null,null,
+                new DynamicGridInfo(false,DynamicGridInfo.OperMenuType.popup));
+        return rootPath+"/concernResume";
+    }
+    @RequestMapping("/concernResume/detail")
+    @AccessControl(name = "简历关注详情", weight = 4.81f, detail = "招聘详情",
+            code = rootPath+ "/concernResume/detail", parent = rootPath+"/concernResume")
+    public String concernResumeDetail(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        ConcernResume concernResume=detailPage(interactive,concernResumeService,3);
+        interactive.setRequestAttribute("entity",concernResume);
+        setDefaultPage(interactive,rootPath+"/concernResume");
+        return rootPath+"/concernResumeDetail";
+    }
+
 }

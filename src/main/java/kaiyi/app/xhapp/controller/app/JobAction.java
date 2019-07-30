@@ -112,7 +112,7 @@ public class JobAction extends SuperAction {
 
     /**
      * 添加关注简历
-     * 参数 account:账号ID
+     * 参数 enterpriseId:企业ID
      * resume:简历ID
      * @param interactive
      * @param response

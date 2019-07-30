@@ -61,6 +61,9 @@ public class Course extends AbstractEntity {
     @PageField(label = "购买量",type = FieldType.NUMBER,showForm = false,tableLength = 140)
     @FieldNumber(type = FieldNumber.TYPE.LONG)
     private long buyVolume;
+    @PageField(label = "浏览量",type = FieldType.NUMBER,showForm = false,tableLength = 140)
+    @FieldNumber(type = FieldNumber.TYPE.LONG)
+    private long browseVolume;
     @PageField(label = "评价得分",type = FieldType.NUMBER,showForm = false,tableLength = 140)
     @FieldNumber(type = FieldNumber.TYPE.DOUBLE)
     private double commentAvgScore;
@@ -249,5 +252,13 @@ public class Course extends AbstractEntity {
             return data.toString();
         }
         return super.convertToJson(entity, field, data);
+    }
+
+    public long getBrowseVolume() {
+        return browseVolume;
+    }
+
+    public void setBrowseVolume(long browseVolume) {
+        this.browseVolume = browseVolume;
     }
 }

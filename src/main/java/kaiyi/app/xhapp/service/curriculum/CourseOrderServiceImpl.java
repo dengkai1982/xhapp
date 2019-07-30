@@ -109,6 +109,7 @@ public class CourseOrderServiceImpl extends InjectDao<CourseOrder> implements Co
                 alreadyCourse.setCourse(orderItem.getCourse());
                 alreadyCourse.setOwner(courseOrder.getAccount());
                 alreadyCourseService.saveObject(alreadyCourse);
+                courseService.addBuyVolume(courseOrder.getEntityId());
             }
         }
         return courseOrder;

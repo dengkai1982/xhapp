@@ -54,6 +54,9 @@
         checkPrivilege(items);
         return items;
     };
+    function customDataConvertCell(valueType,dataValue,cell, dataGrid){
+        return null;
+    }
 </script>
 </body>
 </html>

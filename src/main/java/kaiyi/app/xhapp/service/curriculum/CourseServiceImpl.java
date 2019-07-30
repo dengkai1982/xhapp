@@ -118,4 +118,20 @@ public class CourseServiceImpl extends InjectDao<Course> implements CourseServic
             updateObject(course);
         }
     }
+
+    @Override
+    public void addBrowseVolume(String entityId) {
+        Course course=findForPrimary(entityId);
+        if(Objects.nonNull(course)){
+            course.setBrowseVolume(course.getBrowseVolume()+1);
+        }
+    }
+
+    @Override
+    public void addBuyVolume(String entityId) {
+        Course course=findForPrimary(entityId);
+        if(Objects.nonNull(course)){
+            course.setBuyVolume(course.getBuyVolume()+1);
+        }
+    }
 }

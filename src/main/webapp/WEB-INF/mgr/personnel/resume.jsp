@@ -14,9 +14,6 @@
                 <c:if test="${requestScope.hasData}">
                     <a href="#" class="btn btn-link querybox-toggle" id="show_or_hide_search"><i class="icon-search icon"></i> 搜索</a>
                 </c:if>
-                <visit:auth url="${webPage.newEntityPage}">
-                    <a href="${contextPath}${webPage.newEntityPage}${suffix}?${paginationCurrentPage}=1" class="btn btn-primary"><i class="icon icon-plus"></i> 新增${requestScope.entityShowName}</a>
-                </visit:auth>
             </div>
         </div>
         <c:if test="${requestScope.hasData}">
@@ -32,8 +29,6 @@
                     <div class="table-empty-tip">
                         <p>
                             <span class="text-muted">抱歉,展示没有任何数据。</span>
-                            <span class="text-muted">您现在可以 </span>
-                            <a href="${contextPath}${webPage.newEntityPage}${suffix}?${paginationCurrentPage}=1" class="btn btn-info"><i class="icon icon-plus"></i> 新增${requestScope.entityShowName}</a>
                         </p>
                     </div>
                 </c:otherwise>

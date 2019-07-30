@@ -22,7 +22,7 @@ public class ConcernRecruitment extends AbstractEntity {
     @FieldReference(fieldName = "phone")
     private Account account;
     @PageField(label = "招聘岗位",type = FieldType.REFERENCE)
-    @FieldReference(fieldName = "position")
+    @FieldReference(fieldName = "positionName")
     private Recruitment recruitment;
     @IDate
     @PageField(label = "关注时间",type = FieldType.DATETIME)
