@@ -16,7 +16,7 @@
     &nbsp;课：<input type="submit" name="subimt"><br>
 </form>
 --%>
-<form action="${contextPath}/app/curriculum/generatorWebAlipayPayment${suffix}" method="post">
+<form action="${contextPath}/app/curriculum/generatorWeixinPayment${suffix}" method="post">
     &nbsp;orderId：<input type="text" name="orderId"/><br>
     &nbsp;课：<input type="submit" name="subimt"><br>
 </form>

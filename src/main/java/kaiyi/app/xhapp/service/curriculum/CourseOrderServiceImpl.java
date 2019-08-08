@@ -87,14 +87,12 @@ public class CourseOrderServiceImpl extends InjectDao<CourseOrder> implements Co
         if(Objects.nonNull(courseOrder)&&courseOrder.getStatus().equals(CourseOrderStatus.WAIT_PAYMENT)){
             if(paymentNotify.getPlatform().equals(PayPlatform.INSIDE)){
                 paymentNotify.setThirdPartOrderId(randomIdentifier());
-                Account account=courseOrder.getAccount();
-
             }
             paymentNotifyService.saveObject(paymentNotify);
             if(paymentNotify.isSuccess()){
                 courseOrder.setStatus(CourseOrderStatus.PAYMENTED);
                 courseOrder.setPaymentDate(new Date());
-                em.createQuery("update "+getEntityName(OrderItem.class)+" o set o.orderStatus=:orderStatus " +
+                em.createQuery("update "+getEntityName(OrderItem.class)+" o set o.courseOrderStatus=:courseOrderStatus " +
                         "where o.courseOrder=:courseOrder").setParameter("courseOrderStatus",courseOrder.getStatus())
                         .setParameter("courseOrder",courseOrder).executeUpdate();
             }

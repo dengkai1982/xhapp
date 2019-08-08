@@ -9,12 +9,17 @@
     <h1>测试</h1>
     <script src="${contextPath}/js/app.js" type="text/javascript"></script>
     <script type="text/javascript">
-        queryDataOfOrderBySetUrl("${contextPath}/app/query/pagination${suffix}","shopCarService",
+        queryDataOfOrderBySetUrl("${contextPath}/app/query/pagination${suffix}","orderItemService",
             [{
+                field:"course",
+                condition:"0",
+                value:"15640260548320091"
+            },{
                 field:"account",
                 condition:"0",
-                value:"15577347786510046"
-            }],0,100,"joinTime","ase",function(d){
+                value:"15577347786510046",
+                link:"0"
+            }],0,100,"orderTime","ase",function(d){
                 console.log(d);
             })
     </script>

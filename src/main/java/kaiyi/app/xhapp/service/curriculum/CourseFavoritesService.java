@@ -7,6 +7,6 @@ import kaiyi.puer.db.orm.ServiceException;
 
 public interface CourseFavoritesService extends DatabaseQuery<CourseFavorites>,DatabaseOperator<CourseFavorites> {
 
-    void addFavorites(String accountId,String courseId)throws ServiceException;
+    CourseFavorites addFavorites(String accountId,String courseId)throws ServiceException;
 
 }

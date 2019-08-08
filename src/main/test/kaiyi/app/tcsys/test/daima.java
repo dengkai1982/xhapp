@@ -1,5 +1,6 @@
 package kaiyi.app.tcsys.test;
 
+import kaiyi.app.xhapp.WeixinAppPayInfo;
 import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.app.xhapp.entity.access.VisitorMenu;
 import kaiyi.app.xhapp.entity.curriculum.Course;
@@ -21,6 +22,7 @@ import kaiyi.puer.http.connect.OKHttpConnection;
 import kaiyi.puer.http.parse.TextParser;
 import kaiyi.puer.http.request.HttpGetRequest;
 import kaiyi.puer.json.parse.ArrayJsonParser;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.client.methods.HttpGet;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -30,6 +32,8 @@ import org.jsoup.select.Elements;
 import org.junit.Test;
 
 import java.security.KeyPair;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 public class daima {
@@ -40,6 +44,46 @@ public class daima {
 
     }
 
+    @Test
+    public void signTest(){
+        WeixinAppPayInfo wapi=new WeixinAppPayInfo("wxb9c1bafe582b1125","1494588402",
+                "wx021203127026596563b2cebb1767600400","long9464926long9464926long960512",null);
+        System.out.println(wapi.getPaySign());
+
+        System.out.println(DigestUtils.md5Hex("332211").toUpperCase());
+        System.out.println(DigestUtils.sha1Hex("332211").toUpperCase());
+    }
+
+    @Test
+    public void sign() throws Exception {
+        System.out.println(doSign("wxb9c1bafe582b1125","503e7dbbd6217b9a591f3322f39b5a6c",
+                "1494588402","wx021445032985106563b2cebb1958097600","1564718592",
+                "long9464926long9464926long960512"));
+    }
+
+    private String doSign(String appid,String noncestr,String partnerid,String prepayid,
+                          String timestamp, String signKey) throws Exception {
+        String signStr="appid="+appid+"&noncestr="+noncestr
+                +"&package=Sign=WXPay&partnerid="+partnerid+"&prepayid="+prepayid+"&timestamp="+timestamp
+                +"&key="+signKey;
+        //8037CA5C739277173016E8D20FA62BDD
+        //8037CA5C739277173016E8D20FA62BDD
+        MessageDigest digest=MessageDigest.getInstance("md5");
+        byte[] bytes=digest.digest(signStr.getBytes("utf-8"));
+        return toHexString(bytes).toUpperCase();
+    }
+
+    private String toHexString(byte[] bytes){
+        StringBuilder sb=new StringBuilder();
+        for(int i=0;i<bytes.length;i++){
+            String hex=Integer.toHexString(bytes[i]&0xFF);
+            if(hex.length()==1){
+                hex='0'+hex;
+            }
+            sb.append(hex);
+        }
+        return sb.toString();
+    }
     @Test
     public void jiami() throws Exception {
         RSACipher cipher=new RSACipher("MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAOTG2zXlCm7QJ25+331+hBeIAzXbwCadLqjDWb/D7S4ONbYfJrFueQmrG97mZaJwaZ1dhoMsTwVaDu245HOVFks9+UZ36Q1Tr2CcBpHZpWJTXmmYYd+Hfwb6L6uzUc3WvDP5DTgWLFAPA1d4nWRshfZys/0PX3PjJIL4eDU958TNAgMBAAECgYEAqjYpspeOg5PrQpKyxTP0I23WtaOh+xjHNljh1YN4W+PGopHav/hppX/hZJ4W0BzC94o2IjI9OMYghU4i6rvpsPledEjOv0tkjcRy9ucGxL/T3q4/ezGe7P8hUFnYbsHe/2+6pHjJOyCzab45vH6cTmUbXuPkijMvCZ9NCdkunyECQQD3iH39JegMBSTWy934V0XIMmtVehWpRCvZaPmNTT96LOz/5VKwOz8TwcoM7ViTBaeWzNG2Lal34Ll4VrLYlqdDAkEA7JogA8w3qlk/i5lmFSW6ZKcxHT1WnBuysM8D0zp7qKLtWTPi8bF0jqXBaPs3BoXTc2TGdt8kOE9wNrgURtz6rwJAHDuqOxx+uhhAGmvIVpIFuI7fpTE2lUbcRYDurco4ykOjiJBsfQNU73j0BcNwjdxgQBf+d2v/31d3cB1bas7MJwJAB0Gq3bLzuhvGoSdxRBDGKLQgA3+QGnWXA2k1+tJ+XGuyz9uRiEwjAQUAa5HY3DBajd13YMnzOG7nSCZZKNs6LQJBALBnWpiakCDE/d3Nl0JMxD6FqM0l3+hjSlu/8JlFaUYK5QISY4J+g/3cDYS0ZRsDZOBxS7WvyV9Fv1UeKySbqX4=",

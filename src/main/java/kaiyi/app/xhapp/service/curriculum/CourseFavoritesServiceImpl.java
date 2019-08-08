@@ -39,7 +39,7 @@ public class CourseFavoritesServiceImpl extends InjectDao<CourseFavorites> imple
     @Resource
     private CourseService courseService;
     @Override
-    public void addFavorites(String accountId, String courseId)throws ServiceException {
+    public CourseFavorites addFavorites(String accountId, String courseId)throws ServiceException {
         Account account=accountService.findForPrimary(accountId);
         Course course=courseService.findForPrimary(courseId);
         if(Objects.isNull(account)||Objects.isNull(course)){
@@ -58,5 +58,6 @@ public class CourseFavoritesServiceImpl extends InjectDao<CourseFavorites> imple
             favorites.setCreateTime(new Date());
             saveObject(favorites);
         }
+        return favorites;
     }
 }

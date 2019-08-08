@@ -11,6 +11,7 @@ import com.alipay.api.request.AlipayTradePagePayRequest;
 import com.alipay.api.request.AlipayTradeWapPayRequest;
 import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.exceptions.ClientException;
+import kaiyi.app.xhapp.WeixinAppPayInfo;
 import kaiyi.app.xhapp.entity.access.enums.CapitalType;
 import kaiyi.app.xhapp.entity.curriculum.*;
 import kaiyi.app.xhapp.entity.curriculum.enums.PayPlatform;
@@ -25,6 +26,7 @@ import kaiyi.puer.commons.bean.BeanSyntacticSugar;
 import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.Currency;
+import kaiyi.puer.commons.data.JavaDataTyper;
 import kaiyi.puer.commons.data.StringEditor;
 import kaiyi.puer.commons.log.Logger;
 import kaiyi.puer.commons.utils.RandomUtils;
@@ -198,7 +200,8 @@ public class CurriculumAction extends SuperAction {
         String accountId=interactive.getStringParameter("accountId","");
         JsonMessageCreator jmc=getSuccessMessage();
         try {
-            shopCarService.joinToShopCar(courseId,accountId);
+            ShopCar shopCar=shopCarService.joinToShopCar(courseId,accountId);
+            jmc.setBody(shopCar.getEntityId());
         } catch (ServiceException e) {
             catchServiceException(jmc,e);
         }
@@ -278,7 +281,8 @@ public class CurriculumAction extends SuperAction {
         String courseId=interactive.getStringParameter("courseId","");
         JsonMessageCreator jmc=getSuccessMessage();
         try {
-            courseFavoritesService.addFavorites(accountId,courseId);
+            CourseFavorites favorites=courseFavoritesService.addFavorites(accountId,courseId);
+            jmc.setBody(favorites.getEntityId());
         } catch (ServiceException e) {
             catchServiceException(jmc,e);
         }
@@ -391,7 +395,52 @@ public class CurriculumAction extends SuperAction {
         return weixinInfo;
     }
 
-    @PostMapping("/generatorWeixinPayment")
+    @RequestMapping("/generatorWeixinPaymentNoSign")
+    public void generatorWeixinPaymentNoSign(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws HttpException, IOException {
+        Logger logger=configureService.getLogger(this.getClass());
+        String orderId=interactive.getStringParameter("orderId","");
+        CourseOrder courseOrder=courseOrderService.signleQuery("orderId",orderId);
+        if(Objects.nonNull(courseOrder)){
+            String notifyUrl=interactive.generatorRequestUrl(PREFIX+"/curriculum/weixinPayAsync",null);
+            notifyUrl= ServletUtils.getRequestHostContainerProtolAndPort(interactive.getHttpServletRequest())+notifyUrl;
+            HttpServletRequest request = interactive.getHttpServletRequest();
+            WeixinInfo weixinInfo=getWeixinInfo();
+            /*UnifiedPayRequestPayer requestPayer=UnifiedPayRequestPayer.buildNativePayer(weixinInfo,"购买课程",courseOrder.getOrderId(),
+                    courseOrder.getAmount(),request.getRemoteHost(),notifyUrl,courseOrder.getEntityId());*/
+            UnifiedPayRequestPayer requestPayer=UnifiedPayRequestPayer.buildAppPayer(weixinInfo,"课程购买",
+                    courseOrder.getOrderId(),courseOrder.getAmount(),request.getRemoteHost(),notifyUrl);
+            logger.info(()->"----微信支付参数---");
+            logger.info(()->requestPayer.getContentXml());
+            logger.info(()->"----微信支付参数---");
+            UnifiedPayResponse payResponse = (UnifiedPayResponse) requestPayer.doRequest();
+            Map<String, JavaDataTyper> result=payResponse.getResponseResult();
+            logger.info(()->"----微信返回参数---");
+            result.forEach((k,v)->{
+                logger.info(()->k+","+v.stringValue());
+            });
+            logger.info(()->"----微信返回参数---");
+            MapJsonCreator mjc=new MapJsonCreator();
+            Map<String, JavaDataTyper> weixinResult=payResponse.getResponseResult();
+            weixinResult.forEach((k,v)->{
+                mjc.put(k,new StringJsonCreator(v.stringValue()));
+            });
+            mjc.put("key",new StringJsonCreator(weixinInfo.getApiKey()));
+            /*WeixinAppPayInfo payInfo = new WeixinAppPayInfo(weixinInfo.getAppId(),weixinInfo.getMchId(),payResponse.getPrepayId(),
+                    weixinInfo.getApiKey(),logger);
+            String paymentInfo="{\"appid\":\""+payInfo.getAppId()+"\"" +
+                    ",\"partnerid\":\""+payInfo.getPartnerid()+"\"," +
+                    "\"noncestr\":\""+payInfo.getNonceStr()+"\"," +
+                    "\"package\":\""+payInfo.getPackage()+"\"," +
+                    "\"prepayid\":\""+payInfo.getPrepayId()+"\"," +
+                    "\"timestamp\":"+payInfo.getTimeStamp()+"," +
+                    "\"sign\":\""+payInfo.getPaySign()+"\"}";
+            logger.info(()->"微信json:"+paymentInfo);*/
+            logger.close();
+            interactive.writeUTF8Text(mjc.build());
+        }
+    }
+
+    @RequestMapping("/generatorWeixinPayment")
     public void generatorWeixinPayment(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws HttpException, IOException {
         Logger logger=configureService.getLogger(this.getClass());
         String orderId=interactive.getStringParameter("orderId","");
@@ -401,18 +450,27 @@ public class CurriculumAction extends SuperAction {
             notifyUrl= ServletUtils.getRequestHostContainerProtolAndPort(interactive.getHttpServletRequest())+notifyUrl;
             HttpServletRequest request = interactive.getHttpServletRequest();
             WeixinInfo weixinInfo=getWeixinInfo();
-            UnifiedPayRequestPayer requestPayer=UnifiedPayRequestPayer.buildNativePayer(weixinInfo,"购买课程",courseOrder.getOrderId(),
-                    courseOrder.getAmount(),request.getRemoteHost(),notifyUrl,courseOrder.getEntityId());
+            /*UnifiedPayRequestPayer requestPayer=UnifiedPayRequestPayer.buildNativePayer(weixinInfo,"购买课程",courseOrder.getOrderId(),
+                    courseOrder.getAmount(),request.getRemoteHost(),notifyUrl,courseOrder.getEntityId());*/
+            UnifiedPayRequestPayer requestPayer=UnifiedPayRequestPayer.buildAppPayer(weixinInfo,"课程购买",
+                    courseOrder.getOrderId(),courseOrder.getAmount(),request.getRemoteHost(),notifyUrl);
             logger.info(()->"----微信支付参数---");
             logger.info(()->requestPayer.getContentXml());
             logger.info(()->"----微信支付参数---");
             UnifiedPayResponse payResponse = (UnifiedPayResponse) requestPayer.doRequest();
-            WebPayInfo payInfo = new WebPayInfo(weixinInfo.getAppId(), payResponse.getPrepayId(), weixinInfo.getApiKey());
+            Map<String, JavaDataTyper> result=payResponse.getResponseResult();
+            logger.info(()->"----微信返回参数---");
+            result.forEach((k,v)->{
+                logger.info(()->k+","+v.stringValue());
+            });
+            logger.info(()->"----微信返回参数---");
+            WeixinAppPayInfo payInfo = new WeixinAppPayInfo(weixinInfo.getAppId(),weixinInfo.getMchId(),payResponse.getPrepayId(),
+                    weixinInfo.getApiKey(),logger);
             String paymentInfo="{\"appid\":\""+payInfo.getAppId()+"\"" +
-                    ",\"partnerid\":\""+weixinInfo.getMchId()+"\"," +
-                    "\"noncestr\":\""+payInfo.getNonceStr()+"\"," +
+                    ",\"noncestr\":\""+payInfo.getNonceStr()+"\"," +
                     "\"package\":\""+payInfo.getPackage()+"\"," +
-                    "\"prepayid\":\""+payResponse.getPrepayId()+"\"," +
+                    "\"partnerid\":\""+payInfo.getPartnerid()+"\"," +
+                    "\"prepayid\":\""+payInfo.getPrepayId()+"\"," +
                     "\"timestamp\":"+payInfo.getTimeStamp()+"," +
                     "\"sign\":\""+payInfo.getPaySign()+"\"}";
             logger.info(()->"微信json:"+paymentInfo);
@@ -497,7 +555,7 @@ public class CurriculumAction extends SuperAction {
         String orderId=interactive.getStringParameter("orderId","");
         CourseOrder courseOrder=courseOrderService.signleQuery("orderId",orderId);
         JsonMessageCreator jmc=getSuccessMessage();
-        if(Objects.nonNull(courseOrder)){
+        if(Objects.nonNull(courseOrder)&&courseOrder.getCapitalType().equals(CapitalType.GOLD)){
             Currency actualAmount=Currency.noDecimalBuild(courseOrder.getAmount(),2);
             PaymentNotify paymentNotify=new PaymentNotify(courseOrder.getOrderId(),PayPlatform.INSIDE,
                     "完成订单","使用金币支付","金币支付",actualAmount.toString(),
