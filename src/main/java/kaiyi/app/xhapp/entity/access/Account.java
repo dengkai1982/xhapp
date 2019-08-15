@@ -31,6 +31,11 @@ public class Account extends AbstractEntity {
     @PageField(label = "会员等级",type = FieldType.CHOSEN,tableLength = 100)
     @FieldChosen
     private MemberShip memberShip;
+
+    @PageField(label = "推荐人",type = FieldType.REFERENCE,showForm = false)
+    @FieldReference(fieldName = "showAccountName")
+    private Account recommend;
+
     @PageField(label = "用户头像",type=FieldType.DOCUMENT,showSearch = false,showDetail = false)
     @FieldDocument
     private String headerImage;
@@ -51,7 +56,9 @@ public class Account extends AbstractEntity {
     @ICurrency
     @PageField(label = "持有金币",type = FieldType.NUMBER)
     private int gold;
-
+    @ICurrency
+    @PageField(label = "账户余额",type = FieldType.NUMBER)
+    private int integral;
 
     @Override
     public StreamArray<String> filterField() {
@@ -167,5 +174,22 @@ public class Account extends AbstractEntity {
             return data.toString();
         }
         return "";
+    }
+    @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
+    @JoinColumn(name="recommend")
+    public Account getRecommend() {
+        return recommend;
+    }
+
+    public void setRecommend(Account recommend) {
+        this.recommend = recommend;
+    }
+
+    public int getIntegral() {
+        return integral;
+    }
+
+    public void setIntegral(int integral) {
+        this.integral = integral;
     }
 }

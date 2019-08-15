@@ -4,6 +4,7 @@ import kaiyi.app.xhapp.entity.AbstractEntity;
 import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.app.xhapp.entity.log.enums.AmountType;
 import kaiyi.app.xhapp.entity.log.enums.BorrowLend;
+import kaiyi.app.xhapp.entity.log.enums.TradeCourse;
 import kaiyi.puer.commons.data.ICurrency;
 import kaiyi.puer.commons.data.IDate;
 import kaiyi.puer.h5ui.annotations.*;
@@ -24,6 +25,11 @@ public class AmountFlow extends AbstractEntity {
     private AmountType amountType;
     @PageField(label = "流水单号",tableLength = 160)
     private String orderId;
+
+    @PageField(label = "科目",type = FieldType.CHOSEN)
+    @FieldChosen
+    private TradeCourse tradeCourse;
+
     @ICurrency
     @PageField(label = "之前金额",type = FieldType.NUMBER,tableLength = 120)
     @FieldNumber(type = FieldNumber.TYPE.LONG)
@@ -95,7 +101,7 @@ public class AmountFlow extends AbstractEntity {
     public AmountFlow() {
     }
 
-    public AmountFlow(Account account, AmountType amountType, String orderId,int beforeAmount, int amount,
+    public AmountFlow(Account account, AmountType amountType,TradeCourse tradeCourse, String orderId,int beforeAmount, int amount,
                       int afterAmount,BorrowLend borrowLend) {
         this.account = account;
         this.amountType = amountType;
@@ -105,6 +111,7 @@ public class AmountFlow extends AbstractEntity {
         this.createTime=new Date();
         this.beforeAmount=beforeAmount;
         this.afterAmount=afterAmount;
+        this.tradeCourse=tradeCourse;
     }
 
     public int getBeforeAmount() {
@@ -121,5 +128,13 @@ public class AmountFlow extends AbstractEntity {
 
     public void setAfterAmount(int afterAmount) {
         this.afterAmount = afterAmount;
+    }
+    @Enumerated(EnumType.STRING)
+    public TradeCourse getTradeCourse() {
+        return tradeCourse;
+    }
+
+    public void setTradeCourse(TradeCourse tradeCourse) {
+        this.tradeCourse = tradeCourse;
     }
 }

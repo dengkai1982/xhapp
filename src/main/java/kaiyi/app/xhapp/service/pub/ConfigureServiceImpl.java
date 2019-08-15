@@ -4,6 +4,7 @@ import kaiyi.app.xhapp.entity.pub.Configure;
 import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
 import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.puer.commons.collection.StreamCollection;
+import kaiyi.puer.commons.data.Currency;
 import kaiyi.puer.commons.log.DiskLogger;
 import kaiyi.puer.commons.log.Logger;
 import org.springframework.stereotype.Service;
@@ -64,5 +65,15 @@ public class ConfigureServiceImpl extends InjectDao<Configure> implements Config
     @Override
     public Logger getLogger(Class<?> clz) {
         return new DiskLogger(clz,getStringValue(ConfigureItem.LOG_DIR));
+    }
+
+    @Override
+    public Currency getCurrencyForInteger(ConfigureItem item) {
+        return Currency.noDecimalBuild(getIntegerValue(item),2);
+    }
+
+    @Override
+    public Currency getCurrency(ConfigureItem item) {
+        return Currency.build(getIntegerValue(item),2);
     }
 }

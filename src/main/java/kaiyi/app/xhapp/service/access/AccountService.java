@@ -3,6 +3,7 @@ package kaiyi.app.xhapp.service.access;
 import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.app.xhapp.entity.access.enums.MemberShip;
 import kaiyi.app.xhapp.entity.curriculum.CourseOrder;
+import kaiyi.app.xhapp.entity.log.enums.TradeCourse;
 import kaiyi.puer.db.orm.DatabaseFastOper;
 import kaiyi.puer.db.orm.DatabaseQuery;
 import kaiyi.puer.db.orm.ServiceException;
@@ -49,8 +50,36 @@ public interface AccountService extends DatabaseQuery<Account>,DatabaseFastOper<
     void changeMemberShip(String entityId, MemberShip memberShip);
 
     /**
-     * 使用余额支付
+     * 使用金币支付
      * @param courseOrder
      */
     void usageGoldPayment(CourseOrder courseOrder);
+    /**
+     * 使用余额支付
+     * @param courseOrder
+     */
+    void usageIntegralPayment(CourseOrder courseOrder);
+    /**
+     * 发放提成
+     * @param orderId 单号
+     * @param tradeCourse 科目
+     * @param amount 金额
+     */
+    void computerRoyalty(String accountId,String orderId, TradeCourse tradeCourse,int amount);
+    /**
+     * 申请提现
+     * @param accountId
+     * @param amount
+     */
+    Account applyWithdraw(String accountId,int amount,String orderId)throws ServiceException;
+    /**
+     * 提现失败退回余额
+     * @param memberId
+     * @param amount
+     * @param orderId
+     * @throws ServiceException
+     */
+    void unWithdraw(String memberId,int amount,String orderId)throws  ServiceException;
+
+
 }

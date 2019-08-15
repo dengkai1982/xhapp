@@ -14,9 +14,6 @@
                 <c:if test="${requestScope.hasData}">
                     <a href="#" class="btn btn-link querybox-toggle" id="show_or_hide_search"><i class="icon-search icon"></i> 搜索</a>
                 </c:if>
-                <visit:auth url="${webPage.newEntityPage}">
-                    <a href="${contextPath}${webPage.newEntityPage}${suffix}?${paginationCurrentPage}=1" class="btn btn-primary"><i class="icon icon-plus"></i> 新增${requestScope.entityShowName}</a>
-                </visit:auth>
             </div>
         </div>
         <c:if test="${requestScope.hasData}">
@@ -48,28 +45,9 @@
     }
     function createMenuItems(dataId,dataRow,data){
         var items = [{
-            label:"删除QQ号码",
-            privilege:"/mgr/sys/visitorUser/delete",
-            onClick:function(){
-                confirmOper("消息","确实要删除选中的用户?",function(){
-                    postJSON("${managerPath}/sys/qNumberManager/delete${suffix}",{
-                        entityId:dataId
-                    },"正在执行,请稍后...",function(result){
-                        if(result.code==SUCCESS){
-                            bootbox.alert({
-                                title:"消息",
-                                message: "删除QQ号码成功,点击确认返回",
-                                callback: function () {
-                                    reflashPageData();
-                                }
-                            })
-                        }else{
-                            showMessage(result.msg,1500);
-                        }
-                    });
-                })
-            }
-        }]
+            url:"${contextPath}${webPage.detailEntityPage}${suffix}?entityId="+dataId+"&${paginationCurrentPage}="+getPaginationCurrentPage(),
+            label:"查看详情"
+        }];
         checkPrivilege(items);
         return items;
     };

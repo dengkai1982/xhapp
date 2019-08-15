@@ -70,5 +70,17 @@ public class ServiceExceptionDefine {
     public static final ServiceException alreadyCourseExist=new ServiceException(
             ServiceException.CODE_FAIL,"所选课程已加入到已购清单");
 
+    public static final ServiceException dayWithdrawOne=new ServiceException(
+            ServiceException.CODE_FAIL,"每日仅能申请一次提现");
+
+    public static final ServiceException limitWithdraw=new ServiceException(
+            ServiceException.CODE_FAIL,"当日申请的提现金额超出限制");
+
+    public static final ServiceException withdrawableAmountError=new ServiceException(
+            ServiceException.CODE_FAIL,"申请提现金额错误");
+    public static final ServiceException withdrawableError=new ServiceException(
+            ServiceException.CODE_FAIL,"可提现金额不足");
+
+
 
 }

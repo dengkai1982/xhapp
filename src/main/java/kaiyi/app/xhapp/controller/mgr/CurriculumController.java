@@ -33,6 +33,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import javax.annotation.Resource;
+import javax.annotation.Resources;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Map;
@@ -63,6 +64,10 @@ public class CurriculumController extends ManagerController{
     private CourseProblemService courseProblemService;
     @Resource
     private FaceToFaceService faceToFaceService;
+    @Resource
+    private CourseOrderService courseOrderService;
+    @Resource
+    private AlreadyCourseService alreadyCourseService;
     @RequestMapping("/teacher")
     @AccessControl(name = "授课教师", weight = 3.1f, detail = "管理授课教师", code = rootPath+ "/teacher", parent = rootPath)
     public String teacher(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
@@ -354,7 +359,7 @@ public class CurriculumController extends ManagerController{
     }
 
     @RequestMapping("/mediaLibrary")
-    @AccessControl(name = "媒体库", weight = 3.9f, detail = "管理上传媒体文件", code = rootPath+ "/mediaLibrary", parent = rootPath)
+    @AccessControl(name = "媒体库", weight = 3.6f, detail = "管理上传媒体文件", code = rootPath+ "/mediaLibrary", parent = rootPath)
     public String mediaLibrary(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
         setDefaultPage(interactive,rootPath+"/mediaLibrary");
         mainTablePage(interactive,mediaLibraryService,null,null,
@@ -362,7 +367,7 @@ public class CurriculumController extends ManagerController{
         return rootPath+"/mediaLibrary";
     }
     @RequestMapping("/mediaLibrary/new")
-    @AccessControl(name = "新增媒体库", weight = 3.91f, detail = "新增媒体库",
+    @AccessControl(name = "新增媒体库", weight = 3.61f, detail = "新增媒体库",
             code = rootPath+ "/mediaLibrary/new", parent = rootPath+"/mediaLibrary")
     public String mediaLibraryNew(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
         newOrEditPage(interactive,mediaLibraryService,3);
@@ -371,7 +376,7 @@ public class CurriculumController extends ManagerController{
         return rootPath+"/mediaLibraryForm";
     }
     @RequestMapping("/mediaLibrary/delete")
-    @AccessControl(name = "删除媒体库", weight = 3.92f, detail = "删除媒体库文件",
+    @AccessControl(name = "删除媒体库", weight = 3.62f, detail = "删除媒体库文件",
             code = rootPath+ "/mediaLibrary/delete", parent = rootPath+"/mediaLibrary")
     public void mediaLibraryDelete(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
         String entityId=interactive.getStringParameter("entityId","");
@@ -463,4 +468,41 @@ public class CurriculumController extends ManagerController{
         interactive.setRequestAttribute("treeData",treeData);
         return rootPath+"/categoryQuery";
     }
+
+    @RequestMapping("/courseOrder")
+    @AccessControl(name = "课程订单", weight = 3.7f, detail = "查看课程订单", code = rootPath+ "/courseOrder", parent = rootPath)
+    public String courseOrder(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        setDefaultPage(interactive,rootPath+"/courseOrder");
+        mainTablePage(interactive,courseOrderService,null,null,
+                new DynamicGridInfo(false,DynamicGridInfo.OperMenuType.popup));
+        return rootPath+"/courseOrder";
+    }
+    @RequestMapping("/courseOrder/detail")
+    @AccessControl(name = "订单详情", weight = 3.71f, detail = "查看课程订单详情",
+            code = rootPath+ "/courseOrder/detail", parent = rootPath+"/faceToFace",defaultAuthor = true)
+    public String courseOrderDetail(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        detailPage(interactive,courseOrderService,3);
+        setDefaultPage(interactive,rootPath+"/courseOrder");
+        interactive.getWebPage().setPageTitle("查看课程订单详情");
+        return rootPath+"/courseOrderDetail";
+    }
+    @RequestMapping("/alreadyCourse")
+    @AccessControl(name = "已购课程", weight = 3.8f, detail = "查看课程订单", code = rootPath+ "/alreadyCourse", parent = rootPath)
+    public String alreadyCourse(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        setDefaultPage(interactive,rootPath+"/alreadyCourse");
+        mainTablePage(interactive,alreadyCourseService,null,null,
+                new DynamicGridInfo(false,DynamicGridInfo.OperMenuType.popup));
+        return rootPath+"/alreadyCourse";
+    }
+    @RequestMapping("/alreadyCourse/detail")
+    @AccessControl(name = "已购课程详情", weight = 3.81f, detail = "查看课程订单详情",
+            code = rootPath+ "/alreadyCourse/detail", parent = rootPath+"/alreadyCourse",defaultAuthor = true)
+    public String alreadyCourseDetail(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        detailPage(interactive,alreadyCourseService,3);
+        setDefaultPage(interactive,rootPath+"/alreadyCourse");
+        interactive.getWebPage().setPageTitle("查看课程订单详情");
+        return rootPath+"/alreadyCourseDetail";
+    }
+
+
 }

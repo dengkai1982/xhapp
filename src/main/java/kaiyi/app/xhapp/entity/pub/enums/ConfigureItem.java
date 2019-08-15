@@ -138,24 +138,6 @@ public enum ConfigureItem {
 			return "视频分类ID号";
 		}
 	},
-	EXAM_QUESTION_SINGLE_NUMBER{
-		@Override
-		public String toString() {
-			return "单选题数量";
-		}
-	},
-	EXAM_QUESTION_MULTIPLE_NUMBER{
-		@Override
-		public String toString() {
-			return "多选题数量";
-		}
-	},
-	EXAM_QUESTION_ANSWER_NUMBER{
-		@Override
-		public String toString() {
-			return "问答题数量";
-		}
-	},
 	ALIPAY_APPID{
 		//2018013102118231
 		@Override
@@ -204,6 +186,42 @@ public enum ConfigureItem {
 		public String toString() {
 			return "支付宝支付网关";
 		}
+	},
+	/****************需要进行配置的参数******************/
+	EXAM_QUESTION_SINGLE_NUMBER{
+		@Override
+		public String toString() {
+			return "单选题数量";
+		}
+	},
+	EXAM_QUESTION_MULTIPLE_NUMBER{
+		@Override
+		public String toString() {
+			return "多选题数量";
+		}
+	},
+	EXAM_QUESTION_ANSWER_NUMBER{
+		@Override
+		public String toString() {
+			return "问答题数量";
+		}
+	},
+	SALE_LEVEL_COMMISSION_1{
+		@Override
+		public String toString() {
+			return "直接上级提成比例";
+		}
+	},
+	SALE_LEVEL_COMMISSION_2{
+		@Override
+		public String toString() {
+			return "上上级提成比例";
+		}
+	},
+	LIMIT_WITHDRAW_AMOUNT{
+		@Override
+		public String toString() {
+			return "提现金额上限";
+		}
 	}
-
 }

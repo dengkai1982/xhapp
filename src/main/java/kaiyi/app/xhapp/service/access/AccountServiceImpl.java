@@ -6,6 +6,7 @@ import kaiyi.app.xhapp.entity.access.enums.MemberShip;
 import kaiyi.app.xhapp.entity.curriculum.CourseOrder;
 import kaiyi.app.xhapp.entity.log.enums.AmountType;
 import kaiyi.app.xhapp.entity.log.enums.BorrowLend;
+import kaiyi.app.xhapp.entity.log.enums.TradeCourse;
 import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.app.xhapp.service.log.AmountFlowService;
 import kaiyi.app.xhapp.service.log.ShortMessageSenderNoteService;
@@ -16,6 +17,7 @@ import kaiyi.puer.h5ui.service.ApplicationService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.persistence.LockModeType;
 import java.util.Date;
 import java.util.Objects;
 
@@ -99,8 +101,63 @@ public class AccountServiceImpl extends InjectDao<Account> implements AccountSer
         int before=account.getGold();
         account.setGold(account.getGold()-courseOrder.getAmount());
         updateObject(account);
-        amountFlowService.saveNote(account,AmountType.GOLD,
+        amountFlowService.saveNote(account,AmountType.GOLD,TradeCourse.ALE_PRODUCT,
                 courseOrder.getOrderId(),before,courseOrder.getAmount(),account.getGold(),
                 BorrowLend.expenditure);
+    }
+
+    @Override
+    public void usageIntegralPayment(CourseOrder courseOrder) {
+        Account account=findForPrimary(courseOrder.getAccount().getEntityId());
+        int before=account.getIntegral();
+        account.setIntegral(account.getIntegral()-courseOrder.getAmount());
+        updateObject(account);
+        amountFlowService.saveNote(account,AmountType.INTEGRAL,TradeCourse.ALE_PRODUCT,
+                courseOrder.getOrderId(),before,courseOrder.getAmount(),account.getIntegral(),
+                BorrowLend.expenditure);
+    }
+
+    @Override
+    public void computerRoyalty(String accountId,String orderId, TradeCourse tradeCourse, int amount) {
+        Account account=findForPrimary(accountId);
+        int before=account.getIntegral();
+        account.setIntegral(account.getIntegral()+amount);
+        updateObject(account);
+        amountFlowService.saveNote(account,AmountType.INTEGRAL,tradeCourse,orderId,before,amount,
+                account.getIntegral(),BorrowLend.income);
+    }
+    @Override
+    public Account applyWithdraw(String accountId, int amount,String orderId)throws ServiceException {
+        Account account=findForPrimary(accountId);
+        if(Objects.isNull(account)){
+            throw ServiceExceptionDefine.entityNotExist;
+        }
+        em.lock(account, LockModeType.PESSIMISTIC_WRITE);
+        if(amount<=0){
+            throw ServiceExceptionDefine.withdrawableAmountError;
+        }
+        if(account.getIntegral()<amount){
+            throw ServiceExceptionDefine.withdrawableError;
+        }
+        int before=account.getIntegral();
+        account.setIntegral(account.getIntegral()-amount);
+        updateObject(account);
+        amountFlowService.saveNote(account,AmountType.INTEGRAL,TradeCourse.INTEGRAL_WITH_DRAW,orderId,
+                before,amount,account.getIntegral(),BorrowLend.expenditure);
+        return account;
+    }
+
+    @Override
+    public void unWithdraw(String accountId, int amount, String orderId) throws ServiceException {
+        Account account=findForPrimary(accountId);
+        if(Objects.isNull(account)){
+            throw ServiceExceptionDefine.entityNotExist;
+        }
+        em.lock(account, LockModeType.PESSIMISTIC_WRITE);
+        int before=account.getIntegral();
+        account.setIntegral(account.getIntegral()+amount);
+        updateObject(account);
+        amountFlowService.saveNote(account,AmountType.INTEGRAL,TradeCourse.REJECT_WITH_DRAW,orderId,
+                before,amount,account.getIntegral(),BorrowLend.income);
     }
 }

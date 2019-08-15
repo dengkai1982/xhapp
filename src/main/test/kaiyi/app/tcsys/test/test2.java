@@ -10,6 +10,7 @@ import com.aliyuncs.vod.model.v20170321.GetPlayInfoRequest;
 import com.aliyuncs.vod.model.v20170321.GetPlayInfoResponse;
 import kaiyi.app.xhapp.service.AliyunVodHelper;
 import kaiyi.app.xhapp.service.SMSSender;
+import kaiyi.puer.commons.data.Currency;
 import kaiyi.puer.commons.utils.CoderUtil;
 import kaiyi.puer.crypt.key.KeyGeneratorUtils;
 import kaiyi.puer.http.HttpException;
@@ -21,7 +22,10 @@ import java.security.KeyPair;
 import java.util.List;
 
 public class test2 {
-
+    @Test
+    public void computerPercentage(){
+        System.out.println(Currency.computerPercentage(10,1000));
+    }
     @Test
     public void sendsms() throws HttpException {
         SMSSender sender=new SMSSender("http://smssh1.253.com/msg/send/json",

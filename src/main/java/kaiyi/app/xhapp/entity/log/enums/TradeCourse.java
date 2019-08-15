@@ -1,35 +1,61 @@
-package kaiyi.app.xhapp.entity.access.enums;
+package kaiyi.app.xhapp.entity.log.enums;
 
 import kaiyi.puer.commons.utils.PinyinUtils;
 import kaiyi.puer.h5ui.bean.H5ChosenInterface;
+/**
+ * 资金科目
+ */
+public enum TradeCourse implements H5ChosenInterface {
+    INTEGRAL_WITH_DRAW{
+        @Override
+        public String toString() {
+            return "积分提现";
+        }
 
-public enum CapitalType implements H5ChosenInterface {
-    CASH{
-        @Override
-        public String toString() {
-            return "现金";
-        }
         @Override
         public String getHexColor() {
-            return "#a1a1a2";
+            return "#ea644a";
         }
-    },GOLD{
+    },
+    ALE_PRODUCT{
         @Override
         public String toString() {
-            return "金币";
+            return "购买商品";
         }
         @Override
         public String getHexColor() {
             return "#f1a325";
         }
-    },INTEGRAL{
+    },
+    SETTLEMENT_ROYALTY {
         @Override
         public String toString() {
-            return "积分";
+            return "消费提成";
+        }
+
+        @Override
+        public String getHexColor() {
+            return "#bd7b46";
+        }
+    },
+    MANUAL_CACULATION{
+        @Override
+        public String toString() {
+            return "人工结算";
         }
         @Override
         public String getHexColor() {
-            return "#f1a325";
+            return "#38b03f";
+        }
+    },
+    REJECT_WITH_DRAW {
+        @Override
+        public String toString() {
+            return "驳回提现";
+        }
+        @Override
+        public String getHexColor() {
+            return "#03b8cf";
         }
     };
     @Override
@@ -59,4 +85,5 @@ public enum CapitalType implements H5ChosenInterface {
     public String getDataKeys() {
         return getSearchValues().toString();
     }
+
 }

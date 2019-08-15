@@ -72,7 +72,7 @@ public class SysController extends ManagerController {
     public String qNumberManager(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
         setDefaultPage(interactive,rootPath+"/qNumberManager");
         mainTablePage(interactive,qNumberManagerService,null,null,
-                new DynamicGridInfo(false,DynamicGridInfo.OperMenuType.none));
+                new DynamicGridInfo(false,DynamicGridInfo.OperMenuType.popup));
         return rootPath+"/qNumberManager";
     }
 
@@ -87,6 +87,15 @@ public class SysController extends ManagerController {
     @PostMapping("/qNumberManager/commit")
     public void qNumberManagerCommit(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
         JsonMessageCreator msg=executeNewOrUpdate(interactive,qNumberManagerService);
+        interactive.writeUTF8Text(msg.build());
+    }
+    @AccessControl(name = "删除QQ号码", weight = 6.22f, detail = "删除QQ号码", code = rootPath
+            + "/qNumberManager/delete", parent = rootPath+"/qNumberManager")
+    @RequestMapping("/qNumberManager/delete")
+    public void visitorUserDelete(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        JsonMessageCreator msg=getSuccessMessage();
+        String entityId=interactive.getStringParameter("entityId","");
+        qNumberManagerService.deleteForPrimary(entityId);
         interactive.writeUTF8Text(msg.build());
     }
 
