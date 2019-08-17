@@ -4,6 +4,7 @@ import kaiyi.app.xhapp.WeixinAppPayInfo;
 import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.app.xhapp.entity.access.VisitorMenu;
 import kaiyi.app.xhapp.entity.curriculum.Course;
+import kaiyi.app.xhapp.entity.distribution.BankInfo;
 import kaiyi.app.xhapp.entity.examination.Question;
 import kaiyi.app.xhapp.entity.jobs.Position;
 import kaiyi.app.xhapp.entity.log.ShortMessageSenderNote;
@@ -119,6 +120,7 @@ public class daima {
         BeanSyntacticSugar.printEntity(Position.class);
         BeanSyntacticSugar.printEntity(Question.class);
         BeanSyntacticSugar.printEntity(QNumberManager.class);
+        BeanSyntacticSugar.printEntity(BankInfo.class);
     }
 
     @Test

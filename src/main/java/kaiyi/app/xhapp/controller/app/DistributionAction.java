@@ -24,7 +24,7 @@ import java.io.IOException;
 
 @Controller
 @RequestMapping(CurriculumAction.rootPath)
-public class DistributionController extends SuperAction {
+public class DistributionAction extends SuperAction {
 
     public static final String rootPath=PREFIX+"/distribution";
     @Resource

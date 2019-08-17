@@ -123,13 +123,13 @@ public class CourseOrderServiceImpl extends InjectDao<CourseOrder> implements Co
                 if(Objects.nonNull(recommend1)){
                     int commissionRate1=configureService.getIntegerValue(ConfigureItem.SALE_LEVEL_COMMISSION_1);
                     int royalty=Currency.computerPercentage(commissionRate1,amount.doubleValue()).getNoDecimalPointToInteger();
-                    accountService.computerRoyalty(recommend1.getEntityId(),courseOrder.getOrderId(),
+                    accountService.grantRoyalty(recommend1.getEntityId(),courseOrder.getOrderId(),
                             TradeCourse.SETTLEMENT_ROYALTY,royalty);
                     Account recommend2=recommend1.getRecommend();
                     if(Objects.nonNull(recommend2)){
                         int commissionRate2=configureService.getIntegerValue(ConfigureItem.SALE_LEVEL_COMMISSION_2);
                         royalty=Currency.computerPercentage(commissionRate2,amount.doubleValue()).getNoDecimalPointToInteger();
-                        accountService.computerRoyalty(recommend2.getEntityId(),courseOrder.getOrderId(),
+                        accountService.grantRoyalty(recommend2.getEntityId(),courseOrder.getOrderId(),
                                 TradeCourse.SETTLEMENT_ROYALTY,royalty);
                     }
 

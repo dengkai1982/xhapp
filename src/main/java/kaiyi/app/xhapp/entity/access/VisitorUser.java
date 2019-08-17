@@ -11,6 +11,7 @@ import kaiyi.puer.h5ui.controller.Accesser;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Objects;
 
 @Entity(name=VisitorUser.TABLE_NAME)
 @PageEntity(showName = "用户",entityName = "visitorUser",serviceName = "visitorUserService")
@@ -35,6 +36,14 @@ public class VisitorUser extends AbstractEntity implements Accesser {
     private String loginAddress;
     @PageField(label = "登录次数",showQuery = false,showForm = false)
     private long accessNumber;
+
+    @Transient
+    public String getShowVisitorUserName(){
+        if(Objects.isNull(realName)){
+            return realName;
+        }
+        return loginName;
+    }
 
     public String getLoginName() {
         return loginName;

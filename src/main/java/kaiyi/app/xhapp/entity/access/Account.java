@@ -32,7 +32,7 @@ public class Account extends AbstractEntity {
     @FieldChosen
     private MemberShip memberShip;
 
-    @PageField(label = "推荐人",type = FieldType.REFERENCE,showForm = false)
+    @PageField(label = "推荐人",type = FieldType.REFERENCE,showForm = false,tableLength = 140)
     @FieldReference(fieldName = "showAccountName")
     private Account recommend;
 
@@ -59,6 +59,8 @@ public class Account extends AbstractEntity {
     @ICurrency
     @PageField(label = "账户余额",type = FieldType.NUMBER)
     private int integral;
+
+    private String showAccountName;
 
     @Override
     public StreamArray<String> filterField() {
@@ -143,6 +145,10 @@ public class Account extends AbstractEntity {
 
     public void setRegisterTime(Date registerTime) {
         this.registerTime = registerTime;
+    }
+
+    public void setShowAccountName(String showAccountName) {
+
     }
     @Transient
     public String getShowAccountName(){

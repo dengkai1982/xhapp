@@ -5,10 +5,13 @@ import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
 import kaiyi.app.xhapp.service.access.AccountService;
 import kaiyi.app.xhapp.service.log.ShortMessageSenderNoteService;
 import kaiyi.app.xhapp.service.pub.ConfigureService;
+import kaiyi.puer.commons.image.QrCodeImage;
+import kaiyi.puer.commons.image.SimpleImage;
 import kaiyi.puer.db.orm.ServiceException;
 import kaiyi.puer.json.JsonCreator;
 import kaiyi.puer.json.creator.JsonMessageCreator;
 import kaiyi.puer.json.creator.MutilJsonCreator;
+import kaiyi.puer.web.servlet.ServletUtils;
 import kaiyi.puer.web.servlet.WebInteractive;
 import kaiyi.puer.web.springmvc.IWebInteractive;
 import org.springframework.stereotype.Controller;
@@ -17,7 +20,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 @Controller
@@ -31,6 +39,51 @@ public class AccountAction extends SuperAction {
     private ShortMessageSenderNoteService shortMessageSenderNoteService;
     @Resource
     private ConfigureService configureService;
+
+    private static final String logoPng="http://www.xinhongapp.cn:10086/logo.png";
+    /**
+     * 获取个人分享二维码
+     * recommendId: 个人账户ID
+     * @param interactive
+     * @param response
+     */
+    @RequestMapping("/generatorShareQRCode")
+    public void generatorShareQRCode(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String recommendId=interactive.getStringParameter("recommendId","");
+        Map<String, Object> params=new HashMap<>();
+        params.put("recommendId",recommendId);
+        String url=ServletUtils.getRequestHostContainerProtolAndPort(interactive.getHttpServletRequest());
+        url+=interactive.generatorRequestUrl(rootPath+"/shareRegistPage",params);
+        QrCodeImage qrCodeImage=new QrCodeImage(url);
+        qrCodeImage.encode(400,400);
+        BufferedImage image=qrCodeImage.getCodeImage();
+        String realPath=interactive.getHttpServletRequest().getServletContext().getRealPath("/");
+        File logoFile=new File(realPath+"/image/logo.png");
+        image=QrCodeImage.encodeImgLogo(image,logoFile.toURI().toURL());
+        File bgFile=new File(realPath+"/images/bg.jpg");
+        SimpleImage sim=new SimpleImage(bgFile);
+        sim.water(image,180,685);
+        //SimpleImage sim=new SimpleImage(image,"png");
+        sim.write(response.getOutputStream());
+        qrCodeImage.writeTo(response.getOutputStream(),"png");
+    }
+    /**
+     * 分享注册页面
+     * @param interactive
+     * @param response
+     * @return
+     */
+    @RequestMapping("/shareRegistPage")
+    public String  shareRegistPage(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        String recommendId=interactive.getStringParameter("recommendId","");
+        Account recommend=accountService.findForPrimary(recommendId);
+        if(Objects.isNull(recommend)){
+            return null;
+        }
+        interactive.setRequestAttribute("recommend",recommend);
+        return rootPath+"/shareRegistPage";
+    }
+
     /**
      * 修改用户信息
      * @param interactive
@@ -59,7 +112,8 @@ public class AccountAction extends SuperAction {
         String validateCode=interactive.getStringParameter("validateCode","");
         JsonMessageCreator jmc=getSuccessMessage();
         try {
-            accountService.register(phone,password,validateCode);
+            //TODO 要求鑫鸿提供一个默认上级
+            accountService.register(phone,password,validateCode,"");
         } catch (ServiceException e) {
             catchServiceException(jmc,e);
         }

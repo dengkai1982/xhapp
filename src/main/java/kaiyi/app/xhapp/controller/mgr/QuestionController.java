@@ -6,23 +6,27 @@ import kaiyi.app.xhapp.entity.examination.Question;
 import kaiyi.app.xhapp.entity.examination.QuestionCategory;
 import kaiyi.app.xhapp.entity.examination.TestPager;
 import kaiyi.app.xhapp.entity.examination.TestPagerQuestion;
+import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
 import kaiyi.app.xhapp.service.curriculum.CategoryService;
 import kaiyi.app.xhapp.service.examination.ExamQuestionService;
 import kaiyi.app.xhapp.service.examination.QuestionCategoryService;
 import kaiyi.app.xhapp.service.examination.QuestionService;
 import kaiyi.app.xhapp.service.examination.TestPagerService;
+import kaiyi.app.xhapp.service.pub.ConfigureService;
 import kaiyi.puer.commons.access.AccessControl;
 import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.JavaDataTyper;
 import kaiyi.puer.commons.data.StringEditor;
 import kaiyi.puer.commons.poi.ExcelUtils;
+import kaiyi.puer.commons.time.DateTimeUtil;
 import kaiyi.puer.commons.utils.CoderUtil;
 import kaiyi.puer.db.orm.ServiceException;
 import kaiyi.puer.db.query.CompareQueryExpress;
 import kaiyi.puer.db.query.NullQueryExpress;
 import kaiyi.puer.db.query.QueryExpress;
 import kaiyi.puer.h5ui.bean.DynamicGridInfo;
+import kaiyi.puer.h5ui.service.DocumentService;
 import kaiyi.puer.json.JsonCreator;
 import kaiyi.puer.json.creator.JsonMessageCreator;
 import kaiyi.puer.web.elements.FormElementHidden;
@@ -36,6 +40,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -53,6 +58,8 @@ public class QuestionController extends ManagerController {
     private TestPagerService testPagerService;
     @Resource
     private QuestionCategoryService questionCategoryService;
+    @Resource
+    private ConfigureService configureService;
     @RequestMapping("/question")
     @AccessControl(name = "试题库", weight = 5.1f, detail = "管理试题库内容", code = rootPath+ "/question", parent = rootPath)
     public String question(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
@@ -145,7 +152,13 @@ public class QuestionController extends ManagerController {
         Map<String, JavaDataTyper> params=interactive.getRequestParameterMap();
         String choiceAnswer=interactive.getHttpServletRequest().getParameter("choiceAnswer");
         params.put("choiceAnswer",new JavaDataTyper(choiceAnswer));
-        JsonMessageCreator msg=executeNewOrUpdate(interactive,questionService,params);
+        String serverPathParams=configureService.getStringValue(ConfigureItem.DOC_SERVER_PREFIX);
+        String storagePathParams=configureService.getStringValue(ConfigureItem.DOC_SAVE_PATH);
+        String detail=params.get("detail").stringValue();
+        detail=DocumentService.replaceImageSrc(detail,AccessController.getAccessTempFilePathPrefix(interactive),
+                storagePathParams,serverPathParams);
+        params.put("detail",new JavaDataTyper(detail));
+        JsonMessageCreator msg=executeNewOrUpdate(interactive,questionService,params,storagePathParams);
         interactive.writeUTF8Text(msg.build());
     }
     @PostMapping("/question/deleteAnswer")

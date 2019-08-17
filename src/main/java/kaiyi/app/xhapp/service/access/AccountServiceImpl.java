@@ -30,7 +30,7 @@ public class AccountServiceImpl extends InjectDao<Account> implements AccountSer
     @Resource
     private AmountFlowService amountFlowService;
     @Override
-    public void register(String phone, String password,String validateCode) throws ServiceException {
+    public void register(String phone, String password,String validateCode,String recommendId) throws ServiceException {
         if(!shortMessageSenderNoteService.validateCode(phone,validateCode)){
             throw ServiceExceptionDefine.validateCodeError;
         }
@@ -49,6 +49,10 @@ public class AccountServiceImpl extends InjectDao<Account> implements AccountSer
         account.setRegisterTime(new Date());
         account.setMemberShip(MemberShip.normal);
         account.setPassword(applicationService.cipherToString(password));
+        Account recommend=findForPrimary(recommendId);
+        if(Objects.nonNull(recommend)){
+            account.setRecommend(recommend);
+        }
         saveObject(account);
     }
 
@@ -118,7 +122,7 @@ public class AccountServiceImpl extends InjectDao<Account> implements AccountSer
     }
 
     @Override
-    public void computerRoyalty(String accountId,String orderId, TradeCourse tradeCourse, int amount) {
+    public void grantRoyalty(String accountId,String orderId, TradeCourse tradeCourse, int amount) {
         Account account=findForPrimary(accountId);
         int before=account.getIntegral();
         account.setIntegral(account.getIntegral()+amount);

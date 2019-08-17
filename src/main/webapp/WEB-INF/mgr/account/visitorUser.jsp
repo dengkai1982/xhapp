@@ -59,6 +59,7 @@
             label:"查看详情"
         },{
             label:"删除用户",
+            className:"privilege",
             privilege:"/mgr/account/visitorUser/delete",
             onClick:function(){
                 confirmOper("消息","确实要删除选中的用户?",function(){

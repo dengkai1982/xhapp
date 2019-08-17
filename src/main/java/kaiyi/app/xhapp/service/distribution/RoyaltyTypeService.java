@@ -7,5 +7,5 @@ import kaiyi.puer.db.orm.DatabaseQuery;
 
 public interface RoyaltyTypeService extends DatabaseQuery<RoyaltyType>,DatabaseFastOper<RoyaltyType>,
         DatabaseOperator<RoyaltyType> {
-
+    
 }

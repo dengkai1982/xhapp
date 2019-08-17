@@ -16,7 +16,7 @@ public interface AccountService extends DatabaseQuery<Account>,DatabaseFastOper<
      * @param validateCode
      * @throws ServiceException
      */
-    void register(String phone,String password,String validateCode)throws ServiceException;
+    void register(String phone,String password,String validateCode,String recommendId)throws ServiceException;
 
     /**
      * 账户登录
@@ -65,7 +65,7 @@ public interface AccountService extends DatabaseQuery<Account>,DatabaseFastOper<
      * @param tradeCourse 科目
      * @param amount 金额
      */
-    void computerRoyalty(String accountId,String orderId, TradeCourse tradeCourse,int amount);
+    void grantRoyalty(String accountId,String orderId, TradeCourse tradeCourse,int amount);
     /**
      * 申请提现
      * @param accountId
