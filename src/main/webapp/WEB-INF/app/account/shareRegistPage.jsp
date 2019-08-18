@@ -8,7 +8,6 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
     <title></title>
     <link href="${contextPath}/css/mui.min.css" rel="stylesheet" />
-    <link href="${contextPath}/css/style.css" rel="stylesheet" />
     <style>
         .area {
             margin: 20px auto 0px auto;
@@ -40,85 +39,121 @@
 
 <body>
 <header class="mui-bar mui-bar-nav">
-
     <h1 class="mui-title">会员注册</h1>
 </header>
 <div class="mui-content">
     <div style="margin: 50px auto; text-align: center;"><img src="${contextPath}/images/logo.png" width="30%" height="auto" /></div>
     <form class="mui-input-group">
+        <input type="hidden" id="recommendId" name="recommendId" value="${recommend.entityId}"/>
         <div class="mui-input-row">
             <label>手机号码</label>
-            <input id='account' type="text" class="mui-input-clear mui-input" placeholder="请输入账号">
+            <input id='phoneNumber' type="text" class="mui-input" placeholder="请输入账号">
         </div>
-        <div class="mui-input-row">
+        <div class="mui-input-row validateCodeConotainer">
             <label>验证码</label>
-            <span style="float: right; padding-top: 10px; padding-right: 10px;"><button type="button">
-					获取验证码
-				</button></span><input id='email' type="email" class="mui-input-clear mui-input" placeholder="请输入验证码" style="width: 40%; float: left;">
+
+            <span style="position: absolute;right:2%;padding-top: 10px; padding-right: 10px;">
+                <button type="button" id="sendCode">获取验证码</button>
+            </span>
+            <input id='validateCode' type="number" class="mui-input" placeholder="请输入验证码" style="width: 40%; float: left;">
         </div>
         <div class="mui-input-row">
             <label>输入密码</label>
-            <input id='password' type="password" class="mui-input-clear mui-input" placeholder="请输入密码">
+            <input id='password' type="password" class="mui-input" placeholder="请输入密码">
         </div>
         <div class="mui-input-row">
             <label>确认密码</label>
-            <input id='password_confirm' type="password" class="mui-input-clear mui-input" placeholder="请确认密码">
+            <input id='password_confirm' type="password" class="mui-input" placeholder="请确认密码">
         </div>
 
     </form>
     <div class="mui-content-padded">
-        <button id='reg' class="mui-btn mui-btn-block mui-btn-primary">注册</button>
+        <button id='reg' class="mui-btn mui-btn-block mui-btn-primary">立即注册</button>
     </div>
 </div>
 <script src="${contextPath}/js/mui.min.js"></script>
 <script src="${contextPath}/js/app.js"></script>
 <script>
-    (function($, doc) {
-        $.init();
-        $.plusReady(function() {
-            var settings = app.getSettings();
-            var regButton = doc.getElementById('reg');
-            var accountBox = doc.getElementById('account');
-            var passwordBox = doc.getElementById('password');
-            var passwordConfirmBox = doc.getElementById('password_confirm');
-            var emailBox = doc.getElementById('email');
-            regButton.addEventListener('tap', function(event) {
-                var regInfo = {
-                    account: accountBox.value,
-                    password: passwordBox.value,
-                    email: emailBox.value
-                };
-                var passwordConfirm = passwordConfirmBox.value;
-                if (passwordConfirm != regInfo.password) {
-                    plus.nativeUI.toast('密码两次输入不一致');
-                    return;
+    var codeTime=60;
+    mui.init();
+    mui(".mui-content-padded").on("tap","#reg",function(){
+        var recommendId=document.getElementById("recommendId").value;
+        var phoneNumber=document.getElementById("phoneNumber").value;
+        var validateCode=document.getElementById("validateCode").value;
+        var password=document.getElementById("password").value;
+        var password_confirm=document.getElementById("password_confirm").value;
+        if(recommendId==""){
+            mui.toast("页面来源错误");
+            return;
+        }
+        if(phoneNumber==""){
+            mui.toast("电话号码必须填写");
+            return;
+        }
+        if(validateCode==""){
+            mui.toast("验证码必须填写");
+            return;
+        }
+        if(password==""||password!=password_confirm){
+            mui.toast("两次密码不一致");
+            return;
+        }
+        mui.ajax("${contextPath}/app/account/register.xhtml",{
+            data:{
+                phone:phoneNumber,
+                password:password,
+                recommendId:recommendId,
+                validateCode:validateCode
+            },
+            dataType:'json',//服务器返回json格式数据
+            type:'post',//HTTP请求类型
+            success:function(data){
+                if(data.code=="success"){
+                    window.location.href="${contextPath}/registSuccess.jsp"
+                }else{
+                    mui.toast(data.msg)
                 }
-                app.reg(regInfo, function(err) {
-                    if (err) {
-                        plus.nativeUI.toast(err);
-                        return;
-                    }
-                    plus.nativeUI.toast('注册成功');
-                    /*
-                     * 注意：
-                     * 1、因本示例应用启动页就是登录页面，因此注册成功后，直接显示登录页即可；
-                     * 2、如果真实案例中，启动页不是登录页，则需修改，使用mui.openWindow打开真实的登录页面
-                     */
-                    plus.webview.getLaunchWebview().show("pop-in",200,function () {
-                        plus.webview.currentWebview().close("none");
-                    });
-                    //若启动页不是登录页，则需通过如下方式打开登录页
-//							$.openWindow({
-//								url: 'login.html',
-//								id: 'login',
-//								show: {
-//									aniShow: 'pop-in'
-//								}
-//							});
-                });
-            });
+            }
         });
-    }(mui, document));
+    })
+    mui(".validateCodeConotainer").on("tap","#sendCode",function(){
+        var phoneNumber=document.getElementById("phoneNumber");
+        if(phoneNumber.value!=""){
+            mui.ajax("${contextPath}/app/account/sendShorMessage.xhtml",{
+                data:{
+                    phone:phoneNumber.value,
+                    usage:"用户注册"
+                },
+                dataType:'json',//服务器返回json格式数据
+                type:'post',//HTTP请求类型
+                success:function(data){
+                    if(data.code=="success"){
+                        changeCodeTime(document.getElementById("sendCode"));
+                    }else{
+                        mui.toast(data.msg)
+                    }
+                }
+            });
+        }else{
+            mui.toast("手机号码必须填写")
+        }
+    });
+    function changeCodeTime(tag){
+        console.log(tag);
+        if(codeTime==0){
+            tag.innerHTML="发送验证码";
+            tag.disabled=false;
+            codeTime = 60;
+        }else{
+            tag.innerHTML=codeTime + "s后重新发送";
+            tag.disabled=true;
+            codeTime=codeTime-1;
+            setTimeout(function(){
+                changeCodeTime(tag);
+            },1000);
+        }
+    }
+
 </script>
 </body>
 </html>

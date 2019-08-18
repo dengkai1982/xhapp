@@ -108,12 +108,13 @@ public class AccountAction extends SuperAction {
     public void register(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
         String phone=interactive.getStringParameter("phone","");
         String password=interactive.getStringParameter("password","");
+        String recommendId=interactive.getStringParameter("recommendId","");
         //短信验证码
         String validateCode=interactive.getStringParameter("validateCode","");
         JsonMessageCreator jmc=getSuccessMessage();
         try {
             //TODO 要求鑫鸿提供一个默认上级
-            accountService.register(phone,password,validateCode,"");
+            accountService.register(phone,password,validateCode,recommendId);
         } catch (ServiceException e) {
             catchServiceException(jmc,e);
         }
