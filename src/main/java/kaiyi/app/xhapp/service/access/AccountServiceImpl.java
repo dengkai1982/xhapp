@@ -10,9 +10,13 @@ import kaiyi.app.xhapp.entity.log.enums.TradeCourse;
 import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.app.xhapp.service.log.AmountFlowService;
 import kaiyi.app.xhapp.service.log.ShortMessageSenderNoteService;
+import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.StringEditor;
 import kaiyi.puer.commons.validate.VariableVerifyUtils;
 import kaiyi.puer.db.orm.ServiceException;
+import kaiyi.puer.db.query.CompareQueryExpress;
+import kaiyi.puer.db.query.ContainQueryExpress;
+import kaiyi.puer.db.query.QueryExpress;
 import kaiyi.puer.h5ui.service.ApplicationService;
 import org.springframework.stereotype.Service;
 
@@ -167,5 +171,18 @@ public class AccountServiceImpl extends InjectDao<Account> implements AccountSer
         updateObject(account);
         amountFlowService.saveNote(account,AmountType.INTEGRAL,TradeCourse.REJECT_WITH_DRAW,orderId,
                 before,amount,account.getIntegral(),BorrowLend.income);
+    }
+
+    @Override
+    public StreamCollection<Account> getTeams(String entityId) {
+        Account recommend=new Account();
+        recommend.setEntityId(entityId);
+        QueryExpress query=new CompareQueryExpress("recommend",CompareQueryExpress.Compare.EQUAL,recommend);
+        StreamCollection<Account> accounts=getEntitys(query);
+        if(accounts.assertNotEmpty()){
+            query=new ContainQueryExpress<>("recommend",ContainQueryExpress.CONTAINER.IN,accounts.toList());
+            accounts.append(getEntitys(query));
+        }
+        return accounts;
     }
 }

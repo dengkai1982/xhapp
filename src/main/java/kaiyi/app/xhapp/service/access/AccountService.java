@@ -4,9 +4,12 @@ import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.app.xhapp.entity.access.enums.MemberShip;
 import kaiyi.app.xhapp.entity.curriculum.CourseOrder;
 import kaiyi.app.xhapp.entity.log.enums.TradeCourse;
+import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.db.orm.DatabaseFastOper;
 import kaiyi.puer.db.orm.DatabaseQuery;
 import kaiyi.puer.db.orm.ServiceException;
+
+import java.util.stream.Stream;
 
 public interface AccountService extends DatabaseQuery<Account>,DatabaseFastOper<Account> {
     /**
@@ -79,7 +82,14 @@ public interface AccountService extends DatabaseQuery<Account>,DatabaseFastOper<
      * @param orderId
      * @throws ServiceException
      */
-    void unWithdraw(String memberId,int amount,String orderId)throws  ServiceException;
+    void unWithdraw(String memberId,int amount,String orderId)throws ServiceException;
+
+    /**
+     *
+     * @param entityId
+     * @return
+     */
+    StreamCollection<Account> getTeams(String entityId);
 
 
 }

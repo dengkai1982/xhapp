@@ -2,6 +2,7 @@ package kaiyi.app.xhapp.controller.app;
 
 import kaiyi.app.xhapp.entity.distribution.BankInfo;
 import kaiyi.app.xhapp.entity.distribution.enums.BankType;
+import kaiyi.app.xhapp.service.curriculum.CourseOrderService;
 import kaiyi.app.xhapp.service.distribution.BankInfoService;
 import kaiyi.app.xhapp.service.distribution.WithdrawApplyService;
 import kaiyi.puer.commons.collection.StreamCollection;
@@ -31,6 +32,31 @@ public class DistributionAction extends SuperAction {
     private BankInfoService bankInfoService;
     @Resource
     private WithdrawApplyService withdrawApplyService;
+    @Resource
+    private CourseOrderService courseOrderService;
+    /**
+     * 销量统计
+     * accountId 当前账户ID
+     * date 统计时间，格式为201901或201912
+     * isTeam true 获取团队销量, false获取个人销量
+     * @param interactive
+     * @param response
+     */
+    @RequestMapping("totalSale")
+    public void totalSale(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String accountId=interactive.getStringParameter("accountId","");
+        String date=interactive.getStringParameter("date","");
+        boolean isTeam=interactive.getBoolean("isTeam","true",false);
+        Currency currency=null;
+        if(isTeam){
+            currency=courseOrderService.totalTeamSale(accountId,date);
+        }else{
+            currency=courseOrderService.totalPersonSale(accountId,date);
+        }
+        JsonMessageCreator jmc=getSuccessMessage();
+        jmc.setBody(currency.toString());
+        interactive.writeUTF8Text(jmc.build());
+    }
     /**
      * 获取个人网银信息
      * entityId bankInfoId

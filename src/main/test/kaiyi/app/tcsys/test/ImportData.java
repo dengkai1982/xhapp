@@ -7,6 +7,7 @@ import com.alipay.api.domain.AlipayTradeWapPayModel;
 import com.alipay.api.request.AlipayTradeWapPayRequest;
 import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.exceptions.ClientException;
+import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.app.xhapp.entity.curriculum.Category;
 import kaiyi.app.xhapp.entity.curriculum.CourseOrder;
 import kaiyi.app.xhapp.entity.examination.Question;
@@ -16,6 +17,7 @@ import kaiyi.app.xhapp.service.access.AccountService;
 import kaiyi.app.xhapp.service.access.VisitorRoleService;
 import kaiyi.app.xhapp.service.access.VisitorUserService;
 import kaiyi.app.xhapp.service.curriculum.CategoryService;
+import kaiyi.app.xhapp.service.curriculum.CourseOrderService;
 import kaiyi.app.xhapp.service.examination.ExamQuestionService;
 import kaiyi.app.xhapp.service.examination.QuestionService;
 import kaiyi.app.xhapp.service.jobs.PositionService;
@@ -259,6 +261,22 @@ public class ImportData {
             }
             System.out.println("=============");
         });
+    }
+    @Test
+    public void testGetTeam(){
+        AccountService accountService=sel.getBean(AccountService.class);
+        StreamCollection<Account> accounts=accountService.getTeams("15524007346910022");
+        accounts.forEach(c->{
+            System.out.println(c.getEntityId());
+        });
+    }
+    @Test
+    public void saleCount(){
+        CourseOrderService courseOrderService=sel.getBean(CourseOrderService.class);
+        Currency currency=courseOrderService.totalPersonSale("15524007346910022","201908");
+        System.out.println(currency.toString());
+        currency=courseOrderService.totalTeamSale("15524007346910022","201908");
+        System.out.println(currency.toString());
     }
 
     @Test

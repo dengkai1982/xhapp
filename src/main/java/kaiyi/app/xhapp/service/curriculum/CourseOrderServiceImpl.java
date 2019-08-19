@@ -14,16 +14,19 @@ import kaiyi.app.xhapp.service.log.AmountFlowService;
 import kaiyi.app.xhapp.service.pub.ConfigureService;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.Currency;
+import kaiyi.puer.commons.time.ChangeCalendar;
+import kaiyi.puer.commons.time.DateTimeRange;
+import kaiyi.puer.commons.time.DateTimeUtil;
+import kaiyi.puer.commons.validate.DateRange;
 import kaiyi.puer.db.orm.ServiceException;
 import kaiyi.puer.db.query.CompareQueryExpress;
 import kaiyi.puer.db.query.ContainQueryExpress;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 @Service("courseOrderService")
 public class CourseOrderServiceImpl extends InjectDao<CourseOrder> implements CourseOrderService {
@@ -137,6 +140,75 @@ public class CourseOrderServiceImpl extends InjectDao<CourseOrder> implements Co
             }
         }
         return courseOrder;
+    }
+
+    @Override
+    public Currency totalPersonSale(String entityId, String date) {
+        Account account=new Account();
+        account.setEntityId(entityId);
+        try {
+            DateTimeRange dateRange=parseDateRange(date);
+            Object result=em.createQuery("select coalesce(sum(o.amount),0) from "+getEntityName(entityClass)+" o "+
+                    "where o.status=:status and o.account=:account and o.paymentDate>=:startDate and " +
+                    "o.paymentDate<=:endDate").setParameter("status",CourseOrderStatus.PAYMENTED)
+            .setParameter("account",account).setParameter("startDate",dateRange.getStartDate())
+            .setParameter("endDate",dateRange.getEndDate()).getSingleResult();
+            Long currency=Long.valueOf(result.toString());
+            return Currency.noDecimalBuild(currency,2);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return Currency.noDecimalBuild(0,2);
+    }
+
+    private DateTimeRange parseDateRange(String date) throws ParseException {
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyyMM");
+        Date queryDate=sdf.parse(date);
+        return getDateTimeRange(s->{
+            s.set(Calendar.YEAR, queryDate.getYear());
+            s.set(Calendar.MONTH, queryDate.getMonth());
+            s.set(Calendar.DAY_OF_MONTH,s.getActualMinimum(Calendar.DAY_OF_MONTH ));
+        },e->{
+            e.set(Calendar.DAY_OF_MONTH,e.getActualMaximum(Calendar.DAY_OF_MONTH ));
+        });
+    }
+
+    private static DateTimeRange getDateTimeRange(ChangeCalendar start, ChangeCalendar end){
+        Calendar c=Calendar.getInstance(Locale.getDefault());
+        start.doChange(c);
+        DateTimeRange range=new DateTimeRange();
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        range.setStartDate(c.getTime());
+        end.doChange(c);
+        c.set(Calendar.HOUR_OF_DAY,23);
+        c.set(Calendar.MINUTE, 59);
+        c.set(Calendar.SECOND, 59);
+        range.setEndDate(c.getTime());
+        return range;
+    }
+
+
+
+    @Override
+    public Currency totalTeamSale(String entityId, String date) {
+        StreamCollection<Account> accounts=accountService.getTeams(entityId);
+        if(accounts.assertNotEmpty()){
+            try {
+                DateTimeRange dateRange=parseDateRange(date);
+                Object result=em.createQuery("select coalesce(sum(o.amount),0) from "+getEntityName(entityClass)+" o "+
+                        "where o.status=:status and o.account in(:accounts) and o.paymentDate>=:startDate and " +
+                        "o.paymentDate<=:endDate").setParameter("status",CourseOrderStatus.PAYMENTED)
+                        .setParameter("accounts",accounts).setParameter("startDate",dateRange.getStartDate())
+                        .setParameter("endDate",dateRange.getEndDate()).getSingleResult();
+                Long currency=Long.valueOf(result.toString());
+                return Currency.noDecimalBuild(currency,2);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return Currency.noDecimalBuild(0,2);
     }
 
 
