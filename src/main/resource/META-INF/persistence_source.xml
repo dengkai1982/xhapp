@@ -58,6 +58,7 @@
     <class>kaiyi.app.xhapp.entity.distribution.WithdrawApply</class>
     <class>kaiyi.app.xhapp.entity.distribution.BankInfo</class>
     <class>kaiyi.app.xhapp.entity.distribution.RoyaltyType</class>
+    <class>kaiyi.app.xhapp.entity.log.TeamJoinNote</class>
 	  <properties>
          <property name="hibernate.dialect" value="kaiyi.puer.db.MySQL5DialectUseInnoDB"/>
          <property name="hibernate.max_fetch_depth" value="3"/>

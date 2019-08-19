@@ -29,8 +29,9 @@ public class AccountServiceImpl extends InjectDao<Account> implements AccountSer
     private ShortMessageSenderNoteService shortMessageSenderNoteService;
     @Resource
     private AmountFlowService amountFlowService;
+
     @Override
-    public void register(String phone, String password,String validateCode,String recommendId) throws ServiceException {
+    public Account register(String phone, String password,String validateCode,String recommendId) throws ServiceException {
         if(!shortMessageSenderNoteService.validateCode(phone,validateCode)){
             throw ServiceExceptionDefine.validateCodeError;
         }
@@ -52,8 +53,11 @@ public class AccountServiceImpl extends InjectDao<Account> implements AccountSer
         Account recommend=findForPrimary(recommendId);
         if(Objects.nonNull(recommend)){
             account.setRecommend(recommend);
+            recommend.setTeamNumber(recommend.getTeamNumber()+1);
+            updateObject(recommend);
         }
         saveObject(account);
+        return account;
     }
 
     @Override

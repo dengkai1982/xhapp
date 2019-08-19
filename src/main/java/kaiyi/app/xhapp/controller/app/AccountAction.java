@@ -4,6 +4,7 @@ import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
 import kaiyi.app.xhapp.service.access.AccountService;
 import kaiyi.app.xhapp.service.log.ShortMessageSenderNoteService;
+import kaiyi.app.xhapp.service.log.TeamJoinNoteService;
 import kaiyi.app.xhapp.service.pub.ConfigureService;
 import kaiyi.puer.commons.image.QrCodeImage;
 import kaiyi.puer.commons.image.SimpleImage;
@@ -39,8 +40,8 @@ public class AccountAction extends SuperAction {
     private ShortMessageSenderNoteService shortMessageSenderNoteService;
     @Resource
     private ConfigureService configureService;
-
-    private static final String logoPng="http://www.xinhongapp.cn:10086/logo.png";
+    @Resource
+    private TeamJoinNoteService teamJoinNoteService;
     /**
      * 获取个人分享二维码
      * recommendId: 个人账户ID
@@ -114,7 +115,11 @@ public class AccountAction extends SuperAction {
         JsonMessageCreator jmc=getSuccessMessage();
         try {
             //TODO 要求鑫鸿提供一个默认上级
-            accountService.register(phone,password,validateCode,recommendId);
+            Account account=accountService.register(phone,password,validateCode,recommendId);
+            Account recommend=account.getRecommend();
+            if(Objects.nonNull(recommend)){
+                teamJoinNoteService.saveNote(recommend,account);
+            }
         } catch (ServiceException e) {
             catchServiceException(jmc,e);
         }

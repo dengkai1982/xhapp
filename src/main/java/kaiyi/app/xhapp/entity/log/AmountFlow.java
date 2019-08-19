@@ -18,7 +18,7 @@ public class AmountFlow extends AbstractEntity {
     public static final String TABLE_NAME="amount_flow";
     private static final long serialVersionUID = -3119766248121324039L;
     @PageField(label = "归属人",type = FieldType.REFERENCE)
-    @FieldReference(fieldName = "phone")
+    @FieldReference(fieldName = "showAccountName")
     private Account account;
     @PageField(label = "账户类型",type = FieldType.CHOSEN)
     @FieldChosen

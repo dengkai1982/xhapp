@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Controller
-@RequestMapping(CurriculumAction.rootPath)
+@RequestMapping(DistributionAction.rootPath)
 public class DistributionAction extends SuperAction {
 
     public static final String rootPath=PREFIX+"/distribution";

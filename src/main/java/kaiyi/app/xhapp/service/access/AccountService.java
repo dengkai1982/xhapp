@@ -16,7 +16,7 @@ public interface AccountService extends DatabaseQuery<Account>,DatabaseFastOper<
      * @param validateCode
      * @throws ServiceException
      */
-    void register(String phone,String password,String validateCode,String recommendId)throws ServiceException;
+    Account register(String phone,String password,String validateCode,String recommendId)throws ServiceException;
 
     /**
      * 账户登录
