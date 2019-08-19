@@ -25,6 +25,16 @@ public enum CourseOrderStatus implements H5ChosenInterface {
         public String getHexColor() {
             return "#f1a325";
         }
+    },
+    DELETED{
+        @Override
+        public String toString() {
+            return "用户删除";
+        }
+        @Override
+        public String getHexColor() {
+            return "#38b03f";
+        }
     }
     ;
     @Override

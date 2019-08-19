@@ -638,6 +638,18 @@ public class CurriculumAction extends SuperAction {
         logger.close();
     }
 
+    /**
+     * 用户订单删除
+     * entityId:订单ID，非orderId
+     * @param interactive
+     * @param response
+     */
+    @PostMapping("/deleteCurseOrder")
+    public void deleteCurseOrder(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String entityId=interactive.getStringParameter("entityId","");
+        courseOrderService.deleteOrderById(entityId);
+        interactive.writeUTF8Text(getSuccessMessage().build());
+    }
 
     private Map<String,String> getAlipayNotifyParams(WebInteractive interactive){
         Map<String,String> params = new HashMap<String,String>();

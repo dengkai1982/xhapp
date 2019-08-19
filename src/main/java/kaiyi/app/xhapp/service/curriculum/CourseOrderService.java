@@ -35,4 +35,10 @@ public interface CourseOrderService extends DatabaseQuery<CourseOrder> {
      * @return
      */
     Currency totalTeamSale(String entityId,String date);
+
+    /**
+     * 删除订单
+     * @param entityId
+     */
+    void deleteOrderById(String entityId);
 }

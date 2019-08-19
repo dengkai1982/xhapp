@@ -24,7 +24,7 @@
                         <tbody>
                             <tr>
                                 <th class="strong">申请人</th>
-                                <td>${entity.applyer.name}</td>
+                                <td>${entity.applyer.showAccountName}</td>
                                 <th class="strong">提现单号</th>
                                 <td>${entity.orderId}</td>
                                 <th class="strong">申请时间</th>
@@ -34,9 +34,9 @@
                                 <th class="strong">申请金额</th>
                                 <td><currency:convert value="${entity.applyAmount}"/></td>
                                 <th class="strong">网银类型</th>
-                                <td><enums:string value="${apply.bankType}"/></td>
+                                <td>${entity.bankType.value}</td>
                                 <th class="strong">账号/卡号</th>
-                                <td>${entity.account}</td>
+                                <td>${entity.cardNumber}</td>
                             </tr>
                             <tr>
                                 <th class="strong">开户行</th>
@@ -92,7 +92,7 @@
         </div>
     </div>
 </main>
-<%@include file="/WEB-INF/mgr/footerPage.jsp" %>
+<%@include file="/WEB-INF/footerPage.jsp" %>
 <script type="text/javascript">
     function pageReady(doc) {
         $("#disposeResult").change(function(){

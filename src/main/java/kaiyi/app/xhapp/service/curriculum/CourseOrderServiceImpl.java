@@ -211,6 +211,15 @@ public class CourseOrderServiceImpl extends InjectDao<CourseOrder> implements Co
         return Currency.noDecimalBuild(0,2);
     }
 
+    @Override
+    public void deleteOrderById(String entityId) {
+        CourseOrder order=findForPrimary(entityId);
+        if(!order.getStatus().equals(CourseOrderStatus.PAYMENTED)){
+            order.setStatus(CourseOrderStatus.DELETED);
+            updateObject(order);
+        }
+    }
+
 
 
     /*

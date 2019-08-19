@@ -34,6 +34,7 @@ public class DistributionAction extends SuperAction {
     private WithdrawApplyService withdrawApplyService;
     @Resource
     private CourseOrderService courseOrderService;
+
     /**
      * 销量统计
      * accountId 当前账户ID
