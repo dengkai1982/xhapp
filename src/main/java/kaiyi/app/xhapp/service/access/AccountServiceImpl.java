@@ -2,6 +2,7 @@ package kaiyi.app.xhapp.service.access;
 
 import kaiyi.app.xhapp.ServiceExceptionDefine;
 import kaiyi.app.xhapp.entity.access.Account;
+import kaiyi.app.xhapp.entity.access.AccountRecharge;
 import kaiyi.app.xhapp.entity.access.enums.MemberShip;
 import kaiyi.app.xhapp.entity.curriculum.CourseOrder;
 import kaiyi.app.xhapp.entity.log.enums.AmountType;
@@ -65,6 +66,22 @@ public class AccountServiceImpl extends InjectDao<Account> implements AccountSer
     }
 
     @Override
+    public void resetBindPhone(String entityId, String oldPhone,String newPhone, String validateCode) throws ServiceException {
+        if(!shortMessageSenderNoteService.validateCode(oldPhone,validateCode)){
+            throw ServiceExceptionDefine.validateCodeError;
+        }
+        if(!VariableVerifyUtils.mobileValidate(newPhone)){
+            throw ServiceExceptionDefine.phoneFormatError;
+        }
+        Account account=findForPrimary(entityId);
+        if(Objects.isNull(account)){
+            throw ServiceExceptionDefine.entityNotExist;
+        }
+        account.setPhone(newPhone);
+        updateObject(account);
+    }
+
+    @Override
     public Account login(String phone, String password) throws ServiceException {
         Account account=signleQuery("phone",phone);
         if(Objects.isNull(account)){
@@ -105,6 +122,17 @@ public class AccountServiceImpl extends InjectDao<Account> implements AccountSer
         if(Objects.nonNull(account)){
            account.setMemberShip(memberShip);
         }
+    }
+
+    @Override
+    public void rechargeGold(AccountRecharge recharge) {
+        Account account=findForPrimary(recharge.getRecharger().getEntityId());
+        int before=account.getGold();
+        account.setGold(account.getGold()+recharge.getPrice());
+        updateObject(account);
+        amountFlowService.saveNote(account,AmountType.GOLD,TradeCourse.GOLD_RECHARGE,
+                recharge.getOrderId(),before,recharge.getPrice(),account.getGold(),
+                BorrowLend.income);
     }
 
     @Override

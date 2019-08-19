@@ -1,11 +1,14 @@
 package kaiyi.app.xhapp.controller.app;
 
 import kaiyi.app.xhapp.entity.access.Account;
+import kaiyi.app.xhapp.entity.access.AccountRecharge;
 import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
+import kaiyi.app.xhapp.service.access.AccountRechargeService;
 import kaiyi.app.xhapp.service.access.AccountService;
 import kaiyi.app.xhapp.service.log.ShortMessageSenderNoteService;
 import kaiyi.app.xhapp.service.log.TeamJoinNoteService;
 import kaiyi.app.xhapp.service.pub.ConfigureService;
+import kaiyi.puer.commons.data.Currency;
 import kaiyi.puer.commons.image.QrCodeImage;
 import kaiyi.puer.commons.image.SimpleImage;
 import kaiyi.puer.db.orm.ServiceException;
@@ -42,6 +45,7 @@ public class AccountAction extends SuperAction {
     private ConfigureService configureService;
     @Resource
     private TeamJoinNoteService teamJoinNoteService;
+
     /**
      * 获取个人分享二维码
      * recommendId: 个人账户ID
@@ -97,6 +101,32 @@ public class AccountAction extends SuperAction {
         JsonMessageCreator msg=executeNewOrUpdate(interactive,accountService,docSavePath);
         interactive.writeUTF8Text(msg.build());
     }
+
+    /**
+     * 重新绑定电话号码
+     * entityId 账户ID
+     * oldPhone 旧手机号码
+     * newPhone 新手机号码
+     * validateCode 验证码
+     * @param interactive
+     * @param response
+     * @throws IOException
+     */
+    @PostMapping("/resetBindPhont")
+    public void resetBindPhont(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String entityId=interactive.getStringParameter("entityId","");
+        String oldPhone=interactive.getStringParameter("oldPhone","");
+        String newPhone=interactive.getStringParameter("newPhone","");
+        String validateCode=interactive.getStringParameter("validateCode","");
+        JsonMessageCreator jmc=getSuccessMessage();
+        try {
+            accountService.resetBindPhone(entityId,oldPhone,newPhone,validateCode);
+        } catch (ServiceException e) {
+            catchServiceException(jmc,e);
+        }
+        interactive.writeUTF8Text(jmc.build());
+    }
+
     /**
      * 用户注册
      * phone 手机号码
@@ -193,6 +223,9 @@ public class AccountAction extends SuperAction {
         interactive.writeUTF8Text(jmc.build());
     }
 
+
+
+
     @PostMapping("/login")
     public void login(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
         String phone=interactive.getStringParameter("phone","");
@@ -207,5 +240,7 @@ public class AccountAction extends SuperAction {
         }
         interactive.writeUTF8Text(mutilJsonCreator.build());
     }
+
+
 
 }

@@ -12,12 +12,15 @@ import com.alipay.api.request.AlipayTradeWapPayRequest;
 import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.exceptions.ClientException;
 import kaiyi.app.xhapp.WeixinAppPayInfo;
+import kaiyi.app.xhapp.entity.access.AccountRecharge;
 import kaiyi.app.xhapp.entity.access.enums.CapitalType;
 import kaiyi.app.xhapp.entity.curriculum.*;
 import kaiyi.app.xhapp.entity.curriculum.enums.PayPlatform;
 import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
 import kaiyi.app.xhapp.executor.NotifyCourseOrder;
+import kaiyi.app.xhapp.executor.NotifyRechargeOrder;
 import kaiyi.app.xhapp.service.AliyunVodHelper;
+import kaiyi.app.xhapp.service.access.AccountRechargeService;
 import kaiyi.app.xhapp.service.curriculum.*;
 import kaiyi.app.xhapp.service.log.CourseBrowseService;
 import kaiyi.app.xhapp.service.pages.ExamInfoService;
@@ -65,7 +68,8 @@ import java.util.*;
 @RequestMapping(CurriculumAction.rootPath)
 public class CurriculumAction extends SuperAction {
     public static final String rootPath=PREFIX+"/curriculum";
-
+    @Resource
+    private AccountRechargeService accountRechargeService;
     @Resource
     private CourseService courseService;
     @Resource
@@ -492,16 +496,7 @@ public class CurriculumAction extends SuperAction {
         String orderId=interactive.getStringParameter("orderId","");
         CourseOrder courseOrder=courseOrderService.signleQuery("orderId",orderId);
         if(Objects.nonNull(courseOrder)){
-            String gatewayUrl=configureService.getStringValue(ConfigureItem.ALIPAY_GATEWAY_URL);
-            String appid=configureService.getStringValue(ConfigureItem.ALIPAY_APPID);
-            String privateKey=configureService.getStringValue(ConfigureItem.MY_PRIVATE_KEY);
-            String format=configureService.getStringValue(ConfigureItem.ALIPAY_FORMAT);
-            String charset=configureService.getStringValue(ConfigureItem.CHARSET);
-            String alypayPublicKey=configureService.getStringValue(ConfigureItem.ALIPAY_PUBLIC_KEY);
-            String signtype=configureService.getStringValue(ConfigureItem.ALIPAY_SIGNTYPE);
-            AlipayClient client = new DefaultAlipayClient(gatewayUrl, appid,
-                    privateKey, format, charset,
-                    alypayPublicKey,signtype);
+            AlipayClient client = getAlipayClient();
             AlipayTradeAppPayRequest alipay_request=new AlipayTradeAppPayRequest();
             AlipayTradeAppPayModel model=new AlipayTradeAppPayModel();
             model.setOutTradeNo(courseOrder.getOrderId());
@@ -542,8 +537,6 @@ public class CurriculumAction extends SuperAction {
         interactive.writeUTF8Text(jmc.build());
     }
 
-
-
     /**
      * 完成站内支付
      * @param interactive
@@ -567,16 +560,8 @@ public class CurriculumAction extends SuperAction {
         }
         interactive.writeUTF8Text(jmc.build());
     }
-
-    /**
-     * 支付宝异步回调
-     * @param interactive
-     * @param response
-     * @throws AlipayApiException
-     * @throws IOException
-     */
-    @RequestMapping("/alipaySyncNotify")
-    public void alipaySyncNotify(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws AlipayApiException, IOException {
+    //支付宝支付通知
+    private void alipaySyncNotify(WebInteractive interactive, HttpServletResponse response,boolean isRecharge) throws IOException, AlipayApiException {
         Logger logger=configureService.getLogger(this.getClass());
         logger.info(()->"获取支付宝回调");
         Map<String,String> params = getAlipayNotifyParams(interactive);
@@ -603,7 +588,12 @@ public class CurriculumAction extends SuperAction {
                     PaymentNotify paymentNotify=new PaymentNotify(courseOrder.getOrderId(),PayPlatform.ALIPAY,
                             "完成订单","在线支付","在线支付",actualAmount.toString(),
                             "none",trade_no,new Date(),true);
-                    applicationService.syncExecute(new NotifyCourseOrder(applicationService,paymentNotify));
+                    paymentNotify.setRecharge(isRecharge);
+                    if(isRecharge){
+                        applicationService.syncExecute(new NotifyRechargeOrder(applicationService,paymentNotify));
+                    }else{
+                        applicationService.syncExecute(new NotifyCourseOrder(applicationService,paymentNotify));
+                    }
                     //courseOrderService.paymentSaleOrder(paymentNotify);
                     logger.info(()->"完成订单通知");
                     interactive.writeUTF8Text("success");
@@ -614,8 +604,19 @@ public class CurriculumAction extends SuperAction {
         interactive.writeUTF8Text("fail");
     }
 
-    @RequestMapping("/weixinPayAsync")
-    public void weixinPayAsync(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+    /**
+     * 支付宝异步回调
+     * @param interactive
+     * @param response
+     * @throws AlipayApiException
+     * @throws IOException
+     */
+    @RequestMapping("/alipaySyncNotify")
+    public void alipaySyncNotify(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws AlipayApiException, IOException {
+        alipaySyncNotify(interactive,response,false);
+    }
+
+    private void weixinPayAsync(WebInteractive interactive, HttpServletResponse response,boolean isRecharge) throws IOException {
         Logger logger=configureService.getLogger(this.getClass());
         logger.info(()->"微信支付通知");
         String msg = WeixinUtil.getRequestContent(interactive.getHttpServletRequest(), "utf-8");
@@ -629,13 +630,23 @@ public class CurriculumAction extends SuperAction {
                     payNofity.payIsSuccess() ? "支付成功" : "支付失败", payNofity.getTradeType(), payNofity.getBankType(),
                     payNofity.getTotalFee(), payNofity.getFeeType(), payNofity.getTransactionId(),
                     payNofity.getTimeEnd(), payNofity.payIsSuccess());
-            applicationService.syncExecute(new NotifyCourseOrder(applicationService,platformNotify));
+            platformNotify.setRecharge(isRecharge);
+            if(isRecharge){
+                applicationService.syncExecute(new NotifyRechargeOrder(applicationService,platformNotify));
+            }else{
+                applicationService.syncExecute(new NotifyCourseOrder(applicationService,platformNotify));
+            }
             logger.info(()->"完成订单通知");
             interactive.writeUTF8Text("success");
         } else {
             interactive.writeUTF8Text(payNofity.returnFail("sign error"));
         }
         logger.close();
+    }
+
+    @RequestMapping("/weixinPayAsync")
+    public void weixinPayAsync(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        weixinPayAsync(interactive,response,false);
     }
 
     /**
@@ -665,5 +676,136 @@ public class CurriculumAction extends SuperAction {
             params.put(name, valueStr);
         }
         return params;
+    }
+
+    /*****账户充值******/
+    /**
+     * 构建充值订单
+     * accountId
+     * amount 充值金额，比如20.00，18.55
+     */
+    @PostMapping("/generatorRechargeOrder")
+    public void generatorRechargeOrder(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String accountId=interactive.getStringParameter("accountId","");
+        Currency amount=interactive.getCurrency("amount");
+        JsonMessageCreator jmc=getSuccessMessage();
+        try {
+            AccountRecharge recharge=accountRechargeService.generatorOrder(accountId,amount.getNoDecimalPointToInteger());
+            jmc.setBody(recharge.getOrderId());
+        } catch (ServiceException e) {
+            catchServiceException(jmc,e);
+        }
+        interactive.writeUTF8Text(jmc.build());
+    }
+    /**
+     * 调用支付宝充值
+     * @param interactive
+     * @param response
+     * @return
+     */
+    @RequestMapping("/generatorWebAlipayRecharge")
+    public void generatorWebAlipayRecharge(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String orderId=interactive.getStringParameter("orderId","");
+        AccountRecharge accountRecharge=accountRechargeService.signleQuery("orderId",orderId);
+        if(Objects.nonNull(accountRecharge)){
+            AlipayClient client = getAlipayClient();
+            AlipayTradeAppPayRequest alipay_request=new AlipayTradeAppPayRequest();
+            AlipayTradeAppPayModel model=new AlipayTradeAppPayModel();
+            model.setOutTradeNo(accountRecharge.getOrderId());
+            model.setSubject("购买课程支付金币");
+            model.setTotalAmount(Currency.noDecimalBuild(accountRecharge.getPrice(),2).toString());
+            model.setBody("虚拟物品支付");
+            model.setTimeoutExpress("3m");
+            model.setProductCode("product_code");
+            alipay_request.setBizModel(model);
+            String prefix=ServletUtils.getRequestHostContainerProtolAndPort(interactive.getHttpServletRequest());
+            alipay_request.setReturnUrl(prefix+interactive.generatorRequestUrl(rootPath+"/alipayRechargeNotify",null));
+            alipay_request.setNotifyUrl(prefix+interactive.generatorRequestUrl(rootPath+"/alipayRechargeSyncNotify",null));
+            // form表单生产
+            try {
+                // 调用SDK生成表单
+                //client.sdkExecute()
+                String body = client.sdkExecute(alipay_request).getBody();
+                interactive.writeUTF8Text(body);
+            } catch (AlipayApiException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 支付宝充值异步回调
+     * @param interactive
+     * @param response
+     * @throws AlipayApiException
+     * @throws IOException
+     */
+    @RequestMapping("/alipayRechargeSyncNotify")
+    public void alipayRechargeSyncNotify(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws AlipayApiException, IOException {
+        alipaySyncNotify(interactive,response,true);
+    }
+
+    /**
+     *
+     * @param interactive
+     * @param response
+     * @throws HttpException
+     * @throws IOException
+     */
+    @RequestMapping("/generatorWeixinRecharge")
+    public void generatorWeixinRecharge(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws HttpException, IOException {
+        Logger logger=configureService.getLogger(this.getClass());
+        String orderId=interactive.getStringParameter("orderId","");
+        AccountRecharge accountRecharge=accountRechargeService.signleQuery("orderId",orderId);
+        if(Objects.nonNull(accountRecharge)){
+            String notifyUrl=interactive.generatorRequestUrl(PREFIX+"/curriculum/weixinRechargePayAsync",null);
+            notifyUrl= ServletUtils.getRequestHostContainerProtolAndPort(interactive.getHttpServletRequest())+notifyUrl;
+            HttpServletRequest request = interactive.getHttpServletRequest();
+            WeixinInfo weixinInfo=getWeixinInfo();
+            /*UnifiedPayRequestPayer requestPayer=UnifiedPayRequestPayer.buildNativePayer(weixinInfo,"购买课程",courseOrder.getOrderId(),
+                    courseOrder.getAmount(),request.getRemoteHost(),notifyUrl,courseOrder.getEntityId());*/
+            UnifiedPayRequestPayer requestPayer=UnifiedPayRequestPayer.buildAppPayer(weixinInfo,"购买金币",
+                    accountRecharge.getOrderId(),accountRecharge.getPrice(),request.getRemoteHost(),notifyUrl);
+            logger.info(()->"----微信支付参数---");
+            logger.info(()->requestPayer.getContentXml());
+            logger.info(()->"----微信支付参数---");
+            UnifiedPayResponse payResponse = (UnifiedPayResponse) requestPayer.doRequest();
+            Map<String, JavaDataTyper> result=payResponse.getResponseResult();
+            logger.info(()->"----微信返回参数---");
+            result.forEach((k,v)->{
+                logger.info(()->k+","+v.stringValue());
+            });
+            logger.info(()->"----微信返回参数---");
+            WeixinAppPayInfo payInfo = new WeixinAppPayInfo(weixinInfo.getAppId(),weixinInfo.getMchId(),payResponse.getPrepayId(),
+                    weixinInfo.getApiKey(),logger);
+            String paymentInfo="{\"appid\":\""+payInfo.getAppId()+"\"" +
+                    ",\"noncestr\":\""+payInfo.getNonceStr()+"\"," +
+                    "\"package\":\""+payInfo.getPackage()+"\"," +
+                    "\"partnerid\":\""+payInfo.getPartnerid()+"\"," +
+                    "\"prepayid\":\""+payInfo.getPrepayId()+"\"," +
+                    "\"timestamp\":"+payInfo.getTimeStamp()+"," +
+                    "\"sign\":\""+payInfo.getPaySign()+"\"}";
+            logger.info(()->"微信json:"+paymentInfo);
+            logger.close();
+            interactive.writeUTF8Text(paymentInfo);
+        }
+    }
+    //微信充值通知
+    @RequestMapping("/weixinRechargePayAsync")
+    public void weixinRechargePayAsync(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        weixinPayAsync(interactive,response,true);
+    }
+
+    private AlipayClient getAlipayClient() {
+        String gatewayUrl=configureService.getStringValue(ConfigureItem.ALIPAY_GATEWAY_URL);
+        String appid=configureService.getStringValue(ConfigureItem.ALIPAY_APPID);
+        String privateKey=configureService.getStringValue(ConfigureItem.MY_PRIVATE_KEY);
+        String format=configureService.getStringValue(ConfigureItem.ALIPAY_FORMAT);
+        String charset=configureService.getStringValue(ConfigureItem.CHARSET);
+        String alypayPublicKey=configureService.getStringValue(ConfigureItem.ALIPAY_PUBLIC_KEY);
+        String signtype=configureService.getStringValue(ConfigureItem.ALIPAY_SIGNTYPE);
+        return new DefaultAlipayClient(gatewayUrl, appid,
+                privateKey, format, charset,
+                alypayPublicKey,signtype);
     }
 }

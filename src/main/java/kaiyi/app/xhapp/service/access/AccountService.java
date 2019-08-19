@@ -1,6 +1,7 @@
 package kaiyi.app.xhapp.service.access;
 
 import kaiyi.app.xhapp.entity.access.Account;
+import kaiyi.app.xhapp.entity.access.AccountRecharge;
 import kaiyi.app.xhapp.entity.access.enums.MemberShip;
 import kaiyi.app.xhapp.entity.curriculum.CourseOrder;
 import kaiyi.app.xhapp.entity.log.enums.TradeCourse;
@@ -21,6 +22,12 @@ public interface AccountService extends DatabaseQuery<Account>,DatabaseFastOper<
      */
     Account register(String phone,String password,String validateCode,String recommendId)throws ServiceException;
 
+    /**
+     * 重新绑定电话号码
+     * @return
+     * @throws ServiceException
+     */
+    void resetBindPhone(String entityId,String oldPhone,String newPhone,String validateCode)throws ServiceException;
     /**
      * 账户登录
      * @param phone
@@ -52,6 +59,11 @@ public interface AccountService extends DatabaseQuery<Account>,DatabaseFastOper<
      */
     void changeMemberShip(String entityId, MemberShip memberShip);
 
+    /**
+     * 金币充值
+     * @param recharge
+     */
+    void rechargeGold(AccountRecharge recharge);
     /**
      * 使用金币支付
      * @param courseOrder

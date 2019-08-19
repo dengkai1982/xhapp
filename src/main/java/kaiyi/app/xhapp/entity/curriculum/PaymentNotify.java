@@ -52,6 +52,10 @@ public class PaymentNotify extends AbstractEntity {
      * 支付完成时间
      */
     private Date finishTime;
+    /**
+     * 是否为充值
+     */
+    private boolean recharge;
 
     public PaymentNotify() {
         super();
@@ -162,5 +166,13 @@ public class PaymentNotify extends AbstractEntity {
 
     public void setFinishTime(Date finishTime) {
         this.finishTime = finishTime;
+    }
+
+    public boolean isRecharge() {
+        return recharge;
+    }
+
+    public void setRecharge(boolean recharge) {
+        this.recharge = recharge;
     }
 }

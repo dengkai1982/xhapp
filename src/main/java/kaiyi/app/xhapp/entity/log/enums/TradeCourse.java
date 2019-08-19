@@ -57,6 +57,16 @@ public enum TradeCourse implements H5ChosenInterface {
         public String getHexColor() {
             return "#03b8cf";
         }
+    },
+    GOLD_RECHARGE{
+        @Override
+        public String toString() {
+            return "金币充值";
+        }
+        @Override
+        public String getHexColor() {
+            return "#03b8cf";
+        }
     };
     @Override
     public String[] getSearchValues() {

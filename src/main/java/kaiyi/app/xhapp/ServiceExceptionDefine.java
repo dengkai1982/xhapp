@@ -80,7 +80,8 @@ public class ServiceExceptionDefine {
             ServiceException.CODE_FAIL,"申请提现金额错误");
     public static final ServiceException withdrawableError=new ServiceException(
             ServiceException.CODE_FAIL,"可提现金额不足");
-
+    public static final ServiceException rechargeZreo=new ServiceException(
+            ServiceException.CODE_FAIL,"充值金额必须大于0");
 
 
 }

@@ -6,6 +6,8 @@ import kaiyi.app.xhapp.entity.access.enums.CapitalType;
 import kaiyi.app.xhapp.entity.curriculum.*;
 import kaiyi.app.xhapp.entity.curriculum.enums.CourseOrderStatus;
 import kaiyi.app.xhapp.entity.curriculum.enums.PayPlatform;
+import kaiyi.app.xhapp.entity.log.AmountFlow;
+import kaiyi.app.xhapp.entity.log.enums.BorrowLend;
 import kaiyi.app.xhapp.entity.log.enums.TradeCourse;
 import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
 import kaiyi.app.xhapp.service.InjectDao;
@@ -153,10 +155,42 @@ public class CourseOrderServiceImpl extends InjectDao<CourseOrder> implements Co
                     "o.paymentDate<=:endDate").setParameter("status",CourseOrderStatus.PAYMENTED)
             .setParameter("account",account).setParameter("startDate",dateRange.getStartDate())
             .setParameter("endDate",dateRange.getEndDate()).getSingleResult();
-            Long currency=Long.valueOf(result.toString());
-            return Currency.noDecimalBuild(currency,2);
+            Long courseOrderCurrenty=Long.valueOf(result.toString());
+            result=em.createQuery("select coalesce(sum(o.amount),0) from "+getEntityName(AmountFlow.class)+" o where " +
+                    "o.borrowLend=:borrowLend and o.account=:account and o.createTime>=:startDate and " +
+                    "o.createTime<=:endDate").setParameter("borrowLend",BorrowLend.income)
+                    .setParameter("account",account).setParameter("startDate",dateRange.getStartDate())
+                    .setParameter("endDate",dateRange.getEndDate()).getSingleResult();
+            courseOrderCurrenty+=Long.valueOf(result.toString());
+            return Currency.noDecimalBuild(courseOrderCurrenty,2);
         } catch (ParseException e) {
             e.printStackTrace();
+        }
+        return Currency.noDecimalBuild(0,2);
+    }
+
+    @Override
+    public Currency totalTeamSale(String entityId, String date) {
+        StreamCollection<Account> accounts=accountService.getTeams(entityId);
+        if(accounts.assertNotEmpty()){
+            try {
+                DateTimeRange dateRange=parseDateRange(date);
+                Object result=em.createQuery("select coalesce(sum(o.amount),0) from "+getEntityName(entityClass)+" o "+
+                        "where o.status=:status and o.account in(:accounts) and o.paymentDate>=:startDate and " +
+                        "o.paymentDate<=:endDate").setParameter("status",CourseOrderStatus.PAYMENTED)
+                        .setParameter("accounts",accounts).setParameter("startDate",dateRange.getStartDate())
+                        .setParameter("endDate",dateRange.getEndDate()).getSingleResult();
+                Long courseOrderCurrenty=Long.valueOf(result.toString());
+                result=em.createQuery("select coalesce(sum(o.amount),0) from "+getEntityName(AmountFlow.class)+" o where " +
+                        "o.borrowLend=:borrowLend and o.account in(:accounts) and o.createTime>=:startDate and " +
+                        "o.createTime<=:endDate").setParameter("borrowLend",BorrowLend.income)
+                        .setParameter("accounts",accounts).setParameter("startDate",dateRange.getStartDate())
+                        .setParameter("endDate",dateRange.getEndDate()).getSingleResult();
+                courseOrderCurrenty+=Long.valueOf(result.toString());
+                return Currency.noDecimalBuild(courseOrderCurrenty,2);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
         return Currency.noDecimalBuild(0,2);
     }
@@ -187,28 +221,6 @@ public class CourseOrderServiceImpl extends InjectDao<CourseOrder> implements Co
         c.set(Calendar.SECOND, 59);
         range.setEndDate(c.getTime());
         return range;
-    }
-
-
-
-    @Override
-    public Currency totalTeamSale(String entityId, String date) {
-        StreamCollection<Account> accounts=accountService.getTeams(entityId);
-        if(accounts.assertNotEmpty()){
-            try {
-                DateTimeRange dateRange=parseDateRange(date);
-                Object result=em.createQuery("select coalesce(sum(o.amount),0) from "+getEntityName(entityClass)+" o "+
-                        "where o.status=:status and o.account in(:accounts) and o.paymentDate>=:startDate and " +
-                        "o.paymentDate<=:endDate").setParameter("status",CourseOrderStatus.PAYMENTED)
-                        .setParameter("accounts",accounts).setParameter("startDate",dateRange.getStartDate())
-                        .setParameter("endDate",dateRange.getEndDate()).getSingleResult();
-                Long currency=Long.valueOf(result.toString());
-                return Currency.noDecimalBuild(currency,2);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
-        return Currency.noDecimalBuild(0,2);
     }
 
     @Override
