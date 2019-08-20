@@ -399,51 +399,6 @@ public class CurriculumAction extends SuperAction {
         return weixinInfo;
     }
 
-    @RequestMapping("/generatorWeixinPaymentNoSign")
-    public void generatorWeixinPaymentNoSign(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws HttpException, IOException {
-        Logger logger=configureService.getLogger(this.getClass());
-        String orderId=interactive.getStringParameter("orderId","");
-        CourseOrder courseOrder=courseOrderService.signleQuery("orderId",orderId);
-        if(Objects.nonNull(courseOrder)){
-            String notifyUrl=interactive.generatorRequestUrl(PREFIX+"/curriculum/weixinPayAsync",null);
-            notifyUrl= ServletUtils.getRequestHostContainerProtolAndPort(interactive.getHttpServletRequest())+notifyUrl;
-            HttpServletRequest request = interactive.getHttpServletRequest();
-            WeixinInfo weixinInfo=getWeixinInfo();
-            /*UnifiedPayRequestPayer requestPayer=UnifiedPayRequestPayer.buildNativePayer(weixinInfo,"购买课程",courseOrder.getOrderId(),
-                    courseOrder.getAmount(),request.getRemoteHost(),notifyUrl,courseOrder.getEntityId());*/
-            UnifiedPayRequestPayer requestPayer=UnifiedPayRequestPayer.buildAppPayer(weixinInfo,"课程购买",
-                    courseOrder.getOrderId(),courseOrder.getAmount(),request.getRemoteHost(),notifyUrl);
-            logger.info(()->"----微信支付参数---");
-            logger.info(()->requestPayer.getContentXml());
-            logger.info(()->"----微信支付参数---");
-            UnifiedPayResponse payResponse = (UnifiedPayResponse) requestPayer.doRequest();
-            Map<String, JavaDataTyper> result=payResponse.getResponseResult();
-            logger.info(()->"----微信返回参数---");
-            result.forEach((k,v)->{
-                logger.info(()->k+","+v.stringValue());
-            });
-            logger.info(()->"----微信返回参数---");
-            MapJsonCreator mjc=new MapJsonCreator();
-            Map<String, JavaDataTyper> weixinResult=payResponse.getResponseResult();
-            weixinResult.forEach((k,v)->{
-                mjc.put(k,new StringJsonCreator(v.stringValue()));
-            });
-            mjc.put("key",new StringJsonCreator(weixinInfo.getApiKey()));
-            /*WeixinAppPayInfo payInfo = new WeixinAppPayInfo(weixinInfo.getAppId(),weixinInfo.getMchId(),payResponse.getPrepayId(),
-                    weixinInfo.getApiKey(),logger);
-            String paymentInfo="{\"appid\":\""+payInfo.getAppId()+"\"" +
-                    ",\"partnerid\":\""+payInfo.getPartnerid()+"\"," +
-                    "\"noncestr\":\""+payInfo.getNonceStr()+"\"," +
-                    "\"package\":\""+payInfo.getPackage()+"\"," +
-                    "\"prepayid\":\""+payInfo.getPrepayId()+"\"," +
-                    "\"timestamp\":"+payInfo.getTimeStamp()+"," +
-                    "\"sign\":\""+payInfo.getPaySign()+"\"}";
-            logger.info(()->"微信json:"+paymentInfo);*/
-            logger.close();
-            interactive.writeUTF8Text(mjc.build());
-        }
-    }
-
     @RequestMapping("/generatorWeixinPayment")
     public void generatorWeixinPayment(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws HttpException, IOException {
         Logger logger=configureService.getLogger(this.getClass());
@@ -582,22 +537,25 @@ public class CurriculumAction extends SuperAction {
             //交易状态
             String trade_status = new String(interactive.getHttpServletRequest().getParameter("trade_status").getBytes("ISO-8859-1"),"UTF-8");
             if (trade_status.equals("TRADE_SUCCESS")){
-                CourseOrder courseOrder=courseOrderService.signleQuery("orderId",out_trade_no);
-                if(Objects.nonNull(courseOrder)){
-                    Currency actualAmount=Currency.noDecimalBuild(courseOrder.getAmount(),2);
-                    PaymentNotify paymentNotify=new PaymentNotify(courseOrder.getOrderId(),PayPlatform.ALIPAY,
-                            "完成订单","在线支付","在线支付",actualAmount.toString(),
+                if(isRecharge){
+                    AccountRecharge accountRecharge=accountRechargeService.signleQuery("orderId",out_trade_no);
+                    Currency actualAmount=Currency.noDecimalBuild(accountRecharge.getPrice(),2);
+                    PaymentNotify paymentNotify=new PaymentNotify(accountRecharge.getOrderId(),PayPlatform.ALIPAY,
+                            "完成订单","账户充值","在线支付",actualAmount.toString(),
                             "none",trade_no,new Date(),true);
                     paymentNotify.setRecharge(isRecharge);
-                    if(isRecharge){
-                        applicationService.syncExecute(new NotifyRechargeOrder(applicationService,paymentNotify));
-                    }else{
-                        applicationService.syncExecute(new NotifyCourseOrder(applicationService,paymentNotify));
-                    }
-                    //courseOrderService.paymentSaleOrder(paymentNotify);
-                    logger.info(()->"完成订单通知");
-                    interactive.writeUTF8Text("success");
+                    applicationService.syncExecute(new NotifyRechargeOrder(applicationService,paymentNotify));
+                }else{
+                    CourseOrder courseOrder=courseOrderService.signleQuery("orderId",out_trade_no);
+                    Currency actualAmount=Currency.noDecimalBuild(courseOrder.getAmount(),2);
+                    PaymentNotify paymentNotify=new PaymentNotify(courseOrder.getOrderId(),PayPlatform.ALIPAY,
+                            "完成订单","购买课程","在线支付",actualAmount.toString(),
+                            "none",trade_no,new Date(),true);
+                    paymentNotify.setRecharge(isRecharge);
+                    applicationService.syncExecute(new NotifyCourseOrder(applicationService,paymentNotify));
                 }
+                logger.info(()->"完成订单通知");
+                interactive.writeUTF8Text("success");
             }
         }
         logger.close();

@@ -7,12 +7,13 @@ import kaiyi.app.xhapp.entity.curriculum.CourseOrder;
 import kaiyi.app.xhapp.entity.log.enums.TradeCourse;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.db.orm.DatabaseFastOper;
+import kaiyi.puer.db.orm.DatabaseOperator;
 import kaiyi.puer.db.orm.DatabaseQuery;
 import kaiyi.puer.db.orm.ServiceException;
 
 import java.util.stream.Stream;
 
-public interface AccountService extends DatabaseQuery<Account>,DatabaseFastOper<Account> {
+public interface AccountService extends DatabaseQuery<Account>,DatabaseFastOper<Account>,DatabaseOperator<Account> {
     /**
      * 账户注册
      * @param phone
@@ -102,6 +103,14 @@ public interface AccountService extends DatabaseQuery<Account>,DatabaseFastOper<
      * @return
      */
     StreamCollection<Account> getTeams(String entityId);
+    /**
+     * 执行日清理
+     */
+    void dayClear();
+    /**
+     * 执行月清理
+     */
+    void monthClear();
 
 
 }

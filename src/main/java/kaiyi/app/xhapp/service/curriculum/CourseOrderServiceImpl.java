@@ -121,24 +121,31 @@ public class CourseOrderServiceImpl extends InjectDao<CourseOrder> implements Co
                 alreadyCourse.setOwner(courseOrder.getAccount());
                 alreadyCourseService.saveObject(alreadyCourse);
                 courseService.addBuyVolume(courseOrder.getEntityId());
-                //提成结算
-                Account account=courseOrder.getAccount();
-                Account recommend1=account.getRecommend();
-                Currency amount=Currency.noDecimalBuild(courseOrder.getAmount(),2);
-                if(Objects.nonNull(recommend1)){
-                    int commissionRate1=configureService.getIntegerValue(ConfigureItem.SALE_LEVEL_COMMISSION_1);
-                    int royalty=Currency.computerPercentage(commissionRate1,amount.doubleValue()).getNoDecimalPointToInteger();
-                    accountService.grantRoyalty(recommend1.getEntityId(),courseOrder.getOrderId(),
+            }
+            //提成结算
+            int saleAmount=courseOrder.getAmount();
+            Account account=courseOrder.getAccount();
+            Account recommend1=account.getRecommend();
+            account.addingPersonSaleAmount(saleAmount);
+            accountService.updateObject(account);
+            Currency amount=Currency.noDecimalBuild(courseOrder.getAmount(),2);
+            if(Objects.nonNull(recommend1)){
+                int commissionRate1=configureService.getIntegerValue(ConfigureItem.SALE_LEVEL_COMMISSION_1);
+                int royalty=Currency.computerPercentage(commissionRate1,amount.doubleValue()).getNoDecimalPointToInteger();
+                accountService.grantRoyalty(recommend1.getEntityId(),courseOrder.getOrderId(),
+                        TradeCourse.SETTLEMENT_ROYALTY,royalty);
+                recommend1.addingTeamSaleAmount(saleAmount);
+                accountService.updateObject(recommend1);
+                Account recommend2=recommend1.getRecommend();
+                if(Objects.nonNull(recommend2)){
+                    int commissionRate2=configureService.getIntegerValue(ConfigureItem.SALE_LEVEL_COMMISSION_2);
+                    royalty=Currency.computerPercentage(commissionRate2,amount.doubleValue()).getNoDecimalPointToInteger();
+                    accountService.grantRoyalty(recommend2.getEntityId(),courseOrder.getOrderId(),
                             TradeCourse.SETTLEMENT_ROYALTY,royalty);
-                    Account recommend2=recommend1.getRecommend();
-                    if(Objects.nonNull(recommend2)){
-                        int commissionRate2=configureService.getIntegerValue(ConfigureItem.SALE_LEVEL_COMMISSION_2);
-                        royalty=Currency.computerPercentage(commissionRate2,amount.doubleValue()).getNoDecimalPointToInteger();
-                        accountService.grantRoyalty(recommend2.getEntityId(),courseOrder.getOrderId(),
-                                TradeCourse.SETTLEMENT_ROYALTY,royalty);
-                    }
-
+                    recommend2.addingTeamSaleAmount(saleAmount);
+                    accountService.updateObject(recommend2);
                 }
+
             }
         }
         return courseOrder;

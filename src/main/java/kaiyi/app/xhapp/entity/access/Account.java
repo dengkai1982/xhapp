@@ -64,6 +64,36 @@ public class Account extends AbstractEntity {
     @PageField(label = "账户余额",type = FieldType.NUMBER)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int integral;
+    /**********************累计销量数据(金额)*****************************/
+    @ICurrency
+    @PageField(label = "个人日消费",type = FieldType.NUMBER,tableLength = 140,showQuery = false)
+    @FieldNumber(type = FieldNumber.TYPE.LONG)
+    private long personDaySale;
+    @ICurrency
+    @PageField(label = "个人月消费",type = FieldType.NUMBER,tableLength = 140,showQuery = false)
+    @FieldNumber(type = FieldNumber.TYPE.LONG)
+    private long personMonthSale;
+    @ICurrency
+    @PageField(label = "个人总消费",type = FieldType.NUMBER,tableLength = 140,showQuery = false)
+    @FieldNumber(type = FieldNumber.TYPE.LONG)
+    private long personYearSale;
+    @ICurrency
+    @PageField(label = "会员总消费",type = FieldType.NUMBER,tableLength = 140,showQuery = false)
+    @FieldNumber(type = FieldNumber.TYPE.LONG)
+    private long memberYearSale;
+    @ICurrency
+    @PageField(label = "团队日消费",type = FieldType.NUMBER,tableLength = 140,showQuery = false)
+    @FieldNumber(type = FieldNumber.TYPE.LONG)
+    private long teamDaySale;
+    @ICurrency
+    @PageField(label = "团队月消费",type = FieldType.NUMBER,tableLength = 140,showQuery = false)
+    @FieldNumber(type = FieldNumber.TYPE.LONG)
+    private long teamMonthSale;
+    @ICurrency
+    @PageField(label = "团队总消费(金额)",type = FieldType.NUMBER,tableLength = 140,showQuery = false)
+    @FieldNumber(type = FieldNumber.TYPE.LONG)
+    private long teamYearSale;
+
 
     private String showAccountName;
 
@@ -210,5 +240,79 @@ public class Account extends AbstractEntity {
 
     public void setTeamNumber(int teamNumber) {
         this.teamNumber = teamNumber;
+    }
+
+    public long getPersonDaySale() {
+        return personDaySale;
+    }
+
+    public void setPersonDaySale(long personDaySale) {
+        this.personDaySale = personDaySale;
+    }
+
+    public long getPersonMonthSale() {
+        return personMonthSale;
+    }
+
+    public void setPersonMonthSale(long personMonthSale) {
+        this.personMonthSale = personMonthSale;
+    }
+
+    public long getPersonYearSale() {
+        return personYearSale;
+    }
+
+    public void setPersonYearSale(long personYearSale) {
+        this.personYearSale = personYearSale;
+    }
+
+    public long getMemberYearSale() {
+        return memberYearSale;
+    }
+
+    public void setMemberYearSale(long memberYearSale) {
+        this.memberYearSale = memberYearSale;
+    }
+
+    public long getTeamDaySale() {
+        return teamDaySale;
+    }
+
+    public void setTeamDaySale(long teamDaySale) {
+        this.teamDaySale = teamDaySale;
+    }
+
+    public long getTeamMonthSale() {
+        return teamMonthSale;
+    }
+
+    public void setTeamMonthSale(long teamMonthSale) {
+        this.teamMonthSale = teamMonthSale;
+    }
+
+    public long getTeamYearSale() {
+        return teamYearSale;
+    }
+
+    public void setTeamYearSale(long teamYearSale) {
+        this.teamYearSale = teamYearSale;
+    }
+    /**
+     * 添加个人金额销量
+     * @param amount
+     */
+    public void addingPersonSaleAmount(long amount){
+        this.personDaySale+=amount;
+        this.personMonthSale+=amount;
+        this.personYearSale+=amount;
+    }
+    /**
+     * 添加团队金额销量
+     * @param amount
+     */
+    public void addingTeamSaleAmount(long amount) {
+        this.teamDaySale+=amount;
+        this.teamMonthSale+=amount;
+        this.teamYearSale+=amount;
     }
 }

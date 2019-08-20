@@ -60,14 +60,51 @@
         <div style="padding: 10px 0; margin: 0 auto; text-align: center;">点击下方图标下载安装</div>
     </div>
     <div class="mui-content-padded">
-        <div style="padding: 10px 0; margin: 0 auto; text-align: center;"><a href="${contextPath}/az_down.jsp"><img
+        <div style="padding: 10px 0; margin: 0 auto; text-align: center;"><a href="http://www.xinhongapp.cn/xhapp.apk"><img
                 src="${contextPath}/images/az_down.png" width="200" height="48"/></a></div>
-        <div style="padding: 10px 0; margin: 0 auto; text-align: center;"><a href="${contextPath}/down.jsp"><img
+        <div style="padding: 10px 0; margin: 0 auto; text-align: center;"><a href="@"><img
                 src="${contextPath}/images/pg_down.png" width="200" height="48"/></a></div>
     </div>
 </div>
 <script src="${contextPath}/js/mui.min.js"></script>
 <script src="${contextPath}/js/app.js"></script>
+<script type="text/javascript">
+    function is_weixin() {
+        var ua = navigator.userAgent.toLowerCase();
+        if (ua.match(/MicroMessenger/i) == "micromessenger") {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    var isWeixin = is_weixin();
+    var winHeight = typeof window.innerHeight != 'undefined' ? window.innerHeight : document.documentElement.clientHeight;
+    console.log(winHeight);
+    function loadHtml(){
+        var div = document.createElement('div');
+        div.id = 'weixin-tip';
+        div.innerHTML = '<p><img src="${contextPath}/images/live_weixin.png" alt="微信打开"/></p>';
+        document.body.appendChild(div);
+    }
+
+    function loadStyleText(cssText) {
+        var style = document.createElement('style');
+        style.rel = 'stylesheet';
+        style.type = 'text/css';
+        try {
+            style.appendChild(document.createTextNode(cssText));
+        } catch (e) {
+            style.styleSheet.cssText = cssText; //ie9以下
+        }
+        var head=document.getElementsByTagName("head")[0]; //head标签之间加上style样式
+        head.appendChild(style);
+    }
+    var cssText = "#weixin-tip{position: fixed; left:0; top:0; background: rgba(0,0,0,0.3); filter:alpha(opacity=30); width: 100%; height:100%; z-index: 100;} #weixin-tip p{text-align: center;}";
+    if(isWeixin){
+        loadHtml();
+        loadStyleText(cssText);
+    }
+</script>
 </body>
 
 </html>

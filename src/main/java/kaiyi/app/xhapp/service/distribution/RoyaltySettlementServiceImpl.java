@@ -50,14 +50,22 @@ public class RoyaltySettlementServiceImpl extends InjectDao<RoyaltySettlement> i
             royaltySettlement.setGrant(true);
             royaltySettlement.setGranter(granter);
             royaltySettlement.setGrantTime(new Date());
+            int price=royaltySettlement.getRoyaltyType().getPrice();
+            Account account=royaltySettlement.getAccount();
+            account.addingPersonSaleAmount(price);
+            accountService.updateObject(account);
             Account recommend=royaltySettlement.getRecommend1();
             String orderId=royaltySettlement.getOrderId();
             if(Objects.nonNull(recommend)){
                 accountService.grantRoyalty(recommend.getEntityId(),orderId,TradeCourse.MANUAL_CACULATION,royaltySettlement.getLevel1Amount());
+                recommend.addingTeamSaleAmount(price);
+                accountService.updateObject(recommend);
             }
             recommend=royaltySettlement.getRecommend2();
             if(Objects.nonNull(recommend)){
                 accountService.grantRoyalty(recommend.getEntityId(),orderId,TradeCourse.MANUAL_CACULATION,royaltySettlement.getLevel2Amount());
+                recommend.addingTeamSaleAmount(price);
+                accountService.updateObject(recommend);
             }
             updateObject(royaltySettlement);
         }

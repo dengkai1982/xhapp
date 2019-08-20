@@ -11,8 +11,10 @@ import kaiyi.app.xhapp.entity.log.enums.TradeCourse;
 import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.app.xhapp.service.log.AmountFlowService;
 import kaiyi.app.xhapp.service.log.ShortMessageSenderNoteService;
+import kaiyi.app.xhapp.service.pub.ConfigureService;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.StringEditor;
+import kaiyi.puer.commons.log.Logger;
 import kaiyi.puer.commons.validate.VariableVerifyUtils;
 import kaiyi.puer.db.orm.ServiceException;
 import kaiyi.puer.db.query.CompareQueryExpress;
@@ -25,7 +27,6 @@ import javax.annotation.Resource;
 import javax.persistence.LockModeType;
 import java.util.Date;
 import java.util.Objects;
-
 @Service("accountService")
 public class AccountServiceImpl extends InjectDao<Account> implements AccountService {
     @Resource
@@ -34,7 +35,8 @@ public class AccountServiceImpl extends InjectDao<Account> implements AccountSer
     private ShortMessageSenderNoteService shortMessageSenderNoteService;
     @Resource
     private AmountFlowService amountFlowService;
-
+    @Resource
+    private ConfigureService configureService;
     @Override
     public Account register(String phone, String password,String validateCode,String recommendId) throws ServiceException {
         if(!shortMessageSenderNoteService.validateCode(phone,validateCode)){
@@ -212,5 +214,29 @@ public class AccountServiceImpl extends InjectDao<Account> implements AccountSer
             accounts.append(getEntitys(query));
         }
         return accounts;
+    }
+
+    @Override
+    public void dayClear() {
+        Logger logger=configureService.getLogger(this.getClass());
+        logger.info(()->"--------执行日清理----------");
+        String builder=new String("update "+getEntityName(entityClass)+" o " +
+                "set o.personDaySale=0,o.teamDaySale=0");
+        logger.info(()->"sql:"+builder);
+        em.createQuery(builder).executeUpdate();
+        logger.info(()->"--------完成执行日清理----------");
+        logger.close();
+    }
+
+    @Override
+    public void monthClear() {
+        Logger logger=configureService.getLogger(this.getClass());
+        logger.info(()->"--------执行月清理----------");
+        String builder=new String("update "+getEntityName(entityClass)+" o " +
+                "set o.personDaySale=0,o.teamDaySale=0,o.personMonthSale=0,o.teamMonthSale=0");
+        logger.info(()->"sql:"+builder);
+        em.createQuery(builder).executeUpdate();
+        logger.info(()->"--------完成执行月清理----------");
+        logger.close();
     }
 }
