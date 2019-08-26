@@ -2,8 +2,13 @@ package kaiyi.app.xhapp.service.jobs;
 
 import kaiyi.app.xhapp.entity.jobs.Enterprise;
 import kaiyi.app.xhapp.service.InjectDao;
+import kaiyi.puer.commons.data.JavaDataTyper;
+import kaiyi.puer.db.query.CompareQueryExpress;
+import kaiyi.puer.db.query.LinkQueryExpress;
+import kaiyi.puer.db.query.QueryExpress;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.Objects;
 
 @Service("enterpriseService")
@@ -24,5 +29,16 @@ public class EnterpriseServiceImpl extends InjectDao<Enterprise> implements Ente
         if(Objects.nonNull(enterprise)){
             enterprise.setVerifyed(!enterprise.isVerifyed());
         }
+    }
+
+    @Override
+    public QueryExpress getCustomerQuery(Map<String, JavaDataTyper> params) {
+        QueryExpress query = super.getCustomerQuery(params);
+        if(Objects.nonNull(params.get("onlyEntityId"))){
+            query=new LinkQueryExpress(query, LinkQueryExpress.LINK.AND,
+                    new CompareQueryExpress("entityId",CompareQueryExpress.Compare.EQUAL,
+                            params.get("onlyEntityId").stringValue()));
+        }
+        return query;
     }
 }

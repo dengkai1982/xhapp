@@ -11,5 +11,5 @@ public interface CourseProblemService extends DatabaseQuery<CourseProblem>,Reply
      * @param commentator
      * @param content
      */
-    void problem(String courseId,String commentator,String content)throws ServiceException;
+    CourseProblem problem(String courseId,String commentator,String content)throws ServiceException;
 }

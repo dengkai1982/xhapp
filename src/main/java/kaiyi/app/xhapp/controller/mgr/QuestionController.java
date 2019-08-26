@@ -74,6 +74,7 @@ public class QuestionController extends ManagerController {
     public String questionNew(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
         newOrEditPage(interactive,questionService,3);
         setDefaultPage(interactive,rootPath+"/question");
+        interactive.setRequestAttribute("defaultItems",new String[]{"A","B","C","D"});
         return rootPath+"/questionForm";
     }
     @RequestMapping("/question/modify")
@@ -158,6 +159,10 @@ public class QuestionController extends ManagerController {
         detail=DocumentService.replaceImageSrc(detail,AccessController.getAccessTempFilePathPrefix(interactive),
                 storagePathParams,serverPathParams);
         params.put("detail",new JavaDataTyper(detail));
+        String analysis=params.get("analysis").stringValue();
+        analysis=DocumentService.replaceImageSrc(analysis,AccessController.getAccessTempFilePathPrefix(interactive),
+                storagePathParams,serverPathParams);
+        params.put("analysis",new JavaDataTyper(analysis));
         JsonMessageCreator msg=executeNewOrUpdate(interactive,questionService,params,storagePathParams);
         interactive.writeUTF8Text(msg.build());
     }

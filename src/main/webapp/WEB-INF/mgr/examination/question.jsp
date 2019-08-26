@@ -48,6 +48,12 @@
         ${requestScope.tableScript}
         </c:if>
     }
+    function customDataConvertCell(valueType,dataValue,cell, dataGrid){
+        if(cell.colIndex==1||cell.colIndex==5){
+            return HTMLDecode(dataValue);
+        }
+    }
+
     function createMenuItems(dataId,dataRow,data){
         var items = [{
             url:"${contextPath}${webPage.modifyEntityPage}${suffix}?entityId="+dataId+"&${paginationCurrentPage}="+getPaginationCurrentPage(),

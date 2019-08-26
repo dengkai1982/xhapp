@@ -14,7 +14,7 @@
         <tr>
             <c:forEach items="${dataLine.fieldDatas}" var="fieldData">
                 <th class="strong" name="${fieldData.field.name}">${fieldData.label}</th>
-                <td>
+                <td  fieldName="${fieldData.field.name}">
                     <c:choose>
                         <c:when test="${fieldData.type.fieldType.showName=='CHOSEN'||fieldData.type.fieldType.showName=='BOOLEAN'}">
                             <c:forEach items="${fieldData.value}" var="sl">
@@ -38,6 +38,9 @@
                                     </c:forEach>
                                 </c:otherwise>
                             </c:choose>
+                        </c:when>
+                        <c:when test="${fieldData.type.fieldType.showName=='AREATEXT'}">
+                            <htmlc:src value="${fieldData.value}"/>
                         </c:when>
                         <c:otherwise>
                             ${fieldData.value}

@@ -13,5 +13,5 @@ public interface FaceToFaceService extends DatabaseQuery<FaceToFace>,ReplyServic
      * @param course 预约课程名称
      * @param faceTime 预约面授时间
      */
-    void make(String accountId,String name, String phone, String course, Date faceTime);
+    FaceToFace make(String accountId,String name, String phone, String course, Date faceTime);
 }

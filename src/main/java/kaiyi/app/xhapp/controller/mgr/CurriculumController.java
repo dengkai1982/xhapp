@@ -282,7 +282,14 @@ public class CurriculumController extends ManagerController{
     @AccessControl(name = "课程问题", weight = 3.4f, detail = "查看课程问题列表", code = rootPath+ "/courseProblem", parent = rootPath)
     public String courseProblem(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
         setDefaultPage(interactive,rootPath+"/courseProblem");
-        mainTablePage(interactive,courseProblemService,null,null,
+        FormElementHidden[] formElementHiddens=null;
+        String onlyEntityId=interactive.getStringParameter("onlyEntityId","");
+        if(StringEditor.notEmpty(onlyEntityId)){
+            formElementHiddens=new FormElementHidden[]{
+                    new FormElementHidden("onlyEntityId",onlyEntityId)
+            };
+        }
+        mainTablePage(interactive,courseProblemService,null,formElementHiddens,
                 new DynamicGridInfo(false,DynamicGridInfo.OperMenuType.popup));
         return rootPath+"/courseProblem";
     }
@@ -316,7 +323,14 @@ public class CurriculumController extends ManagerController{
     @AccessControl(name = "面授预约", weight = 3.5f, detail = "查看面授预约请求", code = rootPath+ "/faceToFace", parent = rootPath)
     public String faceToFace(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
         setDefaultPage(interactive,rootPath+"/faceToFace");
-        mainTablePage(interactive,faceToFaceService,null,null,
+        FormElementHidden[] formElementHiddens=null;
+        String onlyEntityId=interactive.getStringParameter("onlyEntityId","");
+        if(StringEditor.notEmpty(onlyEntityId)){
+            formElementHiddens=new FormElementHidden[]{
+                    new FormElementHidden("onlyEntityId",onlyEntityId)
+            };
+        }
+        mainTablePage(interactive,faceToFaceService,null,formElementHiddens,
                 new DynamicGridInfo(false,DynamicGridInfo.OperMenuType.popup));
         return rootPath+"/faceToFace";
     }

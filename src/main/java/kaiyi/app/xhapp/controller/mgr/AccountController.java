@@ -1,15 +1,9 @@
 package kaiyi.app.xhapp.controller.mgr;
 
-import kaiyi.app.xhapp.entity.access.Account;
-import kaiyi.app.xhapp.entity.access.RoleAuthorizationMenu;
-import kaiyi.app.xhapp.entity.access.VisitorMenu;
-import kaiyi.app.xhapp.entity.access.VisitorRole;
+import kaiyi.app.xhapp.entity.access.*;
 import kaiyi.app.xhapp.entity.access.enums.MemberShip;
-import kaiyi.app.xhapp.service.access.AccountService;
-import kaiyi.app.xhapp.service.access.RoleAuthorizationMenuService;
+import kaiyi.app.xhapp.service.access.*;
 import kaiyi.app.xhapp.service.curriculum.TeacherService;
-import kaiyi.app.xhapp.service.access.VisitorRoleService;
-import kaiyi.app.xhapp.service.access.VisitorUserService;
 import kaiyi.puer.commons.access.AccessControl;
 import kaiyi.puer.commons.collection.Cascadeable;
 import kaiyi.puer.commons.collection.ProcessCascadeEachHandler;
@@ -22,6 +16,7 @@ import kaiyi.puer.json.JsonParserException;
 import kaiyi.puer.json.creator.JsonMessageCreator;
 import kaiyi.puer.json.parse.ArrayJsonParser;
 import kaiyi.puer.web.elements.ChosenElement;
+import kaiyi.puer.web.servlet.ServletUtils;
 import kaiyi.puer.web.servlet.WebInteractive;
 import kaiyi.puer.web.springmvc.IWebInteractive;
 import org.springframework.stereotype.Controller;
@@ -47,9 +42,29 @@ public class AccountController extends ManagerController {
     private VisitorUserService visitorUserService;
     @Resource
     private AccountService accountService;
+    @Resource
+    private InsideNoticeService insideNoticeService;
+
+    @RequestMapping("/insideNotice")
+    @AccessControl(name = "消息管理", weight = 1.1f, detail = "管理系统消息", code = rootPath+ "/insideNotice", parent = rootPath)
+    public String insideNotice(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        setDefaultPage(interactive,rootPath+"/insideNotice");
+        mainTablePage(interactive,insideNoticeService,null,null,
+                new DynamicGridInfo(false,DynamicGridInfo.OperMenuType.popup));
+        return rootPath+"/insideNotice";
+    }
+
+
+    @RequestMapping("/readInsideNotice")
+    public void readInsideNotice(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String entityId=interactive.getStringParameter("entityId","");
+        InsideNotice insideNotice=insideNoticeService.readMessage(entityId);
+        String contextPath=interactive.getHttpServletRequest().getServletContext().getContextPath()+prefix;
+        response.sendRedirect(contextPath+insideNotice.getActionUrl());
+    }
 
     @RequestMapping("/visitorRole")
-    @AccessControl(name = "角色管理", weight = 1.1f, detail = "管理系统中的访问角色", code = rootPath+ "/visitorRole", parent = rootPath)
+    @AccessControl(name = "角色管理", weight = 1.2f, detail = "管理系统中的访问角色", code = rootPath+ "/visitorRole", parent = rootPath)
     public String visitorRole(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
         setDefaultPage(interactive,rootPath+"/visitorRole");
         mainTablePage(interactive,visitorRoleService,null,null,
@@ -58,7 +73,7 @@ public class AccountController extends ManagerController {
     }
 
     @RequestMapping("/visitorRole/new")
-    @AccessControl(name = "新增角色", weight = 1.11f, detail = "添加新的角色",
+    @AccessControl(name = "新增角色", weight = 1.21f, detail = "添加新的角色",
             code = rootPath+ "/visitorRole/new", parent = rootPath+"/visitorRole")
     public String visitorRoleNew(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
         newOrEditPage(interactive,visitorRoleService,3);
@@ -66,7 +81,7 @@ public class AccountController extends ManagerController {
         return rootPath+"/visitorRoleForm";
     }
     @RequestMapping("/visitorRole/modify")
-    @AccessControl(name = "编辑角色", weight = 1.12f, detail = "编辑角色",
+    @AccessControl(name = "编辑角色", weight = 1.22f, detail = "编辑角色",
             code = rootPath+ "/visitorRole/modify", parent = rootPath+"/visitorRole")
     public String visitorRoleModify(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
         newOrEditPage(interactive,visitorRoleService,3);
@@ -74,7 +89,7 @@ public class AccountController extends ManagerController {
         return rootPath+"/visitorRoleForm";
     }
     @RequestMapping("/visitorRole/detail")
-    @AccessControl(name = "角色详情", weight = 1.13f, detail = "角色详情",
+    @AccessControl(name = "角色详情", weight = 1.23f, detail = "角色详情",
             code = rootPath+ "/visitorRole/detail", parent = rootPath+"/visitorRole")
     public String visitorRoleDetail(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
         detailPage(interactive,visitorRoleService,3);
@@ -86,7 +101,7 @@ public class AccountController extends ManagerController {
         JsonMessageCreator msg=executeNewOrUpdate(interactive,visitorRoleService);
         interactive.writeUTF8Text(msg.build());
     }
-    @AccessControl(name = "访问权限", weight = 1.14f, detail = "修改部门后台操作访问权限", code = rootPath
+    @AccessControl(name = "访问权限", weight = 1.24f, detail = "修改部门后台操作访问权限", code = rootPath
             + "/visitorRole/privilegeDatas", parent = rootPath+"/visitorRole")
     @RequestMapping("/visitorRole/privilegeDatas")
     public String rolePrilivigeDatas(@IWebInteractive WebInteractive interactive){
@@ -181,7 +196,7 @@ public class AccountController extends ManagerController {
         interactive.writeUTF8Text(msg.build());
     }
     @RequestMapping("/visitorUser")
-    @AccessControl(name = "用户管理", weight = 1.2f, detail = "管理系统中的用户", code = rootPath
+    @AccessControl(name = "用户管理", weight = 1.3f, detail = "管理系统中的用户", code = rootPath
             + "/visitorUser", parent = rootPath)
     public String visitorUser(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
         setDefaultPage(interactive,rootPath+"/visitorUser");
@@ -191,14 +206,14 @@ public class AccountController extends ManagerController {
     }
 
     @RequestMapping("/visitorUser/new")
-    @AccessControl(name = "新增用户", weight = 1.21f, detail = "新增用户", code = rootPath
+    @AccessControl(name = "新增用户", weight = 1.31f, detail = "新增用户", code = rootPath
             + "/visitorUser/new", parent = rootPath+"/visitorUser")
     public String visitorUserNew(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
         newOrEditPage(interactive,visitorUserService,3);
         setDefaultPage(interactive,rootPath+"/visitorUser");
         return rootPath+"/visitorUserForm";
     }
-    @AccessControl(name = "修改用户", weight = 1.22f, detail = "修改用户", code = rootPath
+    @AccessControl(name = "修改用户", weight = 1.32f, detail = "修改用户", code = rootPath
             + "/visitorUser/modify", parent = rootPath+"/visitorUser")
     @RequestMapping("/visitorUser/modify")
     public String visitorUserModify(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
@@ -207,7 +222,7 @@ public class AccountController extends ManagerController {
         return rootPath+"/visitorUserForm";
     }
 
-    @AccessControl(name = "删除用户", weight = 1.23f, detail = "删除用户", code = rootPath
+    @AccessControl(name = "删除用户", weight = 1.33f, detail = "删除用户", code = rootPath
             + "/visitorUser/delete", parent = rootPath+"/visitorUser")
     @RequestMapping("/visitorUser/delete")
     public void visitorUserDelete(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
@@ -220,7 +235,7 @@ public class AccountController extends ManagerController {
         }
         interactive.writeUTF8Text(msg.build());
     }
-    @AccessControl(name = "重置密码", weight = 1.24f, detail = "重置用户密码", code = rootPath
+    @AccessControl(name = "重置密码", weight = 1.34f, detail = "重置用户密码", code = rootPath
             + "/visitorUser/resetPasswd", parent = rootPath+"/visitorUser")
     @RequestMapping("/visitorUser/resetPasswd")
     public void visitorUserResetPasswd(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
@@ -229,7 +244,7 @@ public class AccountController extends ManagerController {
         interactive.writeUTF8Text(getSuccessMessage().build());
     }
     @RequestMapping("/visitorUser/detail")
-    @AccessControl(name = "用户详情", weight = 1.25f, detail = "用户详情",
+    @AccessControl(name = "用户详情", weight = 1.35f, detail = "用户详情",
             code = rootPath+ "/visitorUser/detail", parent = rootPath+"/visitorUser")
     public String visitorUserDetail(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
         detailPage(interactive,visitorUserService,3);
@@ -243,7 +258,7 @@ public class AccountController extends ManagerController {
     }
 
     @RequestMapping("/account")
-    @AccessControl(name = "会员管理", weight = 1.3f, detail = "管理系统中的会员", code = rootPath
+    @AccessControl(name = "会员管理", weight = 1.4f, detail = "管理系统中的会员", code = rootPath
             + "/account", parent = rootPath)
     public String account(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
         setDefaultPage(interactive,rootPath+"/account");
@@ -254,14 +269,14 @@ public class AccountController extends ManagerController {
         return rootPath+"/account";
     }
     @RequestMapping("/account/detail")
-    @AccessControl(name = "会员详情", weight = 1.31f, detail = "用户详情",
+    @AccessControl(name = "会员详情", weight = 1.41f, detail = "用户详情",
             code = rootPath+ "/account/detail", parent = rootPath+"/account")
     public String accountDetail(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
         detailPage(interactive,accountService,3);
         setDefaultPage(interactive,rootPath+"/account");
         return rootPath+"/accountDetail";
     }
-    @AccessControl(name = "重置密码", weight = 1.32f, detail = "重置会员密码", code = rootPath
+    @AccessControl(name = "重置密码", weight = 1.42f, detail = "重置会员密码", code = rootPath
             + "/account/resetPasswd", parent = rootPath+"/account")
     @RequestMapping("/account/resetPasswd")
     public void accountResetPasswd(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
@@ -278,7 +293,7 @@ public class AccountController extends ManagerController {
         }
         interactive.writeUTF8Text(jmc.build());
     }
-    @AccessControl(name = "修改会员类型", weight = 1.33f, detail = "改变会员类型", code = rootPath
+    @AccessControl(name = "修改会员类型", weight = 1.43f, detail = "改变会员类型", code = rootPath
             + "/account/changeMemberShip", parent = rootPath+"/account")
     @RequestMapping("/account/changeMemberShip")
     public void accountChangeMemberShip(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {

@@ -57,6 +57,7 @@ public class AccountServiceImpl extends InjectDao<Account> implements AccountSer
         account.setRegisterTime(new Date());
         account.setMemberShip(MemberShip.normal);
         account.setPassword(applicationService.cipherToString(password));
+        account.setNickName(account.getPhone());
         Account recommend=findForPrimary(recommendId);
         if(Objects.nonNull(recommend)){
             account.setRecommend(recommend);

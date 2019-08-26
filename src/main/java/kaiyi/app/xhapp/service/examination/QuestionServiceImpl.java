@@ -29,6 +29,7 @@ public class QuestionServiceImpl extends InjectDao<Question> implements Question
 
 
 
+
     @Override
     public void deleteChoiceAnswer(String choiceAnswerId) {
         em.createQuery("delete from "+getEntityName(ChoiceAnswer.class)+" o where o.entityId=:entityId")

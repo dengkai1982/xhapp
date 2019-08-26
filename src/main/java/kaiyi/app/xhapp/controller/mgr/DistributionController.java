@@ -11,6 +11,7 @@ import kaiyi.puer.commons.access.AccessControl;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.Currency;
 import kaiyi.puer.commons.data.JavaDataTyper;
+import kaiyi.puer.commons.data.StringEditor;
 import kaiyi.puer.db.orm.ServiceException;
 import kaiyi.puer.h5ui.bean.DynamicGridInfo;
 import kaiyi.puer.h5ui.controller.Accesser;
@@ -21,6 +22,7 @@ import kaiyi.puer.json.creator.JsonMessageCreator;
 import kaiyi.puer.json.creator.ObjectJsonCreator;
 import kaiyi.puer.json.creator.StringJsonCreator;
 import kaiyi.puer.web.elements.ChosenElement;
+import kaiyi.puer.web.elements.FormElementHidden;
 import kaiyi.puer.web.servlet.WebInteractive;
 import kaiyi.puer.web.springmvc.IWebInteractive;
 import org.springframework.stereotype.Controller;
@@ -182,8 +184,15 @@ public class DistributionController extends ManagerController{
     @AccessControl(name = "提现管理", weight = 6.3f, code = rootPath+ "/withdrawApply", parent = rootPath)
     public String withdrawApply(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
         setDefaultPage(interactive,rootPath+"/withdrawApply");
+        FormElementHidden[] formElementHiddens=null;
+        String onlyEntityId=interactive.getStringParameter("onlyEntityId","");
+        if(StringEditor.notEmpty(onlyEntityId)){
+            formElementHiddens=new FormElementHidden[]{
+                    new FormElementHidden("onlyEntityId",onlyEntityId)
+            };
+        }
         DynamicGridInfo dynamicGridInfo=new DynamicGridInfo(false,DynamicGridInfo.OperMenuType.popup);
-        mainTablePage(interactive,withdrawApplyService,null,null, dynamicGridInfo);
+        mainTablePage(interactive,withdrawApplyService,null,formElementHiddens, dynamicGridInfo);
         return rootPath+"/withdrawApply";
     }
     @RequestMapping("/withdrawApply/modify")

@@ -11,6 +11,7 @@ import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
 import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.app.xhapp.service.access.AccountService;
 import kaiyi.app.xhapp.service.pub.ConfigureService;
+import kaiyi.puer.commons.data.JavaDataTyper;
 import kaiyi.puer.commons.time.DateTimeRange;
 import kaiyi.puer.commons.time.DateTimeUtil;
 import kaiyi.puer.db.orm.ServiceException;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.Map;
 import java.util.Objects;
 
 @Service("withdrawApplyService")
@@ -34,7 +36,7 @@ public class WithdrawApplyServiceImpl extends InjectDao<WithdrawApply> implement
     @Resource
     private ConfigureService configureService;
     @Override
-    public void apply(String bankInfoId, String accountId, int amount,String phone) throws ServiceException {
+    public WithdrawApply apply(String bankInfoId, String accountId, int amount,String phone) throws ServiceException {
         if(existDay(accountId)){
             throw ServiceExceptionDefine.dayWithdrawOne;
         }
@@ -62,6 +64,18 @@ public class WithdrawApplyServiceImpl extends InjectDao<WithdrawApply> implement
         apply.setContractPhone(phone);
         apply.setMark("");
         saveObject(apply);
+        return apply;
+    }
+
+    @Override
+    public QueryExpress getCustomerQuery(Map<String, JavaDataTyper> params) {
+        QueryExpress query = super.getCustomerQuery(params);
+        if(Objects.nonNull(params.get("onlyEntityId"))){
+            query=new LinkQueryExpress(query, LinkQueryExpress.LINK.AND,
+                    new CompareQueryExpress("entityId",CompareQueryExpress.Compare.EQUAL,
+                            params.get("onlyEntityId").stringValue()));
+        }
+        return query;
     }
 
     @Override

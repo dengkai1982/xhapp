@@ -21,7 +21,7 @@ public class Question extends AbstractEntity {
     public static final String TABLE_NAME="question";
     private static final long serialVersionUID = -3446794725915281424L;
     @NotEmpty(hint = "题目必须填写")
-    @PageField(label = "试题题目",formColumnLength = 3,tableLength = 500,showForm = false)
+    @PageField(label = "试题题目",type = FieldType.AREATEXT,formColumnLength = 3,tableLength = 500,showForm = false)
     private String detail;
     @NotEmpty(hint = "所属类别名称必须选择")
     @PageField(label = "所属类别名称",type = FieldType.REFERENCE,tableLength = 140)
@@ -37,7 +37,7 @@ public class Question extends AbstractEntity {
     @PageField(label = "试题分值",type = FieldType.NUMBER)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int score;
-    @PageField(label = "问题解析",type = FieldType.AREATEXT,formColumnLength = 3,tableLength = 500)
+    @PageField(label = "问题解析",type = FieldType.AREATEXT,formColumnLength = 3,tableLength = 500,showForm = false)
     private String analysis;
     @PageField(label = "参考答案",showForm = false,showQuery = false,showSearch = false)
     private String answer;

@@ -115,7 +115,8 @@ public class FaceToFace extends AbstractEntity {
         this.faceTime = faceTime;
         this.account=account;
     }
-
+    @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
+    @JoinColumn(name="account")
     public Account getAccount() {
         return account;
     }

@@ -24,6 +24,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.Objects;
+
 @Service("concernResumeService")
 public class ConcernResumeServiceImpl extends InjectDao<ConcernResume> implements ConcernResumeService {
     private static final long serialVersionUID = 2618843499288448960L;
@@ -82,5 +84,16 @@ public class ConcernResumeServiceImpl extends InjectDao<ConcernResume> implement
         if(exist(query)){
             throw ServiceExceptionDefine.resumeConcerned;
         }
+    }
+
+    @Override
+    public QueryExpress getCustomerQuery(Map<String, JavaDataTyper> params) {
+        QueryExpress query = super.getCustomerQuery(params);
+        if(Objects.nonNull(params.get("onlyEntityId"))){
+            query=new LinkQueryExpress(query, LinkQueryExpress.LINK.AND,
+                    new CompareQueryExpress("entityId",CompareQueryExpress.Compare.EQUAL,
+                            params.get("onlyEntityId").stringValue()));
+        }
+        return query;
     }
 }

@@ -11,6 +11,7 @@
 <%@ taglib uri="http://kaiyi.puer.web/jsp/jstl/currency" prefix="currency"%>
 <%@ taglib uri="http://kaiyi.puer.web/jsp/jstl/webPage" prefix="webpage"%>
 <%@ taglib uri="http://kaiyi.web.authority/visit" prefix="visit"%>
+<%@ taglib uri="http://kaiyi.web.authority/htmlc" prefix="htmlc"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <c:set var="prefix" value="<%=ManagerController.prefix%>"/>
 <c:set var="managerMenus" value="<%=session.getAttribute(ManagerController.NAME_SESSION_MENU)%>"/>

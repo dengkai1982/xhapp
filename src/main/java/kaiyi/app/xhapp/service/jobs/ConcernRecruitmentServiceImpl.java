@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.Objects;
 
 @Service("concernRecruitmentService")
 public class ConcernRecruitmentServiceImpl extends InjectDao<ConcernRecruitment> implements ConcernRecruitmentService{
@@ -84,5 +85,15 @@ public class ConcernRecruitmentServiceImpl extends InjectDao<ConcernRecruitment>
             }
         });
         return creator;
+    }
+    @Override
+    public QueryExpress getCustomerQuery(Map<String, JavaDataTyper> params) {
+        QueryExpress query = super.getCustomerQuery(params);
+        if(Objects.nonNull(params.get("onlyEntityId"))){
+            query=new LinkQueryExpress(query, LinkQueryExpress.LINK.AND,
+                    new CompareQueryExpress("entityId",CompareQueryExpress.Compare.EQUAL,
+                            params.get("onlyEntityId").stringValue()));
+        }
+        return query;
     }
 }

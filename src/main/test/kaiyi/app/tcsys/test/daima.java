@@ -13,7 +13,9 @@ import kaiyi.app.xhapp.entity.pub.Configure;
 import kaiyi.app.xhapp.entity.pub.Notice;
 import kaiyi.app.xhapp.entity.sys.QNumberManager;
 import kaiyi.puer.commons.bean.BeanSyntacticSugar;
+import kaiyi.puer.commons.utils.ChinaIDCard;
 import kaiyi.puer.commons.utils.CoderUtil;
+import kaiyi.puer.commons.validate.VariableVerifyUtils;
 import kaiyi.puer.crypt.cipher.RSACipher;
 import kaiyi.puer.crypt.key.KeyGeneratorUtils;
 import kaiyi.puer.http.HttpException;
@@ -38,6 +40,12 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 public class daima {
+    @Test
+    public void idcard(){
+        boolean verify=ChinaIDCard.validate("513030199001056359");
+        System.out.println(verify);
+    }
+
     @Test
     public void print(){
         String[] dps1="市发改委、市经济和信息化委、市教育体育局、市科技和知识产权局、市民政局、市住房城乡建设局、市交通运输局、市水务局、市农牧业局、市林业局、市商务局、市文广新局、市卫生计生委、市旅游发展委、市国资委、市食品药品监管局、市供销社、市金融工作局、市工商联".split("、");

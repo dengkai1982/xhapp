@@ -1,10 +1,7 @@
 package kaiyi.app.xhapp.controller.app;
 
 import kaiyi.app.xhapp.entity.access.Account;
-import kaiyi.app.xhapp.entity.jobs.ConcernRecruitment;
-import kaiyi.app.xhapp.entity.jobs.ConcernResume;
-import kaiyi.app.xhapp.entity.jobs.Recruitment;
-import kaiyi.app.xhapp.entity.jobs.Resume;
+import kaiyi.app.xhapp.entity.jobs.*;
 import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
 import kaiyi.app.xhapp.service.access.AccountService;
 import kaiyi.app.xhapp.service.jobs.*;
@@ -27,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Controller
 @RequestMapping(JobAction.rootPath)
@@ -50,6 +48,8 @@ public class JobAction extends SuperAction {
     private ConcernResumeService concernResumeService;
     @Resource
     private ConcernRecruitmentService concernRecruitmentService;
+    @Resource
+    private AccountService accountService;
     /**
      * 新增修改个人简历
      * @param interactive
@@ -106,7 +106,11 @@ public class JobAction extends SuperAction {
     @PostMapping("/commitEnterprise")
     public void commitEnterprise(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
         String docSavePath=configureService.getStringValue(ConfigureItem.DOC_SAVE_PATH);
-        JsonMessageCreator msg=executeNewOrUpdate(interactive,enterpriseService,docSavePath);
+        AtomicReference<Enterprise> reference=new AtomicReference<>();
+        JsonMessageCreator msg=executeNewOrUpdate(interactive,enterpriseService,interactive.getRequestParameterMap(),docSavePath,
+                reference);
+        Enterprise enterprise=reference.get();
+        sendInsideMessage(interactive,"有新的企业加入,企业名称:"+enterprise.getEnterpriseName(),"/personnel/enterprise",enterprise.getEntityId());
         interactive.writeUTF8Text(msg.build());
     }
 
@@ -120,7 +124,15 @@ public class JobAction extends SuperAction {
      */
     @PostMapping("/concernResume")
     public void concernCertificate(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
-        JsonMessageCreator msg=executeNewOrUpdate(interactive,concernResumeService);
+        AtomicReference<ConcernResume> reference=new AtomicReference<>();
+        JsonMessageCreator msg=executeNewOrUpdate(interactive,concernResumeService,interactive.getRequestParameterMap(),
+                null,reference);
+        if(msg.getCode().equals(JsonMessageCreator.SUCCESS)){
+            ConcernResume resume=reference.get();
+            Enterprise enterprise=enterpriseService.findForPrimary(resume.getEnterprise().getEntityId());
+            sendInsideMessage(interactive,"有新的简历关注,企业名称:"+enterprise.getEnterpriseName(),
+                    "/personnel/concernResume",resume.getEntityId());
+        }
         interactive.writeUTF8Text(msg.build());
     }
 
@@ -157,6 +169,7 @@ public class JobAction extends SuperAction {
     public void cancelConcernCertificate(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
         String entityId=interactive.getStringParameter("entityId","");
         concernResumeService.deleteForPrimary(entityId);
+        insideNoticeService.deleteByUrl(getSendUrl(interactive,"/personnel/concernResume",entityId));
     }
     /**
      * 添加关注招聘信息
@@ -168,7 +181,15 @@ public class JobAction extends SuperAction {
      */
     @PostMapping("/concernRecruitment")
     public void concernRecruitment(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
-        JsonMessageCreator msg=executeNewOrUpdate(interactive,concernRecruitmentService);
+        AtomicReference<ConcernRecruitment> reference=new AtomicReference<>();
+        JsonMessageCreator msg=executeNewOrUpdate(interactive,concernRecruitmentService,interactive.getRequestParameterMap(),
+                null,reference);
+        if(msg.getCode().equals(JsonMessageCreator.SUCCESS)){
+            ConcernRecruitment concernRecruitment=reference.get();
+            Account account=accountService.findForPrimary(concernRecruitment.getAccount().getEntityId());
+            sendInsideMessage(interactive,"有新的招聘信息被关注,关注人:"+account.getShowAccountName(),
+                    "/personnel/concernRecruitment",concernRecruitment.getEntityId());
+        }
         interactive.writeUTF8Text(msg.build());
     }
     /**
@@ -180,6 +201,7 @@ public class JobAction extends SuperAction {
     public void cancelConcernRecruitment(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
         String entityId=interactive.getStringParameter("entityId","");
         concernRecruitmentService.deleteForPrimary(entityId);
+        insideNoticeService.deleteByUrl(getSendUrl(interactive,"/personnel/concernRecruitment",entityId));
     }
 
     /**

@@ -2,13 +2,11 @@ package kaiyi.app.xhapp.service.examination;
 
 import kaiyi.app.xhapp.ServiceExceptionDefine;
 import kaiyi.app.xhapp.entity.access.Account;
-import kaiyi.app.xhapp.entity.curriculum.Category;
 import kaiyi.app.xhapp.entity.examination.*;
 import kaiyi.app.xhapp.entity.examination.enums.QuestionType;
 import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
 import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.app.xhapp.service.access.AccountService;
-import kaiyi.app.xhapp.service.curriculum.CategoryService;
 import kaiyi.app.xhapp.service.pub.ConfigureService;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.db.orm.ServiceException;
@@ -30,7 +28,7 @@ public class ExamQuestionServiceImpl extends InjectDao<ExamQuestion> implements 
     @Resource
     private TestPagerService testPagerService;
     @Resource
-    private CategoryService categoryService;
+    private QuestionCategoryService questionCategoryService;
     @Resource
     private ConfigureService configureService;
     @Resource
@@ -87,7 +85,7 @@ public class ExamQuestionServiceImpl extends InjectDao<ExamQuestion> implements 
 
     @Override
     public ExamQuestion generatorByCategory(String accountId, String categoryId) throws ServiceException {
-        Category category=categoryService.findForPrimary(categoryId);
+        QuestionCategory category=questionCategoryService.findForPrimary(categoryId);
         Account account=accountService.findForPrimary(accountId);
         if(Objects.isNull(account)||Objects.isNull(category)){
             throw ServiceExceptionDefine.entityNotExist;
@@ -159,7 +157,7 @@ public class ExamQuestionServiceImpl extends InjectDao<ExamQuestion> implements 
      * @param totalScore 总分值
      * @return
      */
-    private StreamCollection<Question> getRandomQuestion(Category category, QuestionType questionType,int totalScore){
+    private StreamCollection<Question> getRandomQuestion(QuestionCategory category, QuestionType questionType,int totalScore){
         StreamCollection<Question> result=new StreamCollection<>();
         QueryExpress query=new CompareQueryExpress("category", CompareQueryExpress.Compare.EQUAL,category);
         query=new LinkQueryExpress(query, LinkQueryExpress.LINK.AND,new CompareQueryExpress("questionType", CompareQueryExpress.Compare.EQUAL,

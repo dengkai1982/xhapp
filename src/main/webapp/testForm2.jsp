@@ -16,10 +16,9 @@
     &nbsp;课：<input type="submit" name="subimt"><br>
 </form>
 --%>
-<form action="${contextPath}/app/distribution/commitBankInfo${suffix}" method="post">
-    &nbsp;bankType：<input type="text" name="bankType"/><br>
-    &nbsp;account：<input type="text" name="account"/><br>
-    &nbsp;bankAccount：<input type="text" name="bankAccount"/><br>
+<form action="${contextPath}/app/job/concernResume${suffix}" method="post">
+    &nbsp;enterprise：<input type="text" name="enterprise"/><br>
+    &nbsp;resume：<input type="text" name="resume"/><br>
     &nbsp;课：<input type="submit" name="subimt"><br>
 </form>
 </body>

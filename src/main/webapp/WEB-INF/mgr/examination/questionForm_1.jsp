@@ -11,6 +11,9 @@
             width:20px;
             height:20px;
         }
+        #answerListContainer input{
+            height:33px;
+        }
     </style>
 </head>
 <body>
@@ -44,48 +47,48 @@
                         <input type="text" validate="required:正确答案未选择" value="${entity.answer}" name="answer" class="form-control" id="answer" readonly>
                     </div>
                 </div>
-                <div id="answerContainer" style="display: none;">
+                <div id="answerContainer">
                     <button type="button" id="newAnswerButton" class="btn btn-wide btn-danger">新增答案</button>
-                    <table class="table table-striped table-bordered table-hover" style="margin-top:10px">
-                        <thead>
-                        <tr>
-                            <th style="width: 10%">答案编号</th>
-                            <th>答案描述</th>
-                            <th style="width: 10%">正确答案</th>
-                            <th style="width: 10%">操作</th>
-                        </tr>
-                        </thead>
+                    <table class="table table-bordered table-hover" style="margin-top:10px">
                         <tbody id="answerListContainer">
-                            <c:forEach items="${entity.choiceAnswerStream}" var="answer">
-                                <tr data-id="${answer.entityId}">
-                                    <td class="optionName">${answer.optionName}</td>
-                                    <td class="detailValue">${answer.detailValue}</td>
-                                    <c:choose>
-                                        <c:when test="${entity.questionType.itemNumber==0}">
-                                            <c:choose>
-                                                <c:when test="${answer.checked}">
-                                                    <td><input type="radio" checked="checked" class="singleRadio" name="answerRadio" optionName="${answer.optionName}"></td>
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <td><input type="radio" class="singleRadio" name="answerRadio" optionName="${answer.optionName}"></td>
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <c:choose>
-                                                <c:when test="${answer.checked}">
-                                                    <td><input type="checkbox" checked="checked" optionName="${answer.optionName}" class="multipleCheckBox"/></td>
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <td><input type="checkbox" optionName="${answer.optionName}" class="multipleCheckBox"/></td>
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </c:otherwise>
-                                    </c:choose>
-                                    <td><a href="###" class="text-danger editAnswer"><i class="icon icon-edit"></i></a>&nbsp;<a href="###" class="text-danger deleteAnswer"><i class="icon icon-trash"></i></a></td>
-                                </tr>
-                            </c:forEach>
+                            <tr>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">答案编号</span>
+                                        <input type="text" name="optionName" class="form-control">
+                                        <span class="input-group-addon">答案类型</span>
+                                        <select class="form-control">
+                                            <option value="eat">吃饭</option>
+                                            <option value="sleep">睡觉</option>
+                                            <option value="code">写代码</option>
+                                        </select>
+                                        <span class="input-group-addon">答案描述</span>
+                                        <input type="text" name="detailValue" class="form-control">
+                                        <span class="input-group-addon">正确答案</span>
+                                        <input type="text" name="checked" class="form-control">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default remove_node_line" style="border-left:none;color:#f60;height:33px;" type="button"><i class="icon-trash" style="font-size:14px;"></i></button>
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    324
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    324
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    324
+                                </td>
+                            </tr>
                         </tbody>
+
                     </table>
                 </div>
                 <%@include file="/WEB-INF/mgr/access/formCommitButton.jsp"%>
@@ -182,6 +185,7 @@
             $("#newOrEditAnswerModal input[name='modal_is_editor']").val("true");
             $("#newOrEditAnswerModal").modal("show");
         });
+        /*
         var $questionType=$("#questionType").val();
         if($questionType=="0"){
             $("#answerContainer").show();
@@ -193,7 +197,7 @@
             $("#answerContainer").hide();
 
         }
-
+        */
         $("#questionType").change(function(){
             var questionType=$(this).val();
             if(questionType=="0"){

@@ -18,10 +18,8 @@ public class Certificate extends AbstractEntity {
     @NotEmpty(hint = "证书名称必须填写")
     @PageField(label = "证书名称")
     private String name;
-    @ICurrency
-    @PageField(label = "期望价值",type = FieldType.NUMBER)
-    @FieldNumber(type = FieldNumber.TYPE.INT)
-    private int expect;
+    @PageField(label = "期望价值")
+    private String expect;
     @IDate(pattern = "yyyy-MM-dd")
     @PageField(label = "到期时间",type = FieldType.DATE)
     private Date expire;
@@ -54,11 +52,11 @@ public class Certificate extends AbstractEntity {
         this.photo = photo;
     }
 
-    public int getExpect() {
+    public String getExpect() {
         return expect;
     }
 
-    public void setExpect(int expect) {
+    public void setExpect(String expect) {
         this.expect = expect;
     }
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)

@@ -49,8 +49,6 @@ public class PersonnelController extends ManagerController{
     @Resource
     private CertificateService certificateService;
     @Resource
-    private ConcernEnterpriseService concernEnterpriseService;
-    @Resource
     private ConcernRecruitmentService concernRecruitmentService;
     @Resource
     private ConcernResumeService concernResumeService;
@@ -136,9 +134,16 @@ public class PersonnelController extends ManagerController{
         setDefaultPage(interactive,rootPath+"/enterprise");
         /*mainTablePage(interactive,enterpriseService,null,null,
                 new DynamicGridInfo(false,DynamicGridInfo.OperMenuType.popup));*/
+        FormElementHidden[] formElementHiddens=null;
+        String onlyEntityId=interactive.getStringParameter("onlyEntityId","");
+        if(StringEditor.notEmpty(onlyEntityId)){
+            formElementHiddens=new FormElementHidden[]{
+                    new FormElementHidden("onlyEntityId",onlyEntityId)
+            };
+        }
         PageElementManager pm=getH5UIService().getPageElementManager();
         StreamCollection<PageFieldData> tableFieldDatas=pm.getPageFieldDatas(enterpriseService.getEntityClassName());
-        tablePage(interactive,enterpriseService,null,null,pm.getSearchableFieldData(enterpriseService.getEntityClassName()),
+        tablePage(interactive,enterpriseService,null,formElementHiddens,pm.getSearchableFieldData(enterpriseService.getEntityClassName()),
                 tableFieldDatas,new DynamicGridInfo(false,DynamicGridInfo.OperMenuType.popup));
         return rootPath+"/enterprise";
     }
@@ -251,7 +256,14 @@ public class PersonnelController extends ManagerController{
     @AccessControl(name = "招聘信息关注", weight = 4.7f, detail = "招聘信息关注", code = rootPath+ "/concernRecruitment", parent = rootPath)
     public String concernRecruitment(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
         setDefaultPage(interactive,rootPath+"/concernRecruitment");
-        mainTablePage(interactive,concernRecruitmentService,null,null,
+        FormElementHidden[] formElementHiddens=null;
+        String onlyEntityId=interactive.getStringParameter("onlyEntityId","");
+        if(StringEditor.notEmpty(onlyEntityId)){
+            formElementHiddens=new FormElementHidden[]{
+                    new FormElementHidden("onlyEntityId",onlyEntityId)
+            };
+        }
+        mainTablePage(interactive,concernRecruitmentService,null,formElementHiddens,
                 new DynamicGridInfo(false,DynamicGridInfo.OperMenuType.popup));
         return rootPath+"/concernRecruitment";
     }
@@ -268,7 +280,14 @@ public class PersonnelController extends ManagerController{
     @AccessControl(name = "简历关注", weight = 4.8f, detail = "简历关注", code = rootPath+ "/concernResume", parent = rootPath)
     public String concernResume(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
         setDefaultPage(interactive,rootPath+"/concernResume");
-        mainTablePage(interactive,concernResumeService,null,null,
+        FormElementHidden[] formElementHiddens=null;
+        String onlyEntityId=interactive.getStringParameter("onlyEntityId","");
+        if(StringEditor.notEmpty(onlyEntityId)){
+            formElementHiddens=new FormElementHidden[]{
+                    new FormElementHidden("onlyEntityId",onlyEntityId)
+            };
+        }
+        mainTablePage(interactive,concernResumeService,null,formElementHiddens,
                 new DynamicGridInfo(false,DynamicGridInfo.OperMenuType.popup));
         return rootPath+"/concernResume";
     }

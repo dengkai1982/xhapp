@@ -45,7 +45,7 @@
 <%@include file="/WEB-INF/footerPage.jsp"%>
 <script type="text/javascript">
     function pageReady(doc) {
-
+        $("td[fieldName='detail'],td[fieldName='analysis']").attr("colspan","6");
     }
 </script>
 </body>

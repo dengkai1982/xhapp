@@ -57,11 +57,11 @@ public class Account extends AbstractEntity {
     @PageField(label = "地址",tableLength = 400)
     private String address;
     @ICurrency
-    @PageField(label = "持有金币",type = FieldType.NUMBER)
+    @PageField(label = "账户余额",type = FieldType.NUMBER)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int gold;
     @ICurrency
-    @PageField(label = "账户余额",type = FieldType.NUMBER)
+    @PageField(label = "积分",type = FieldType.NUMBER)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int integral;
     /**********************累计销量数据(金额)*****************************/

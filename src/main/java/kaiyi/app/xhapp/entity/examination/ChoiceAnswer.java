@@ -12,6 +12,9 @@ public class ChoiceAnswer extends AbstractEntity {
     public static final String TABLE_NAME="choice_answer";
     @PageField(label = "选项名称")
     private String optionName;
+    @PageField(label = "答案类型",type = FieldType.BOOLEAN)
+    @FieldBoolean(values = {"图片","文字"})
+    private boolean imageType;
     @PageField(label = "选择值")
     private String detailValue;
     @PageField(label = "所属问题",type = FieldType.REFERENCE)
@@ -52,5 +55,13 @@ public class ChoiceAnswer extends AbstractEntity {
 
     public void setChecked(boolean checked) {
         this.checked = checked;
+    }
+
+    public boolean isImageType() {
+        return imageType;
+    }
+
+    public void setImageType(boolean imageType) {
+        this.imageType = imageType;
     }
 }

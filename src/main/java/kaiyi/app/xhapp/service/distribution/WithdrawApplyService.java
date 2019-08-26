@@ -16,7 +16,7 @@ public interface WithdrawApplyService extends DatabaseQuery<WithdrawApply> ,Data
      * @param amount 申请金额
      * @throws ServiceException
      */
-    void apply(String bankInfoId,String accountId,int amount,String pohone)throws ServiceException;
+    WithdrawApply apply(String bankInfoId,String accountId,int amount,String pohone)throws ServiceException;
 
     /**
      * 处理提现申请

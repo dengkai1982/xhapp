@@ -21,6 +21,7 @@ import kaiyi.app.xhapp.executor.NotifyCourseOrder;
 import kaiyi.app.xhapp.executor.NotifyRechargeOrder;
 import kaiyi.app.xhapp.service.AliyunVodHelper;
 import kaiyi.app.xhapp.service.access.AccountRechargeService;
+import kaiyi.app.xhapp.service.access.InsideNoticeService;
 import kaiyi.app.xhapp.service.curriculum.*;
 import kaiyi.app.xhapp.service.log.CourseBrowseService;
 import kaiyi.app.xhapp.service.pages.ExamInfoService;
@@ -248,7 +249,9 @@ public class CurriculumAction extends SuperAction {
         String content=interactive.getStringParameter("content","");
         JsonMessageCreator jmc=getSuccessMessage();
         try {
-            courseProblemService.problem(courseId,accountId,content);
+            CourseProblem problem =courseProblemService.problem(courseId,accountId,content);
+            sendInsideMessage(interactive,"有一条新的课程提问信息,提问人:"+problem.getSubmitter().getShowAccountName(),
+                    "/curriculum/courseProblem",problem.getEntityId());
         } catch (ServiceException e) {
             catchServiceException(jmc,e);
         }
@@ -347,7 +350,9 @@ public class CurriculumAction extends SuperAction {
         String phone=interactive.getStringParameter("phone","");
         String course=interactive.getStringParameter("course","");
         Date faceTime=interactive.getDateParameter("faceTime",new SimpleDateFormat("yyyy-MM-dd"));
-        faceToFaceService.make(accountId,name,phone,course,faceTime);
+        FaceToFace faceToFace=faceToFaceService.make(accountId,name,phone,course,faceTime);
+        sendInsideMessage(interactive,"有新的预约面授,预约人:"+faceToFace.getAccount().getShowAccountName(),
+                "",faceToFace.getEntityId());
     }
 
     /**
