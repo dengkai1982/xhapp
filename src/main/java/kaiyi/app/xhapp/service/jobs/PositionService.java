@@ -20,4 +20,6 @@ public interface PositionService extends DatabaseQuery<Position> , DatabaseFastO
     StreamCollection<Position> getSameLevel(String districtId);
 
     void newJobs(String name,String parentName);
+
+    void changeShowable(String entityId);
 }

@@ -58,47 +58,73 @@ public class QuestionServiceImpl extends InjectDao<Question> implements Question
         return line.size()>=4;
     }
 
+    private QuestionCategory findCategory(StreamCollection<QuestionCategory> categories,String categoryLevel1,
+                                          String categoryLevel2,String categoryLevel3,String categoryLevel4){
+        for(QuestionCategory c1:categories){
+            if(c1.getName().equals(categoryLevel1)){
+                Set<QuestionCategory> c2s=c1.getChildren();
+                for(QuestionCategory c2:c2s){
+                    if(c2.getName().equals(categoryLevel2)){
+                        Set<QuestionCategory> c3s=c2.getChildren();
+                        for(QuestionCategory c3:c3s){
+                            if(c3.getName().equals(categoryLevel3)){
+                                Set<QuestionCategory> c4s=c3.getChildren();
+                                for(QuestionCategory c4:c4s){
+                                    if(c4.getName().equals(categoryLevel4)){
+                                        return c4;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     @Override
     public Question parseQuestion(List<ExcelData> line, StreamCollection<QuestionCategory> categories) throws ServiceException {
         Question question=new Question();
         String detail = line.get(0).getData().stringValue();
-        String categoryName= line.get(1).getData().stringValue();
-        QuestionCategory category=categories.find(h->{
-            return h.getName().equals(categoryName);
-        });
+        String categoryLevel1= line.get(1).getData().stringValue();
+        String categoryLevel2= line.get(2).getData().stringValue();
+        String categoryLevel3= line.get(3).getData().stringValue();
+        String categoryLevel4= line.get(4).getData().stringValue();
+        QuestionCategory questionCategory=findCategory(categories,categoryLevel1,categoryLevel2,categoryLevel3,categoryLevel4);
         if(Objects.isNull(categories)){
             throw ServiceExceptionDefine.categoryError;
         }
-        String typeName=line.get(2).getData().stringValue();
+        String typeName=line.get(5).getData().stringValue();
         QuestionType questionType=QuestionType.getByName(typeName);
         if(Objects.isNull(questionType)){
             throw ServiceExceptionDefine.questionType;
         }
-        int score=line.get(3).getData().integerValue(0);
+        int score=line.get(6).getData().integerValue(0);
         question.setDetail(detail);
-        question.setCategory(category);
+        question.setCategory(questionCategory);
         question.setQuestionType(questionType);
         question.setScore(score);
         question.setEnable(true);
         String analysis=null;
         String answer=null;
         if(questionType.equals(QuestionType.QuestionsAndAnswers)){
-            if(line.size()==5){
-                analysis=line.get(4).getData().stringValue();
+            if(line.size()==8){
+                analysis=line.get(7).getData().stringValue();
             }
-            if(line.size()==6){
-                answer=line.get(5).getData().stringValue();
+            if(line.size()==9){
+                answer=line.get(8).getData().stringValue();
             }
         }else{
-            analysis=line.get(4).getData().stringValue();
-            answer=line.get(5).getData().stringValue();
+            analysis=line.get(7).getData().stringValue();
+            answer=line.get(8).getData().stringValue();
         }
         question.setAnalysis(analysis);
         question.setAnswer(answer);
         if(!question.getQuestionType().equals(QuestionType.QuestionsAndAnswers)){
             question.setChoiceAnswers(new HashSet<>());
-            String optionName=line.get(6).getData().stringValue();
-            String detailValue=line.get(7).getData().stringValue();
+            String optionName=line.get(9).getData().stringValue();
+            String detailValue=line.get(10).getData().stringValue();
             parseChoiceAnswer(question,optionName,detailValue);
         }
         return question;

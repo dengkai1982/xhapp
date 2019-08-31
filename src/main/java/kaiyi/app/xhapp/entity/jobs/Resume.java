@@ -21,6 +21,9 @@ public class Resume extends AbstractEntity {
     @NotEmpty(hint = "姓名必须填写")
     @PageField(label = "姓名")
     private String name;
+    @PageField(label = "发布状态",type = FieldType.BOOLEAN,tableLength = 120)
+    @FieldBoolean(values = {"已发布","未发布"})
+    private boolean infoUpper;
     @IDate
     @PageField(label = "创建时间",type = FieldType.DATETIME,tableLength = 160)
     private Date createTime;
@@ -205,4 +208,11 @@ public class Resume extends AbstractEntity {
         this.detail = detail;
     }
 
+    public boolean isInfoUpper() {
+        return infoUpper;
+    }
+
+    public void setInfoUpper(boolean infoUpper) {
+        this.infoUpper = infoUpper;
+    }
 }

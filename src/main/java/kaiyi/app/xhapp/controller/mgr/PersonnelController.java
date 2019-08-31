@@ -128,6 +128,16 @@ public class PersonnelController extends ManagerController{
         interactive.writeUTF8Text(msg.build());
     }
 
+    @AccessControl(name = "显示/隐藏", weight = 4.13f, detail = "显示或隐藏职务信息",
+            code = rootPath+ "/position/showable", parent = rootPath+"/position")
+    @RequestMapping("/position/showable")
+    public void positionShowable(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String entityId=interactive.getStringParameter("entityId","");
+        positionService.changeShowable(entityId);
+        interactive.writeUTF8Text(getSuccessMessage().build());
+    }
+
+
     @RequestMapping("/enterprise")
     @AccessControl(name = "企业信息", weight = 4.2f, detail = "企业信息", code = rootPath+ "/enterprise", parent = rootPath)
     public String enterprise(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
@@ -199,6 +209,17 @@ public class PersonnelController extends ManagerController{
         recruitmentService.changeRecommend(entityId);
         interactive.writeUTF8Text(jmc.build());
     }
+    @AccessControl(name = "发布/取消发布", weight = 4.33f, detail = "发布或取消发布招聘信息", code = rootPath
+            + "/recruitment/changeUpper", parent = rootPath+"/recruitment")
+    @RequestMapping("/recruitment/changeUpper")
+    public void recruitmentChangeUpper(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String entityId=interactive.getStringParameter("entityId","");
+        recruitmentService.changeUpper(entityId);
+        interactive.writeUTF8Text(getSuccessMessage().build());
+    }
+
+
+
     @RequestMapping("/resume")
     @AccessControl(name = "个人简历", weight = 4.4f, detail = "个人简历", code = rootPath+ "/resume", parent = rootPath)
     public String resume(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
@@ -218,6 +239,15 @@ public class PersonnelController extends ManagerController{
         interactive.setRequestAttribute("workExperiences",workExperiences);
         return rootPath+"/resumeDetail";
     }
+    @AccessControl(name = "发布/取消发布", weight = 4.42f, detail = "发布或取消发布企业信息",
+            code = rootPath+ "/resume/changeUpper", parent = rootPath+"/resume")
+    @RequestMapping("/resume/changeUpper")
+    public void resumeChangeUpper(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String entityId=interactive.getStringParameter("entityId","");
+        resumeService.changeUpper(entityId);
+        interactive.writeUTF8Text(getSuccessMessage().build());
+    }
+
     @RequestMapping("/certificate")
     @AccessControl(name = "个人证书", weight = 4.5f, detail = "个人证书", code = rootPath+ "/certificate", parent = rootPath)
     public String certificate(@IWebInteractive WebInteractive interactive, HttpServletResponse response){

@@ -23,6 +23,9 @@ public class Account extends AbstractEntity {
     @Mobile(hint = "手机号码格式错误")
     @PageField(label = "会员手机号码",tableLength = 160)
     private String phone;
+    @PageField(label = "内部会员",type = FieldType.BOOLEAN,tableLength = 120)
+    @FieldBoolean(values = {"内部会员","非内部会员"})
+    private boolean insideMember;
     @PageField(label = "登录密码",showSearch = false,showTable = false,showDetail = false)
     private String password;
     @IDate
@@ -31,25 +34,23 @@ public class Account extends AbstractEntity {
     @PageField(label = "会员等级",type = FieldType.CHOSEN,tableLength = 100)
     @FieldChosen
     private MemberShip memberShip;
-
     @PageField(label = "推荐人",type = FieldType.REFERENCE,showForm = false,tableLength = 140)
     @FieldReference(fieldName = "showAccountName")
     private Account recommend;
     @PageField(label = "团队人数",type = FieldType.NUMBER,showForm = false)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int teamNumber;
-
     @PageField(label = "用户头像",type=FieldType.DOCUMENT,showSearch = false,showDetail = false)
     @FieldDocument
     private String headerImage;
-    @PageField(label = "签名",tableLength = 200)
+    @PageField(label = "签名",tableLength = 200,showSearch = false,showTable = false)
     private String sign;
     @PageField(label = "昵称",tableLength = 200)
     private String nickName;
     @PageField(label = "性别",type = FieldType.CHOSEN)
     @FieldChosen
     private SEX sex;
-    @PageField(label = "行业",tableLength = 120)
+    @PageField(label = "行业",tableLength = 120,showSearch = false,showTable = false)
     private String industry;
     @Email(hint = "电子邮箱格式错误")
     @PageField(label = "电子邮箱",tableLength = 200)
@@ -61,9 +62,12 @@ public class Account extends AbstractEntity {
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int gold;
     @ICurrency
-    @PageField(label = "积分",type = FieldType.NUMBER)
+    @PageField(label = "账户积分",type = FieldType.NUMBER)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int integral;
+    @PageField(label = "账户状态",type = FieldType.BOOLEAN,tableLength = 120)
+    @FieldBoolean(values = {"账户可用","账户冻结"})
+    private boolean active;
     /**********************累计销量数据(金额)*****************************/
     @ICurrency
     @PageField(label = "个人日消费",type = FieldType.NUMBER,tableLength = 140,showQuery = false)
@@ -90,16 +94,18 @@ public class Account extends AbstractEntity {
     @FieldNumber(type = FieldNumber.TYPE.LONG)
     private long teamMonthSale;
     @ICurrency
-    @PageField(label = "团队总消费(金额)",type = FieldType.NUMBER,tableLength = 140,showQuery = false)
+    @PageField(label = "团队总消费",type = FieldType.NUMBER,tableLength = 140,showQuery = false)
     @FieldNumber(type = FieldNumber.TYPE.LONG)
     private long teamYearSale;
+
+    private Account parentInsideAccount;
 
 
     private String showAccountName;
 
     @Override
     public StreamArray<String> filterField() {
-        return new StreamArray<>(new String[]{"password"});
+        return new StreamArray<>(new String[]{"password","parentInsideAccount"});
     }
 
     public String getPhone() {
@@ -314,5 +320,29 @@ public class Account extends AbstractEntity {
         this.teamDaySale+=amount;
         this.teamMonthSale+=amount;
         this.teamYearSale+=amount;
+    }
+
+    public boolean isInsideMember() {
+        return insideMember;
+    }
+
+    public void setInsideMember(boolean insideMember) {
+        this.insideMember = insideMember;
+    }
+    @Transient
+    public Account getParentInsideAccount() {
+        return parentInsideAccount;
+    }
+
+    public void setParentInsideAccount(Account parentInsideAccount) {
+        this.parentInsideAccount = parentInsideAccount;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

@@ -24,7 +24,7 @@
             <form id="editor_form" data-form-name="${webPage.pageTitle}" class="form-horizontal" method="post"
                   action="${contextPath}${webPage.commitEntityAction}${suffix}">
                 <c:set var="configure" value="${requestScope.configureMap}" />
-                <fieldset>
+                <%--<fieldset>
                     <legend>随机生成试题参数配置(<span style="color:#f60">注:三种试题数量相加必须等于100</span>)</legend>
                     <div class="form-group">
                         <label for="EXAM_QUESTION_SINGLE_NUMBER" class="col-sm-1">单选题数量</label>
@@ -40,7 +40,7 @@
                             <input type="number" class="form-control" id="EXAM_QUESTION_ANSWER_NUMBER" value="${configure['EXAM_QUESTION_ANSWER_NUMBER']}" name="EXAM_QUESTION_ANSWER_NUMBER" placeholder="请填写单选题生成数量">
                         </div>
                     </div>
-                </fieldset>
+                </fieldset>--%>
                 <fieldset>
                     <legend>课程提现配置</legend>
                     <div class="form-group">
@@ -55,6 +55,13 @@
                         <div class="col-sm-2">
                             <div class="input-group">
                                 <input type="number" class="form-control" id="SALE_LEVEL_COMMISSION_2" value="${configure['SALE_LEVEL_COMMISSION_2']}" name="SALE_LEVEL_COMMISSION_2" placeholder="请填写上上级提成比例">
+                                <span class="input-group-addon" style="border-right:1px solid #dcdcdc">%</span>
+                            </div>
+                        </div>
+                        <label for="INSIDE_MEMBER_COMMISSION" class="col-sm-1" style="width:130px;">内部员工提成比例</label>
+                        <div class="col-sm-2">
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="INSIDE_MEMBER_COMMISSION" value="${configure['INSIDE_MEMBER_COMMISSION']}" name="INSIDE_MEMBER_COMMISSION" placeholder="请填写内部员工提成比例">
                                 <span class="input-group-addon" style="border-right:1px solid #dcdcdc">%</span>
                             </div>
                         </div>

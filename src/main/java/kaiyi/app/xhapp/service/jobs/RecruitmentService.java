@@ -9,4 +9,10 @@ public interface RecruitmentService extends DatabaseFastOper<Recruitment>,Databa
         DatabaseOperator<Recruitment> {
 
     void changeRecommend(String entityId);
+
+    /**
+     * 修改发布状态
+     * @param entityId
+     */
+    void changeUpper(String entityId);
 }

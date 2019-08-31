@@ -47,4 +47,12 @@ public class ResumeServiceImpl extends InjectDao<Resume> implements ResumeServic
         }
         return query;
     }
+
+    @Override
+    public void changeUpper(String entityId) {
+        Resume resume=findForPrimary(entityId);
+        if(Objects.nonNull(resume)){
+            resume.setInfoUpper(!resume.isInfoUpper());
+        }
+    }
 }

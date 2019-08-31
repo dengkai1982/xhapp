@@ -11,6 +11,7 @@ import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.app.xhapp.entity.curriculum.Category;
 import kaiyi.app.xhapp.entity.curriculum.CourseOrder;
 import kaiyi.app.xhapp.entity.examination.Question;
+import kaiyi.app.xhapp.entity.examination.QuestionCategory;
 import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
 import kaiyi.app.xhapp.service.AliyunVodHelper;
 import kaiyi.app.xhapp.service.access.AccountService;
@@ -19,6 +20,7 @@ import kaiyi.app.xhapp.service.access.VisitorUserService;
 import kaiyi.app.xhapp.service.curriculum.CategoryService;
 import kaiyi.app.xhapp.service.curriculum.CourseOrderService;
 import kaiyi.app.xhapp.service.examination.ExamQuestionService;
+import kaiyi.app.xhapp.service.examination.QuestionCategoryService;
 import kaiyi.app.xhapp.service.examination.QuestionService;
 import kaiyi.app.xhapp.service.jobs.PositionService;
 import kaiyi.app.xhapp.service.log.ShortMessageSenderNoteService;
@@ -54,6 +56,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class ImportData {
@@ -67,17 +70,19 @@ public class ImportData {
         }
     }
 
-    /*@Test
+    @Test
     public void excelImport() throws IOException {
-        CategoryService categoryService=sel.getBean(CategoryService.class);
+        QuestionCategoryService categoryService=sel.getBean(QuestionCategoryService.class);
         QuestionService questionService=sel.getBean(QuestionService.class);
-        File file=new File("/Users/dengkai/金红/批量导入模板.xlsx");
+        File file=new File("/Users/dengkai/金红/证书/试题导入/市政工程管理与实务.xlsx");
         AtomicReference<Question> questionReference=new AtomicReference<>();
-        StreamCollection<Category> categories=categoryService.getEntitys();
+        StreamCollection<QuestionCategory> categories=categoryService.getEntitys();
         if(Objects.nonNull(file)&&file.exists()){
+            AtomicInteger index=new AtomicInteger(0);
             ExcelUtils.readExcel(file, line->{
                 if(!line.get(0).getData().stringValue().equals("试题题目")){
                     //表头不做处理
+                    System.out.println("index:"+index.getAndAdd(1));
                     try {
                         if(questionService.isQuestion(line)){
                             Question existQuestion=questionReference.get();
@@ -99,10 +104,10 @@ public class ImportData {
             });
         }
         if(Objects.nonNull(questionReference.get())){
-            questionService.saveObject(questionReference.get());
+            System.out.println(questionReference.get());
+            //questionService.saveObject(questionReference.get());
         }
-        //file.delete();
-    }*/
+    }
 
 
     @Test

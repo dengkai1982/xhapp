@@ -147,6 +147,15 @@ public class CourseOrderServiceImpl extends InjectDao<CourseOrder> implements Co
                 }
 
             }
+            //内部员工提成结算
+            Account insideMember=accountService.findParentInsideMember(account.getEntityId());
+            if(Objects.nonNull(insideMember)){
+                int insideRate=configureService.getIntegerValue(ConfigureItem.INSIDE_MEMBER_COMMISSION);
+                int royalty=Currency.computerPercentage(insideRate,amount.doubleValue()).getNoDecimalPointToInteger();
+                accountService.grantRoyalty(insideMember.getEntityId(),courseOrder.getOrderId(),
+                        TradeCourse.INSIDE_SETTLEMENT_ROYALTY,royalty);
+                accountService.updateObject(insideMember);
+            }
         }
         return courseOrder;
     }

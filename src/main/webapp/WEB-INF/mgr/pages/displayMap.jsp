@@ -74,11 +74,13 @@
         if(cell.config.name=="imagePath"){
             var hex=cell.config.data.imagePath;
             var imageUrl="${managerPath}/access/accessStorageFile${suffix}?hex="+hex;
-            var dv="<img  style='height:80px;' src='"+imageUrl+"' class='carouselImage' alt=''/>";
+            //var dv="<img  style='height:40px;' src='"+imageUrl+"' class='carouselImage' alt=''/>";
+            var dv="<a href='"+imageUrl+"' target='_blank' data-toggle='lightbox'>点击查看</a>"
             return dv;
         }
     }
     //datagrid-row-cell
+    /*
     function changeGridHeight(){
         $(".datagrid-row-cell").css("height","100px");
         var height = 0;
@@ -88,9 +90,10 @@
         $(".datagrid-container").height(height);
         $(".datagrid-row-cell").each(function(i,d){
             var top=100*i;
+            console.log(top);
             $(this).css("top",(top+37)+"px")
         })
-    }
+    }*/
 </script>
 </body>
 </html>

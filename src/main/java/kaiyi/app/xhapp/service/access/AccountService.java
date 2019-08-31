@@ -111,6 +111,21 @@ public interface AccountService extends DatabaseQuery<Account>,DatabaseFastOper<
      * 执行月清理
      */
     void monthClear();
+    /**
+     * 设置是否为内部会员
+     * @param entityId
+     */
+    void changeInsideMember(String entityId);
+    /**
+     * 获取上级内部会员
+     * @param entityId
+     * @return
+     */
+    Account findParentInsideMember(String entityId);
 
-
+    /**
+     * 修改访问激活状态
+     * @param entityId
+     */
+    void changeActive(String entityId);
 }

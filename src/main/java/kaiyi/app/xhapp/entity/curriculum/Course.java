@@ -34,11 +34,14 @@ public class Course extends AbstractEntity {
     @PageField(label = "课程难度",type = FieldType.CHOSEN)
     @FieldChosen
     private Difficulty difficulty;
-    @NotEmpty(hint = "课程售价必须填写")
+    /*@NotEmpty(hint = "课程售价必须填写")
     @ICurrency
     @PageField(label = "课程售价",type = FieldType.NUMBER)
-    @FieldNumber(type = FieldNumber.TYPE.INT)
+    @FieldNumber(type = FieldNumber.TYPE.INT)*/
     private int price;
+    @PageField(label = "是否免费",type = FieldType.BOOLEAN,tableLength =120)
+    @FieldBoolean(values = {"免费","收费"})
+    private boolean freeCourse;
     @PageField(label = "首页推荐",type = FieldType.BOOLEAN,tableLength =120)
     @FieldBoolean(values = {"推荐","不推荐"})
     private boolean recommendMainPage;
@@ -260,5 +263,13 @@ public class Course extends AbstractEntity {
 
     public void setBrowseVolume(long browseVolume) {
         this.browseVolume = browseVolume;
+    }
+
+    public boolean isFreeCourse() {
+        return freeCourse;
+    }
+
+    public void setFreeCourse(boolean freeCourse) {
+        this.freeCourse = freeCourse;
     }
 }

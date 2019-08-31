@@ -63,6 +63,34 @@
             className:"privilege",
             access:"${webPage.modifyEntityPage}"
         }];
+        var showable="";
+        if(data.showable.ordinal=="true"){
+            showable="隐藏职位";
+        }else{
+            showable="显示职位";
+        }
+        items.push({
+            label:showable,
+            className:"privilege",
+            access:"/mgr/personnel/position/showable",
+            onClick:function(e){
+                postJSON("${managerPath}/personnel/position/showable${suffix}",{
+                    entityId:dataId
+                },"正在执行,请稍后...",function(result){
+                    if(result.code==SUCCESS){
+                        bootbox.alert({
+                            title:"消息",
+                            message: showable+"成功,点击确认返回",
+                            callback: function () {
+                                reflashPageData();
+                            }
+                        })
+                    }else{
+                        showMessage(result.msg,1500);
+                    }
+                });
+            }
+        });
         checkPrivilege(items);
         return items;
     };

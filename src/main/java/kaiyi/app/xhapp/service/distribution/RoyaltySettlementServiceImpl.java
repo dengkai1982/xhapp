@@ -5,9 +5,11 @@ import kaiyi.app.xhapp.entity.access.VisitorUser;
 import kaiyi.app.xhapp.entity.distribution.RoyaltySettlement;
 import kaiyi.app.xhapp.entity.distribution.RoyaltyType;
 import kaiyi.app.xhapp.entity.log.enums.TradeCourse;
+import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
 import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.app.xhapp.service.access.AccountService;
 import kaiyi.app.xhapp.service.access.VisitorUserService;
+import kaiyi.app.xhapp.service.pub.ConfigureService;
 import kaiyi.puer.commons.data.Currency;
 import kaiyi.puer.commons.data.JavaDataTyper;
 import kaiyi.puer.db.orm.ServiceException;
@@ -29,6 +31,8 @@ public class RoyaltySettlementServiceImpl extends InjectDao<RoyaltySettlement> i
     private RoyaltyTypeService royaltyTypeService;
     @Resource
     private VisitorUserService visitorUserService;
+    @Resource
+    private ConfigureService configureService;
     @Override
     protected void objectBeforePersistHandler(RoyaltySettlement royaltySettlement, Map<String, JavaDataTyper> params) throws ServiceException {
         royaltySettlement.setCreateTime(new Date());
@@ -68,6 +72,15 @@ public class RoyaltySettlementServiceImpl extends InjectDao<RoyaltySettlement> i
                 accountService.updateObject(recommend);
             }
             updateObject(royaltySettlement);
+            //内部员工结算
+            Account insideMember=accountService.findParentInsideMember(account.getEntityId());
+            if(Objects.nonNull(insideMember)){
+                int insideRate=configureService.getIntegerValue(ConfigureItem.INSIDE_MEMBER_COMMISSION);
+                int royalty=Currency.computerPercentage(insideRate,price).getNoDecimalPointToInteger();
+                accountService.grantRoyalty(insideMember.getEntityId(),orderId,
+                        TradeCourse.INSIDE_MANUAL_CACULATION,royalty);
+                accountService.updateObject(insideMember);
+            }
         }
     }
 

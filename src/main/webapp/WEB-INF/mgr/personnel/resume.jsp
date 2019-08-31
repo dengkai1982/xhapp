@@ -48,6 +48,34 @@
             url:"${contextPath}${webPage.detailEntityPage}${suffix}?entityId="+dataId+"&${paginationCurrentPage}="+getPaginationCurrentPage(),
             label:"查看详情"
         }];
+        var infoUpper="";
+        if(data.infoUpper.ordinal=="true"){
+            infoUpper="取消发布";
+        }else{
+            infoUpper="发布简历";
+        }
+        items.push({
+            label:infoUpper,
+            className:"privilege",
+            access:"/mgr/personnel/resume/changeUpper",
+            onClick:function(e){
+                postJSON("${managerPath}/personnel/resume/changeUpper${suffix}",{
+                    entityId:dataId
+                },"正在执行,请稍后...",function(result){
+                    if(result.code==SUCCESS){
+                        bootbox.alert({
+                            title:"消息",
+                            message: infoUpper+"成功,点击确认返回",
+                            callback: function () {
+                                reflashPageData();
+                            }
+                        })
+                    }else{
+                        showMessage(result.msg,1500);
+                    }
+                });
+            }
+        });
         checkPrivilege(items);
         return items;
     };

@@ -13,11 +13,11 @@ import java.util.Date;
 import java.util.Objects;
 
 @Entity(name=ExamInfo.TABLE_NAME)
-@PageEntity(showName = "考试咨询",entityName = "examInfo",serviceName = "examInfoService")
+@PageEntity(showName = "考试资讯",entityName = "examInfo",serviceName = "examInfoService")
 public class ExamInfo extends AbstractEntity implements ContentText {
     private static final long serialVersionUID = -3047395829998804499L;
     public static final String TABLE_NAME="exam_info";
-    @NotEmpty(hint = "咨询标题必须填写")
+    @NotEmpty(hint = "资讯标题必须填写")
     @PageField(label = "资讯标题",formColumnLength = 3)
     private String title;
     @PageField(label="发布时间",showForm = false,showSearch = false)

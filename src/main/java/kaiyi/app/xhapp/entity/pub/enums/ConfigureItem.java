@@ -223,5 +223,11 @@ public enum ConfigureItem {
 		public String toString() {
 			return "提现金额上限";
 		}
+	},
+	INSIDE_MEMBER_COMMISSION{
+		@Override
+		public String toString() {
+			return "内部会员提成比例";
+		}
 	}
 }

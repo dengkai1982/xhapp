@@ -67,6 +67,14 @@ public class PositionServiceImpl extends InjectDao<Position> implements Position
         saveObject(newJobs);
     }
 
+    @Override
+    public void changeShowable(String entityId) {
+        Position position=findForPrimary(entityId);
+        if(Objects.nonNull(position)){
+            position.setShowable(!position.isShowable());
+        }
+    }
+
 
     @Override
 

@@ -50,4 +50,12 @@ public class RecruitmentServiceImpl extends InjectDao<Recruitment> implements Re
             recruitment.setRecommend(!recruitment.isRecommend());
         }
     }
+
+    @Override
+    public void changeUpper(String entityId) {
+        Recruitment recruitment=findForPrimary(entityId);
+        if(Objects.nonNull(recruitment)){
+            recruitment.setInfoUpper(!recruitment.isInfoUpper());
+        }
+    }
 }

@@ -19,6 +19,9 @@ public class Position extends AbstractEntity implements Cascadeable,Comparable<P
     @NotEmpty(hint = "职位名称必须填写")
     @PageField(label = "职位名称")
     private String name;
+    @PageField(label = "显示/隐藏",type = FieldType.BOOLEAN,tableLength = 120,showForm = false)
+    @FieldBoolean(values = {"显示","隐藏"})
+    private boolean showable;
     @PageField(label = "上级类别",type = FieldType.REFERENCE,showForm = false)
     @FieldReference(fieldName = "name")
     private Position parent;
@@ -108,5 +111,13 @@ public class Position extends AbstractEntity implements Cascadeable,Comparable<P
     @Override
     public int compareTo(Position o) {
         return this.getName().compareTo(o.getName());
+    }
+
+    public boolean isShowable() {
+        return showable;
+    }
+
+    public void setShowable(boolean showable) {
+        this.showable = showable;
     }
 }

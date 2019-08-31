@@ -5,10 +5,10 @@
 <head>
     <%@include file="/WEB-INF/htmlHeader.jsp"%>
     <style>
-        .detail-content{
+        /*.detail-content{
             height:200px;
             margin-left:100px;
-        }
+        }*/
         .photo_container{
             position: absolute;
             left:60px;
@@ -27,7 +27,7 @@
                 <div class="detail-content">
                     <%@include file="/WEB-INF/mgr/access/entityDetail.jsp"%>
                 </div>
-                <div class="photo_container">
+                <%--<div class="photo_container">
                     <c:choose>
                         <c:when test="${empty requestScope.entity.headerImage}">
                             <img src="${contextPath}/img/default_header.png"/>
@@ -36,7 +36,7 @@
                             <img src="${managerPath}/access/accessStorageFile${suffix}?hex=${requestScope.entity.headerImage}"/>
                         </c:otherwise>
                     </c:choose>
-                </div>
+                </div>--%>
                 <%@include file="/WEB-INF/mgr/access/detailPageButton.jsp"%>
             </div>
         </div>

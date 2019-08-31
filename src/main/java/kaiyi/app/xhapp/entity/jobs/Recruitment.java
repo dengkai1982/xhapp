@@ -15,9 +15,12 @@ public class Recruitment extends AbstractEntity {
     public static final String TABLE_NAME="recruitment";
     private static final long serialVersionUID = -893953219915415823L;
     @NotEmpty(hint = "企业名称必须指定")
-    @PageField(label = "企业名称",type = FieldType.REFERENCE,tableLength = 180)
+    @PageField(label = "企业名称",type = FieldType.REFERENCE,tableLength = 220)
     @FieldReference(fieldName = "enterpriseName")
     private Enterprise enterprise;
+    @PageField(label = "发布状态",type = FieldType.BOOLEAN,tableLength = 120)
+    @FieldBoolean(values = {"已发布","未发布"})
+    private boolean infoUpper;
     @NotEmpty(hint = "招聘岗位必须填写")
     @PageField(label = "招聘岗位",type = FieldType.REFERENCE,tableLength = 220,showTable = false)
     @FieldReference(fieldName = "name")
@@ -58,8 +61,6 @@ public class Recruitment extends AbstractEntity {
     public Date invalidTime;
     @PageField(label = "备注",tableLength = 300)
     private String remark;
-
-
 
     public boolean isFullTime() {
         return fullTime;
@@ -177,5 +178,13 @@ public class Recruitment extends AbstractEntity {
 
     public void setPositionName(String positionName) {
         this.positionName = positionName;
+    }
+
+    public boolean isInfoUpper() {
+        return infoUpper;
+    }
+
+    public void setInfoUpper(boolean infoUpper) {
+        this.infoUpper = infoUpper;
     }
 }

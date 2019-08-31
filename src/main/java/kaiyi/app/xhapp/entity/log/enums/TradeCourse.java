@@ -67,6 +67,27 @@ public enum TradeCourse implements H5ChosenInterface {
         public String getHexColor() {
             return "#03b8cf";
         }
+    },
+    INSIDE_SETTLEMENT_ROYALTY {
+        @Override
+        public String toString() {
+            return "消费提成(内部员工)";
+        }
+
+        @Override
+        public String getHexColor() {
+            return "#bd7b46";
+        }
+    },
+    INSIDE_MANUAL_CACULATION{
+        @Override
+        public String toString() {
+            return "人工结算(内部员工)";
+        }
+        @Override
+        public String getHexColor() {
+            return "#38b03f";
+        }
     };
     @Override
     public String[] getSearchValues() {

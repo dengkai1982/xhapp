@@ -240,4 +240,38 @@ public class AccountServiceImpl extends InjectDao<Account> implements AccountSer
         logger.info(()->"--------完成执行月清理----------");
         logger.close();
     }
+
+    @Override
+    public void changeInsideMember(String entityId) {
+        Account account=signleQuery("entityId",entityId);
+        if(Objects.nonNull(account)){
+            account.setInsideMember(!account.isInsideMember());
+        }
+    }
+
+    @Override
+    public Account findParentInsideMember(String entityId) {
+        Account account=findForPrimary(entityId);
+        return findParentInsideMember(account);
+    }
+
+    @Override
+    public void changeActive(String entityId) {
+        Account account=findForPrimary(entityId);
+        if(Objects.nonNull(account)){
+            account.setActive(!account.isActive());
+        }
+    }
+
+    private Account findParentInsideMember(Account account){
+        if(Objects.nonNull(account)){
+            Account recommend=account.getRecommend();
+            if(recommend.isInsideMember()){
+                return recommend;
+            }else{
+                return findParentInsideMember(account);
+            }
+        }
+        return null;
+    }
 }

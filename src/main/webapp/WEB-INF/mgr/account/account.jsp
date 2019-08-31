@@ -137,7 +137,63 @@
                 $("#changeMemberShipModal").modal("show");
                 $("#changeMemberShipModal #memberShip").trigger('chosen:updated');
             }
-        }]
+        }];
+        var insideMember="";
+        if(data.insideMember.ordinal=="true"){
+            insideMember="取消内部会员";
+        }else{
+            insideMember="标记内部会员";
+        }
+        var active="";
+        if(data.active.ordinal=="true"){
+            active="解锁会员";
+        }else{
+            active="冻结会员";
+        }
+        items.push({
+            label:insideMember,
+            className:"privilege",
+            access:"/mgr/account/account/changeInsideMember",
+            onClick:function(e){
+                postJSON("${managerPath}/account/account/changeInsideMember${suffix}",{
+                    entityId:dataId
+                },"正在执行,请稍后...",function(result){
+                    if(result.code==SUCCESS){
+                        bootbox.alert({
+                            title:"消息",
+                            message: insideMember+"成功,点击确认返回",
+                            callback: function () {
+                                reflashPageData();
+                            }
+                        })
+                    }else{
+                        showMessage(result.msg,1500);
+                    }
+                });
+            }
+        });
+        items.push({
+            label:active,
+            className:"privilege",
+            access:"/mgr/account/account/changeActive",
+            onClick:function(e){
+                postJSON("${managerPath}/account/account/changeActive${suffix}",{
+                    entityId:dataId
+                },"正在执行,请稍后...",function(result){
+                    if(result.code==SUCCESS){
+                        bootbox.alert({
+                            title:"消息",
+                            message: active+"成功,点击确认返回",
+                            callback: function () {
+                                reflashPageData();
+                            }
+                        })
+                    }else{
+                        showMessage(result.msg,1500);
+                    }
+                });
+            }
+        });
         checkPrivilege(items);
         return items;
     };

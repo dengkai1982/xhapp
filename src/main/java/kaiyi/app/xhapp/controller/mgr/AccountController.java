@@ -272,7 +272,9 @@ public class AccountController extends ManagerController {
     @AccessControl(name = "会员详情", weight = 1.41f, detail = "用户详情",
             code = rootPath+ "/account/detail", parent = rootPath+"/account")
     public String accountDetail(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
-        detailPage(interactive,accountService,3);
+        Account account=detailPage(interactive,accountService,3);
+        Account insideMember=accountService.findParentInsideMember(account.getEntityId());
+        account.setParentInsideAccount(insideMember);
         setDefaultPage(interactive,rootPath+"/account");
         return rootPath+"/accountDetail";
     }
@@ -302,5 +304,21 @@ public class AccountController extends ManagerController {
         JsonMessageCreator jmc=getSuccessMessage();
         accountService.changeMemberShip(entityId,memberShip);
         interactive.writeUTF8Text(jmc.build());
+    }
+    @AccessControl(name = "设置内部会员", weight = 1.44f, detail = "设置会员是否为内部会员", code = rootPath
+            + "/account/changeInsideMember", parent = rootPath+"/account")
+    @RequestMapping("/account/changeInsideMember")
+    public void accountChangeInsideMember(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String entityId=interactive.getStringParameter("entityId","");
+        accountService.changeInsideMember(entityId);
+        interactive.writeUTF8Text(getSuccessMessage().build());
+    }
+    @AccessControl(name = "冻结/解锁", weight = 1.45f, detail = "冻结或者解锁会员", code = rootPath
+            + "/account/changeActive", parent = rootPath+"/account")
+    @RequestMapping("/account/changeActive")
+    public void accountActive(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String entityId=interactive.getStringParameter("entityId","");
+        accountService.changeActive(entityId);
+        interactive.writeUTF8Text(getSuccessMessage().build());
     }
 }
