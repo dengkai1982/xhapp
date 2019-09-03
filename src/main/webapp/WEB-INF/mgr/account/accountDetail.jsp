@@ -22,6 +22,7 @@
     <div class="container">
         <div class="form_container">
             <%@include file="/WEB-INF/mgr/access/newOrEditBaseTitle.jsp"%>
+            <input type="hidden" name="parentInsideAccount" value="${entity.parentInsideAccount.memberName}"/>
             <div class="detail">
                 <div class="detail-title">会员详情<span class="icon icon-caret-down"></span></div>
                 <div class="detail-content">
@@ -45,7 +46,10 @@
 <%@include file="/WEB-INF/footerPage.jsp"%>
 <script type="text/javascript">
     function pageReady(doc) {
-
+        var parentInsideAccount=$("input[name='parentInsideAccount']").val();
+        if(parentInsideAccount!=""){
+            $("td[fieldname='parentInsideAccount']").html(parentInsideAccount);
+        }
     }
 </script>
 </body>

@@ -11,6 +11,7 @@ import kaiyi.app.xhapp.service.pub.ConfigureService;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.db.orm.ServiceException;
 import kaiyi.puer.db.query.CompareQueryExpress;
+import kaiyi.puer.db.query.ContainQueryExpress;
 import kaiyi.puer.db.query.LinkQueryExpress;
 import kaiyi.puer.db.query.QueryExpress;
 import org.springframework.stereotype.Service;
@@ -30,11 +31,11 @@ public class ExamQuestionServiceImpl extends InjectDao<ExamQuestion> implements 
     @Resource
     private QuestionCategoryService questionCategoryService;
     @Resource
-    private ConfigureService configureService;
-    @Resource
     private QuestionService questionService;
     @Resource
     private ExamQuestionItemService examQuestionItemService;
+    @Resource
+    private SimulationCategoryService simulationCategoryService;
     @Override
     public ExamQuestion generatorByTestPager(String accountId, String testPagerId) throws ServiceException {
         TestPager testPager=testPagerService.findForPrimary(testPagerId);
@@ -82,22 +83,22 @@ public class ExamQuestionServiceImpl extends InjectDao<ExamQuestion> implements 
         item.setChoiceAnswers(examChoiceAnswers);
         return item;
     }
-
     @Override
-    public ExamQuestion generatorByCategory(String accountId, String categoryId) throws ServiceException {
-        QuestionCategory category=questionCategoryService.findForPrimary(categoryId);
+    public ExamQuestion generatorBySimulationCategory(String accountId, String questionCategoryId) throws ServiceException {
+        StreamCollection<SimulationCategory> categorys=simulationCategoryService.getCategoryAndChildren(questionCategoryId);
         Account account=accountService.findForPrimary(accountId);
-        if(Objects.isNull(account)||Objects.isNull(category)){
+        if(Objects.isNull(account)|| categorys.assertEmpty()){
             throw ServiceExceptionDefine.entityNotExist;
         }
-        String name=category.getName()+"随机练习题";
+        SimulationCategory firstCategory=categorys.get(0);
+        String name=firstCategory.getName()+"随机练习题";
         checkExamQuestionExist(name,account);
-        int singleNumber=configureService.getIntegerValue(ConfigureItem.EXAM_QUESTION_SINGLE_NUMBER);
-        int multipleNumber=configureService.getIntegerValue(ConfigureItem.EXAM_QUESTION_MULTIPLE_NUMBER);
-        int answerNumber=configureService.getIntegerValue(ConfigureItem.EXAM_QUESTION_ANSWER_NUMBER);
-        StreamCollection<Question> singleQuestion=getRandomQuestion(category,QuestionType.SingleChoice,singleNumber);
-        StreamCollection<Question> multipleQuestion=getRandomQuestion(category,QuestionType.MultipleChoice,multipleNumber);
-        StreamCollection<Question> answerQuestion=getRandomQuestion(category,QuestionType.QuestionsAndAnswers,answerNumber);
+        int singleNumber=firstCategory.getSingleNumber();
+        int multipleNumber=firstCategory.getMultipleNumber();
+        int answerNumber=firstCategory.getAnswerNumber();
+        StreamCollection<Question> singleQuestion=getRandomQuestionForSimulationCategory(categorys,QuestionType.SingleChoice,singleNumber);
+        StreamCollection<Question> multipleQuestion=getRandomQuestionForSimulationCategory(categorys,QuestionType.MultipleChoice,multipleNumber);
+        StreamCollection<Question> answerQuestion=getRandomQuestionForSimulationCategory(categorys,QuestionType.QuestionsAndAnswers,answerNumber);
         int weight=singleQuestion.size()+multipleQuestion.size()+answerQuestion.size();
         ExamQuestion exam=new ExamQuestion(name,account,singleQuestion.size(),
                 multipleQuestion.size(),answerQuestion.size());
@@ -121,6 +122,47 @@ public class ExamQuestionServiceImpl extends InjectDao<ExamQuestion> implements 
         saveObject(exam);
         return exam;
     }
+    @Override
+    public ExamQuestion generatorByCategory(String accountId, String categoryId) throws ServiceException {
+        StreamCollection<QuestionCategory> categorys=questionCategoryService.getCategoryAndChildren(categoryId);
+        Account account=accountService.findForPrimary(accountId);
+        if(Objects.isNull(account)|| categorys.assertEmpty()){
+            throw ServiceExceptionDefine.entityNotExist;
+        }
+        QuestionCategory firstCategory=categorys.get(0);
+        String name=firstCategory.getName()+"随机练习题";
+        checkExamQuestionExist(name,account);
+        int singleNumber=firstCategory.getSingleNumber();
+        int multipleNumber=firstCategory.getMultipleNumber();
+        int answerNumber=firstCategory.getAnswerNumber();
+        StreamCollection<Question> singleQuestion=getRandomQuestion(categorys,QuestionType.SingleChoice,singleNumber);
+        StreamCollection<Question> multipleQuestion=getRandomQuestion(categorys,QuestionType.MultipleChoice,multipleNumber);
+        StreamCollection<Question> answerQuestion=getRandomQuestion(categorys,QuestionType.QuestionsAndAnswers,answerNumber);
+        int weight=singleQuestion.size()+multipleQuestion.size()+answerQuestion.size();
+        ExamQuestion exam=new ExamQuestion(name,account,singleQuestion.size(),
+                multipleQuestion.size(),answerQuestion.size());
+        Set<ExamQuestionItem> items=new HashSet<>();
+        for(Question question:singleQuestion){
+            ExamQuestionItem item=createExamQuestionItem(exam,question,question.getScore(),weight,account);
+            weight--;
+            items.add(item);
+        }
+        for(Question question:multipleQuestion){
+            ExamQuestionItem item=createExamQuestionItem(exam,question,question.getScore(),weight,account);
+            weight--;
+            items.add(item);
+        }
+        for(Question question:answerQuestion){
+            ExamQuestionItem item=createExamQuestionItem(exam,question,question.getScore(),weight,account);
+            weight--;
+            items.add(item);
+        }
+        exam.setQuestionItems(items);
+        saveObject(exam);
+        return exam;
+    }
+
+
 
     @Override
     public void answerQuestion(String examQuestionItemId, String answer) {
@@ -149,17 +191,33 @@ public class ExamQuestionServiceImpl extends InjectDao<ExamQuestion> implements 
             throw ServiceExceptionDefine.examQuestionExist;
         }
     }
-
     /**
      * 随机获取练习题
-     * @param category 类别ID
+     * @param categorys 类别ID
      * @param questionType 试题类型
      * @param totalScore 总分值
      * @return
      */
-    private StreamCollection<Question> getRandomQuestion(QuestionCategory category, QuestionType questionType,int totalScore){
+    private StreamCollection<Question> getRandomQuestionForSimulationCategory(StreamCollection<SimulationCategory> categorys, QuestionType questionType,int totalScore){
         StreamCollection<Question> result=new StreamCollection<>();
-        QueryExpress query=new CompareQueryExpress("category", CompareQueryExpress.Compare.EQUAL,category);
+        QueryExpress query=new ContainQueryExpress("simulationCategory",ContainQueryExpress.CONTAINER.IN,categorys.toList());
+        query=new LinkQueryExpress(query, LinkQueryExpress.LINK.AND,new CompareQueryExpress("questionType", CompareQueryExpress.Compare.EQUAL,
+                questionType));
+        StreamCollection<Question> questions=questionService.getEntitys(query);
+        Random random=new Random();
+        getQuestionByRandom(result,questions,random,totalScore);
+        return result;
+    }
+    /**
+     * 随机获取练习题
+     * @param categorys 类别ID
+     * @param questionType 试题类型
+     * @param totalScore 总分值
+     * @return
+     */
+    private StreamCollection<Question> getRandomQuestion(StreamCollection<QuestionCategory> categorys, QuestionType questionType,int totalScore){
+        StreamCollection<Question> result=new StreamCollection<>();
+        QueryExpress query=new ContainQueryExpress<QuestionCategory>("category",ContainQueryExpress.CONTAINER.IN,categorys.toList());
         query=new LinkQueryExpress(query, LinkQueryExpress.LINK.AND,new CompareQueryExpress("questionType", CompareQueryExpress.Compare.EQUAL,
                 questionType));
         StreamCollection<Question> questions=questionService.getEntitys(query);

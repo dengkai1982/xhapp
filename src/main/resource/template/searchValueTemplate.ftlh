@@ -32,8 +32,8 @@
 <#elseif searchCurrentData.type.fieldType.showName=='REFERENCE'>
     <#if searchCurrentData.type.pupupSelect>
         <div class="input-group">
-            <input type="hidden" name="query_value" data-position="${position}" class="query_value" data-ref-value="${searchCurrentData.field.name}"/>
-            <input type="text" class="form-control popupSingleChoose" data-ref-value="${searchCurrentData.field.name}" readonly placeholder="点击选择"
+            <input type="hidden" id="${searchCurrentData.field.name}" name="query_value" data-position="${position}" class="query_value" data-ref-value="${searchCurrentData.field.name}"/>
+            <input type="text" id="${searchCurrentData.field.name}Reference" name="${searchCurrentData.field.name}Reference" class="form-control popupSingleChoose" data-ref-value="${searchCurrentData.field.name}" readonly placeholder="点击选择"
             data-service-name="${searchCurrentData.type.serviceName}"
             data-search-title-name="${searchCurrentData.type.searchTitleName}"
             data-action-button-name="${searchCurrentData.type.actionButtonName}"

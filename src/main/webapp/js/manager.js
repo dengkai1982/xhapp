@@ -473,7 +473,7 @@ function openSingleChoosenTrigger(showName,showValue,serviceName,fieldName,searc
     var isCustomSelectModal=false;
     if(functionExist("interceptorSelectModal")){
         //拦截实体搜索框,采用自己的实现
-        //isCustomSelectModal=interceptorSelectModal($showName,$showValue,referenceQueryId,referenceQueryName,entityName,actionName,showFieldName,fieldName,windowTitle);
+        isCustomSelectModal=interceptorSelectModal(showName,showValue,serviceName,fieldName,searchTitleName,actionButtonName);
     }
     //如果自己拦截实现,则返回
     if(isCustomSelectModal){

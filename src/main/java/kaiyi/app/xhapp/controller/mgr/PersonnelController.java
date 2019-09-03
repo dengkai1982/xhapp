@@ -1,6 +1,8 @@
 package kaiyi.app.xhapp.controller.mgr;
 
+import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.app.xhapp.entity.jobs.*;
+import kaiyi.app.xhapp.service.access.AccountService;
 import kaiyi.app.xhapp.service.jobs.*;
 import kaiyi.puer.commons.access.AccessControl;
 import kaiyi.puer.commons.collection.StreamArray;
@@ -52,6 +54,8 @@ public class PersonnelController extends ManagerController{
     private ConcernRecruitmentService concernRecruitmentService;
     @Resource
     private ConcernResumeService concernResumeService;
+    @Resource
+    private AccountService accountService;
     @RequestMapping("/position")
     @AccessControl(name = "招聘职位", weight = 4.1f, detail = "管理招聘职位", code = rootPath+ "/position", parent = rootPath)
     public String position(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
@@ -161,7 +165,10 @@ public class PersonnelController extends ManagerController{
     @AccessControl(name = "企业详情", weight = 4.21f, detail = "企业详情",
             code = rootPath+ "/enterprise/detail", parent = rootPath+"/enterprise")
     public String enterpriseDetail(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
-        detailPage(interactive,enterpriseService,3);
+        Enterprise enterprise=detailPage(interactive,enterpriseService,3);
+        Account owner=enterprise.getOwner();
+        Account insideMember=accountService.findParentInsideMember(owner.getEntityId());
+        enterprise.setParentInsideAccount(insideMember);
         setDefaultPage(interactive,rootPath+"/enterprise");
         return rootPath+"/enterpriseDetail";
     }
@@ -196,7 +203,10 @@ public class PersonnelController extends ManagerController{
     @AccessControl(name = "招聘详情", weight = 4.31f, detail = "招聘详情",
             code = rootPath+ "/recruitment/detail", parent = rootPath+"/recruitment")
     public String recruitmentDetail(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
-        detailPage(interactive,recruitmentService,3);
+        Recruitment recruitment=detailPage(interactive,recruitmentService,3);
+        Account owner=recruitment.getEnterprise().getOwner();
+        Account insideMember=accountService.findParentInsideMember(owner.getEntityId());
+        recruitment.getEnterprise().setParentInsideAccount(insideMember);
         setDefaultPage(interactive,rootPath+"/recruitment");
         return rootPath+"/recruitmentDetail";
     }
@@ -237,6 +247,9 @@ public class PersonnelController extends ManagerController{
         QueryExpress query=new CompareQueryExpress("resume",Compare.EQUAL,resume);
         StreamCollection<WorkExperience> workExperiences=workExperienceService.getEntitys(query,new OrderBy(query.getPrefix(),"startTime", OrderBy.TYPE.ASC));
         interactive.setRequestAttribute("workExperiences",workExperiences);
+        Account owner=resume.getOwner();
+        StreamCollection<Certificate> certificates=certificateService.getEntitys(new CompareQueryExpress("owner",Compare.EQUAL,owner));
+        interactive.setRequestAttribute("certificates",certificates);
         return rootPath+"/resumeDetail";
     }
     @AccessControl(name = "发布/取消发布", weight = 4.42f, detail = "发布或取消发布企业信息",
@@ -261,7 +274,10 @@ public class PersonnelController extends ManagerController{
     @AccessControl(name = "证书详情", weight = 4.51f, detail = "招聘详情",
             code = rootPath+ "/certificate/detail", parent = rootPath+"/certificate")
     public String certificateDetail(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
-        detailPage(interactive,certificateService,3);
+        Certificate cert=detailPage(interactive,certificateService,3);
+        Account owner=cert.getOwner();
+        Account insideMember=accountService.findParentInsideMember(owner.getEntityId());
+        owner.setParentInsideAccount(insideMember);
         setDefaultPage(interactive,rootPath+"/certificate");
         return rootPath+"/certificateDetail";
     }

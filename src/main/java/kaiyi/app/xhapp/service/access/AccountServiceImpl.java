@@ -263,14 +263,25 @@ public class AccountServiceImpl extends InjectDao<Account> implements AccountSer
         }
     }
 
+    @Override
+    public void setMemberName(String entityId, String name) {
+        Account account=findForPrimary(entityId);
+        if(Objects.nonNull(account)){
+            account.setMemberName(name);
+        }
+    }
+
     private Account findParentInsideMember(Account account){
         if(Objects.nonNull(account)){
             Account recommend=account.getRecommend();
-            if(recommend.isInsideMember()){
-                return recommend;
-            }else{
-                return findParentInsideMember(account);
+            if(Objects.nonNull(recommend)){
+                if(recommend.isInsideMember()){
+                    return recommend;
+                }else{
+                    return findParentInsideMember(account);
+                }
             }
+
         }
         return null;
     }

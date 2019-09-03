@@ -47,7 +47,7 @@ public class ExaminationAction extends SuperAction {
         interactive.writeUTF8Text(mjc.build());
     }
     /**
-     * 根据类别ID来构建考试试题
+     * 根据QuestionCategory类别ID来构建考试试题
      */
     @PostMapping("/generatorExamQuestionByCategory")
     public void generatorExamQuestionByCategory(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
@@ -57,6 +57,23 @@ public class ExaminationAction extends SuperAction {
         JsonMessageCreator jmc=getSuccessMessage();
         try {
             ExamQuestion examQuestion=examQuestionService.generatorByCategory(accountId,categoryId);
+            mjc.addJsonCreator(defaultWriteObject(examQuestion));
+        } catch (ServiceException e) {
+            catchServiceException(jmc,e);
+        }
+        interactive.writeUTF8Text(mjc.build());
+    }
+    /**
+     * 根据SimulationCategory来构建考试试题
+     */
+    @PostMapping("/generatorExamQuestionBySimulationCategory")
+    public void generatorExamQuestionBySimulationCategory(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String categoryId=interactive.getStringParameter("categoryId","");
+        String accountId=interactive.getStringParameter("accountId","");
+        MutilJsonCreator mjc=new MutilJsonCreator();
+        JsonMessageCreator jmc=getSuccessMessage();
+        try {
+            ExamQuestion examQuestion=examQuestionService.generatorBySimulationCategory(accountId,categoryId);
             mjc.addJsonCreator(defaultWriteObject(examQuestion));
         } catch (ServiceException e) {
             catchServiceException(jmc,e);
@@ -78,7 +95,4 @@ public class ExaminationAction extends SuperAction {
         examQuestionService.answerQuestion(examQuestionId,resultAnswer);
         interactive.writeUTF8Text(getSuccessMessage().build());
     }
-
-
-
 }

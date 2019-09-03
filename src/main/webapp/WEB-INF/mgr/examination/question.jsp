@@ -42,15 +42,41 @@
     </div>
 </main>
 <%@include file="/WEB-INF/footerPage.jsp"%>
+<script type="text/javascript" src="${contextPath}/js/category.js"></script>
 <script type="text/javascript">
     function pageReady(doc){
         <c:if test="${requestScope.hasData}">
         ${requestScope.tableScript}
         </c:if>
+        /*$("input[data-service-name='questionCategoryService']").removeClass("popupSingleChoose").click(function(){
+            console.log("clock")
+        })*/
+    }
+    /*function filterQueryConditionValue(chosenField,valueHtml){
+        console.log(chosenField)
+        console.log(valueHtml)
+        return valueHtml;
+    }*/
+    function interceptorSelectModal(showName,showValue,serviceName,fieldName,searchTitleName,actionButtonName){
+        if(serviceName=="questionCategoryService"){
+            $("#category").attr("name","category")
+            queryQuestionCategory("选择试题所属类别","category","categoryReference",function(){
+                console.log("close");
+            })
+            return true;
+        }else if(serviceName=="simulationCategoryService"){
+            $("#simulationCategory").attr("name","simulationCategory");
+            simulationQuestionCategory("选择试题模拟考试分类","simulationCategory","simulationCategoryReference",function(){
+                console.log("close");
+            })
+            return true;
+        }
+        return false;
     }
     function customDataConvertCell(valueType,dataValue,cell, dataGrid){
-        if(cell.colIndex==1||cell.colIndex==5){
-            return HTMLDecode(dataValue);
+        if(cell.colIndex==1||cell.colIndex==6){
+            var dv=HTMLDecode(dataValue);
+            return "<a title='"+dv+"'>"+dv+"</dv>";
         }
     }
 

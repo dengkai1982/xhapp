@@ -55,7 +55,7 @@
     var questionArray;
     function pageReady(doc) {
         $("#categoryReference").removeClass("popupSingleChoose").click(function(){
-            queryCategory("选择试卷课程类别","category","categoryReference",function(){
+            queryQuestionCategory("选择试卷课程类别","category","categoryReference",function(){
                 console.log("close");
             })
         })

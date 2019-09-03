@@ -17,11 +17,19 @@ public interface ExamQuestionService extends DatabaseQuery<ExamQuestion> , Datab
     /**
      * 根据试题类别构建考试题目
      * @param accountId
-     * @param categoryId
+     * @param questionCategoryId
      * @throws ServiceException
      */
-    ExamQuestion generatorByCategory(String accountId,String categoryId)throws ServiceException;
+    ExamQuestion generatorByCategory(String accountId,String questionCategoryId)throws ServiceException;
 
+    /**
+     * 根据模拟题类别构建考试题目
+     * @param accountId
+     * @param questionCategoryId
+     * @return
+     * @throws ServiceException
+     */
+    ExamQuestion generatorBySimulationCategory(String accountId,String questionCategoryId)throws ServiceException;
     /**
      * 完成答题
      * @param examQuestionItemId

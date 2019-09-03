@@ -24,9 +24,13 @@ public class Question extends AbstractEntity {
     @PageField(label = "试题题目",type = FieldType.AREATEXT,formColumnLength = 3,tableLength = 500,showForm = false)
     private String detail;
     @NotEmpty(hint = "所属类别名称必须选择")
-    @PageField(label = "所属类别名称",type = FieldType.REFERENCE,tableLength = 140)
+    @PageField(label = "所属类别",type = FieldType.REFERENCE,tableLength = 140)
     @FieldReference(fieldName = "name")
     private QuestionCategory category;
+    @NotEmpty(hint = "模拟考试类别必须选择")
+    @PageField(label = "模拟考试类别",type = FieldType.REFERENCE,tableLength = 140)
+    @FieldReference(fieldName = "name")
+    private SimulationCategory simulationCategory;
     @NotEmpty(hint = "题目类型必须选择")
     @PageField(label = "题目类型",type = FieldType.CHOSEN)
     @FieldChosen
@@ -37,13 +41,16 @@ public class Question extends AbstractEntity {
     @PageField(label = "试题分值",type = FieldType.NUMBER)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int score;
-    @PageField(label = "问题解析",type = FieldType.AREATEXT,formColumnLength = 3,tableLength = 500,showForm = false)
+    @PageField(label = "问题解析",type = FieldType.AREATEXT,formColumnLength = 3,tableLength = 500,showForm = false,
+    showQuery = false)
     private String analysis;
     @PageField(label = "参考答案",showForm = false,showQuery = false,showSearch = false)
     private String answer;
     @PageField(label = "启用状态",type = FieldType.BOOLEAN,showForm = false,showQuery = false,showSearch = false)
     @FieldBoolean(values = {"启用","停用"})
     private boolean enable;
+
+
 
     private Set<ChoiceAnswer> choiceAnswers;
 
@@ -129,6 +136,13 @@ public class Question extends AbstractEntity {
     public void setEnable(boolean enable) {
         this.enable = enable;
     }
+    @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
+    @JoinColumn(name="simulationCategory")
+    public SimulationCategory getSimulationCategory() {
+        return simulationCategory;
+    }
 
-
+    public void setSimulationCategory(SimulationCategory simulationCategory) {
+        this.simulationCategory = simulationCategory;
+    }
 }

@@ -321,4 +321,14 @@ public class AccountController extends ManagerController {
         accountService.changeActive(entityId);
         interactive.writeUTF8Text(getSuccessMessage().build());
     }
+    @AccessControl(name = "设置员工姓名", weight = 1.46f, detail = "设置员工姓名", code = rootPath
+            + "/account/setMemberName", parent = rootPath+"/account")
+    @RequestMapping("/account/setMemberName")
+    public void accountMemberName(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String entityId=interactive.getStringParameter("entityId","");
+        String memberName=interactive.getStringParameter("memberName","");
+        accountService.setMemberName(entityId,memberName);
+        interactive.writeUTF8Text(getSuccessMessage().build());
+    }
+
 }

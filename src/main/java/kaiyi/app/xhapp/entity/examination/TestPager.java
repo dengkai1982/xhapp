@@ -26,7 +26,7 @@ public class TestPager extends AbstractEntity {
     @NotEmpty(hint = "所属课程分类必须选择")
     @PageField(label = "课程分类",type = FieldType.REFERENCE)
     @FieldReference(fieldName = "name")
-    private Category category;
+    private QuestionCategory category;
     @NotEmpty(hint = "试卷分类必须选择")
     @PageField(label = "试卷分类",type = FieldType.CHOSEN)
     @FieldChosen
@@ -122,11 +122,11 @@ public class TestPager extends AbstractEntity {
     }
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
     @JoinColumn(name="category")
-    public Category getCategory() {
+    public QuestionCategory getCategory() {
         return category;
     }
 
-    public void setCategory(Category category) {
+    public void setCategory(QuestionCategory category) {
         this.category = category;
     }
     @Enumerated(EnumType.STRING)

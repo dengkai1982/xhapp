@@ -6,14 +6,15 @@ import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.validate.NotEmpty;
 import kaiyi.puer.h5ui.annotations.*;
-
 import javax.persistence.*;
 import java.util.*;
-@Entity(name=QuestionCategory.TABLE_NAME)
-@PageEntity(showName = "习题类别",entityName = "questionCategory",serviceName = "questionCategoryService")
-public class QuestionCategory extends AbstractEntity implements Cascadeable,Comparable<QuestionCategory>  {
-    public static final String TABLE_NAME="question_category";
-    private static final long serialVersionUID = -3868636085788078314L;
+
+@Entity(name=SimulationCategory.TABLE_NAME)
+@PageEntity(showName = "模拟题类别",entityName = "simulationCategory",serviceName = "simulationCategoryService")
+public class SimulationCategory extends AbstractEntity implements Cascadeable,Comparable<SimulationCategory> {
+
+    public static final String TABLE_NAME="simulation_category";
+    private static final long serialVersionUID = -2130727931934214387L;
 
     @NotEmpty(hint = "分类名称必须填写")
     @PageField(label = "分类名称")
@@ -27,8 +28,8 @@ public class QuestionCategory extends AbstractEntity implements Cascadeable,Comp
     private Float weight;
     @PageField(label = "上级类别",type = FieldType.REFERENCE,showForm = false)
     @FieldReference(fieldName = "name")
-    private QuestionCategory parent;
-    private Set<QuestionCategory> children;
+    private SimulationCategory parent;
+    private Set<SimulationCategory> children;
     @PageField(label = "层级",type = FieldType.NUMBER,showForm = false,
             showTable = false,showQuery = false,showDetail = false,showSearch = false)
     @FieldNumber(type = FieldNumber.TYPE.INT)
@@ -68,21 +69,21 @@ public class QuestionCategory extends AbstractEntity implements Cascadeable,Comp
 
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
     @JoinColumn(name="parent")
-    public QuestionCategory getParent() {
+    public SimulationCategory getParent() {
         return parent;
     }
 
     @Override
     public <T extends Cascadeable> void addParent(T parent) {
-        if(parent instanceof QuestionCategory){
-            setParent((QuestionCategory) parent);
+        if(parent instanceof SimulationCategory){
+            setParent((SimulationCategory) parent);
         }
     }
 
     @Override
     public <T extends Cascadeable> void addChildren(T child) {
-        if(child instanceof QuestionCategory&&this.children!=null){
-            this.children.add((QuestionCategory)child);
+        if(child instanceof SimulationCategory&&this.children!=null){
+            this.children.add((SimulationCategory)child);
         }
     }
 
@@ -90,16 +91,16 @@ public class QuestionCategory extends AbstractEntity implements Cascadeable,Comp
     @Override
     public List<? extends Cascadeable> getChildrenList() {
         if(this.children!=null){
-            List<QuestionCategory> list=StreamCollection.setToList(this.children);
+            List<SimulationCategory> list=StreamCollection.setToList(this.children);
             Collections.sort(list);
             return list;
         }
-        return new ArrayList<QuestionCategory>();
+        return new ArrayList<SimulationCategory>();
     }
 
     @Override
     public <T extends Cascadeable> T mirror() {
-        QuestionCategory questionCategory=new QuestionCategory();
+        SimulationCategory questionCategory=new SimulationCategory();
         questionCategory.setName(this.name);
         questionCategory.setEntityId(this.getEntityId());
         questionCategory.setChildren(new HashSet<>());
@@ -109,16 +110,16 @@ public class QuestionCategory extends AbstractEntity implements Cascadeable,Comp
         return (T)questionCategory;
     }
 
-    public void setParent(QuestionCategory parent) {
+    public void setParent(SimulationCategory parent) {
         this.parent = parent;
     }
 
     @OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY,mappedBy="parent")
-    public Set<QuestionCategory> getChildren() {
+    public Set<SimulationCategory> getChildren() {
         return children;
     }
 
-    public void setChildren(Set<QuestionCategory> children) {
+    public void setChildren(Set<SimulationCategory> children) {
         this.children = children;
     }
 
@@ -127,7 +128,7 @@ public class QuestionCategory extends AbstractEntity implements Cascadeable,Comp
     }
 
     @Override
-    public int compareTo(QuestionCategory o) {
+    public int compareTo(SimulationCategory o) {
         return this.getName().compareTo(o.getName());
     }
 

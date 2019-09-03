@@ -24,8 +24,10 @@ public class Account extends AbstractEntity {
     @PageField(label = "会员手机号码",tableLength = 160)
     private String phone;
     @PageField(label = "内部会员",type = FieldType.BOOLEAN,tableLength = 120)
-    @FieldBoolean(values = {"内部会员","非内部会员"})
+    @FieldBoolean(values = {"公司员工","外部会员"})
     private boolean insideMember;
+    @PageField(label = "员工姓名",tableLength = 140)
+    private String memberName;
     @PageField(label = "登录密码",showSearch = false,showTable = false,showDetail = false)
     private String password;
     @IDate
@@ -53,9 +55,9 @@ public class Account extends AbstractEntity {
     @PageField(label = "行业",tableLength = 120,showSearch = false,showTable = false)
     private String industry;
     @Email(hint = "电子邮箱格式错误")
-    @PageField(label = "电子邮箱",tableLength = 200)
+    @PageField(label = "电子邮箱",tableLength = 200,showTable = false)
     private String email;
-    @PageField(label = "地址",tableLength = 400)
+    @PageField(label = "地址",tableLength = 400,showTable = false)
     private String address;
     @ICurrency
     @PageField(label = "账户余额",type = FieldType.NUMBER)
@@ -97,7 +99,9 @@ public class Account extends AbstractEntity {
     @PageField(label = "团队总消费",type = FieldType.NUMBER,tableLength = 140,showQuery = false)
     @FieldNumber(type = FieldNumber.TYPE.LONG)
     private long teamYearSale;
-
+    @PageField(label = "归属内部员工",type = FieldType.REFERENCE,showForm = false,showTable = false,
+            showQuery = false,showSearch = false,tableLength = 140)
+    @FieldReference(fieldName = "showAccountName")
     private Account parentInsideAccount;
 
 
@@ -344,5 +348,13 @@ public class Account extends AbstractEntity {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public String getMemberName() {
+        return memberName;
+    }
+
+    public void setMemberName(String memberName) {
+        this.memberName = memberName;
     }
 }

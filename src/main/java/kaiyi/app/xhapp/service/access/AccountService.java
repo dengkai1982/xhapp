@@ -128,4 +128,11 @@ public interface AccountService extends DatabaseQuery<Account>,DatabaseFastOper<
      * @param entityId
      */
     void changeActive(String entityId);
+
+    /**
+     * 设置员工姓名
+     * @param entityId
+     * @param name
+     */
+    void setMemberName(String entityId,String name);
 }

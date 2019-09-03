@@ -1,9 +1,8 @@
 package kaiyi.app.xhapp.service.examination;
 
-import kaiyi.app.xhapp.entity.curriculum.Category;
 import kaiyi.app.xhapp.entity.examination.QuestionCategory;
+import kaiyi.app.xhapp.entity.examination.SimulationCategory;
 import kaiyi.app.xhapp.service.InjectDao;
-import kaiyi.app.xhapp.service.curriculum.CategoryTreeJsonValuePolicy;
 import kaiyi.puer.commons.collection.Cascadeable;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.JavaDataTyper;
@@ -18,15 +17,16 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.*;
 
-@Service("questionCategoryService")
-public class QuestionCategoryServiceImpl extends InjectDao<QuestionCategory> implements QuestionCategoryService {
+@Service("simulationCategoryService")
+public class SimulationCategoryServiceImpl extends InjectDao<SimulationCategory> implements SimulationCategoryService {
+
     @Resource
     private H5UIService h5UIService;
     @Override
     public QueryExpress getCustomerQuery(Map<String, JavaDataTyper> params) {
         QueryExpress queryExpress = super.getCustomerQuery(params);
         if(existParameter(params,"parent")){
-            QuestionCategory parent=new QuestionCategory();
+            SimulationCategory parent=new SimulationCategory();
             parent.setEntityId(params.get("parent").stringValue());
             queryExpress=new LinkQueryExpress(queryExpress,LinkQueryExpress.LINK.AND,new CompareQueryExpress("parent",
                     CompareQueryExpress.Compare.EQUAL,parent));
@@ -40,8 +40,8 @@ public class QuestionCategoryServiceImpl extends InjectDao<QuestionCategory> imp
     }
 
     @Override
-    public StreamCollection<QuestionCategory> getChild(String districtId) {
-        QuestionCategory parent=new QuestionCategory();
+    public StreamCollection<SimulationCategory> getChild(String districtId) {
+        SimulationCategory parent=new SimulationCategory();
         parent.setEntityId(districtId);
         QueryExpress query=new CompareQueryExpress("parent",CompareQueryExpress.Compare.EQUAL,parent);
         OrderBy order=new OrderBy(query.getPrefix(),"entityId");
@@ -49,8 +49,8 @@ public class QuestionCategoryServiceImpl extends InjectDao<QuestionCategory> imp
     }
 
     @Override
-    public StreamCollection<QuestionCategory> getSameLevel(String districtId) {
-        QuestionCategory questionCategory=findForPrimary(districtId);
+    public StreamCollection<SimulationCategory> getSameLevel(String districtId) {
+        SimulationCategory questionCategory=findForPrimary(districtId);
         if(Objects.nonNull(questionCategory)){
             return getChild(questionCategory.getParent().getEntityId());
         }
@@ -58,8 +58,8 @@ public class QuestionCategoryServiceImpl extends InjectDao<QuestionCategory> imp
     }
 
     @Override
-    protected void objectBeforePersistHandler(QuestionCategory questionCategory, Map<String, JavaDataTyper> params) throws ServiceException {
-        QuestionCategory parent=questionCategory.getParent();
+    protected void objectBeforePersistHandler(SimulationCategory questionCategory, Map<String, JavaDataTyper> params) throws ServiceException {
+        SimulationCategory parent=questionCategory.getParent();
         if(Objects.nonNull(parent)){
             parent=findForPrimary(parent.getEntityId());
             questionCategory.setLevel(parent.getLevel()+1);
@@ -68,8 +68,8 @@ public class QuestionCategoryServiceImpl extends InjectDao<QuestionCategory> imp
 
     @Override
     public void newQuestionCategory(String name, String parentName) {
-        QuestionCategory parent=signleQuery("name",parentName);
-        QuestionCategory newCategory=new QuestionCategory();
+        SimulationCategory parent=signleQuery("name",parentName);
+        SimulationCategory newCategory=new SimulationCategory();
         newCategory.setName(name);
         if(Objects.nonNull(parent)){
             newCategory.setParent(parent);
@@ -88,12 +88,12 @@ public class QuestionCategoryServiceImpl extends InjectDao<QuestionCategory> imp
     }
 
     @Override
-    public StreamCollection<QuestionCategory> getEnableRootCategory() {
+    public StreamCollection<SimulationCategory> getEnableRootCategory() {
         QueryExpress query=new CompareQueryExpress("enable",CompareQueryExpress.Compare.EQUAL,Boolean.TRUE);
         OrderBy orderby=new OrderBy(query.getPrefix(),"level",OrderBy.TYPE.ASC);
         orderby.add(query.getPrefix(),"weight",OrderBy.TYPE.DESC);
-        StreamCollection<QuestionCategory> categories=getEntitys(query,orderby);
-        List<QuestionCategory> result=new ArrayList<>();
+        StreamCollection<SimulationCategory> categories=getEntitys(query,orderby);
+        List<SimulationCategory> result=new ArrayList<>();
         Cascadeable.cascade(categories.toList(),result);
         Collections.sort(result);
         return new StreamCollection<>(result);
@@ -112,19 +112,19 @@ public class QuestionCategoryServiceImpl extends InjectDao<QuestionCategory> imp
     };
 
     @Override
-    public String toJsonTree(StreamCollection<QuestionCategory> categories, String templateName) {
-        JsonValuePolicy<QuestionCategory> jsonValuePolicy=new QuestionCategoryTreeJsonValuePolicy(templateName,
+    public String toJsonTree(StreamCollection<SimulationCategory> categories, String templateName) {
+        JsonValuePolicy<SimulationCategory> jsonValuePolicy=new SimulationCategoryTreeJsonValuePolicy(templateName,
                 categoryJsonFieldReplacePolicy,h5UIService);
-        CollectionJsonCreator<QuestionCategory> json=new CollectionJsonCreator<QuestionCategory>(categories, new String[]{
+        CollectionJsonCreator<SimulationCategory> json=new CollectionJsonCreator<SimulationCategory>(categories, new String[]{
                 "entityId", "name", "childrenList","weight","enable","level"
         },categoryJsonFieldReplacePolicy,jsonValuePolicy);
         return json.build();
     }
 
     @Override
-    public StreamCollection<QuestionCategory> getCategoryAndChildren(String categoryId) {
-        QuestionCategory category=findForPrimary(categoryId);
-        StreamCollection<QuestionCategory> questionCategories=new StreamCollection<>();
+    public StreamCollection<SimulationCategory> getCategoryAndChildren(String categoryId) {
+        SimulationCategory category=findForPrimary(categoryId);
+        StreamCollection<SimulationCategory> questionCategories=new StreamCollection<>();
         if(Objects.nonNull(category)){
             questionCategories.add(category);
             findChildQuestion(category,questionCategories);
@@ -132,9 +132,9 @@ public class QuestionCategoryServiceImpl extends InjectDao<QuestionCategory> imp
         return questionCategories;
     }
 
-    private void findChildQuestion(QuestionCategory parent, StreamCollection<QuestionCategory> questionCategories) {
+    private void findChildQuestion(SimulationCategory parent, StreamCollection<SimulationCategory> questionCategories) {
         CompareQueryExpress query=new CompareQueryExpress("parent",CompareQueryExpress.Compare.EQUAL,parent);
-        StreamCollection<QuestionCategory> categories=getEntitys(query);
+        StreamCollection<SimulationCategory> categories=getEntitys(query);
         categories.forEachByOrder((i,d)->{
             questionCategories.add(d);
             findChildQuestion(d,questionCategories);

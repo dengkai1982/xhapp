@@ -52,6 +52,27 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="detail-title">个人证书<span class="icon icon-caret-down"></span></div>
+                <div class="detail-content">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>证书名称</th>
+                            <th>期望价值</th>
+                            <th>到期时间</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <c:forEach items="${requestScope.certificates}" var="cert">
+                            <tr>
+                                <td>${cert.name}</td>
+                                <td>${cert.expect}</td>
+                                <td><fmt:formatDate value="${cert.expire}" pattern="yyyy-MM-dd"/></td>
+                            </tr>
+                        </c:forEach>
+                        </tbody>
+                    </table>
+                </div>
                 <%@include file="/WEB-INF/mgr/access/detailPageButton.jsp"%>
             </div>
         </div>

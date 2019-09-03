@@ -2,16 +2,10 @@ package kaiyi.app.xhapp.controller.mgr;
 
 
 import kaiyi.app.xhapp.entity.curriculum.Category;
-import kaiyi.app.xhapp.entity.examination.Question;
-import kaiyi.app.xhapp.entity.examination.QuestionCategory;
-import kaiyi.app.xhapp.entity.examination.TestPager;
-import kaiyi.app.xhapp.entity.examination.TestPagerQuestion;
+import kaiyi.app.xhapp.entity.examination.*;
 import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
 import kaiyi.app.xhapp.service.curriculum.CategoryService;
-import kaiyi.app.xhapp.service.examination.ExamQuestionService;
-import kaiyi.app.xhapp.service.examination.QuestionCategoryService;
-import kaiyi.app.xhapp.service.examination.QuestionService;
-import kaiyi.app.xhapp.service.examination.TestPagerService;
+import kaiyi.app.xhapp.service.examination.*;
 import kaiyi.app.xhapp.service.pub.ConfigureService;
 import kaiyi.puer.commons.access.AccessControl;
 import kaiyi.puer.commons.collection.StreamArray;
@@ -60,6 +54,8 @@ public class QuestionController extends ManagerController {
     private QuestionCategoryService questionCategoryService;
     @Resource
     private ConfigureService configureService;
+    @Resource
+    private SimulationCategoryService simulationCategoryService;
     @RequestMapping("/question")
     @AccessControl(name = "试题库", weight = 5.1f, detail = "管理试题库内容", code = rootPath+ "/question", parent = rootPath)
     public String question(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
@@ -335,5 +331,93 @@ public class QuestionController extends ManagerController {
         return rootPath+"/questionCategoryQuery";
     }
 
-    //categoryEnableQuery
+    @RequestMapping("/simulationCategory")
+    @AccessControl(name = "模拟试题分类", weight = 5.4f, detail = "模拟试题分类", code = rootPath+ "/simulationCategory", parent = rootPath)
+    public String simulationCategory(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        setDefaultPage(interactive,rootPath+"/simulationCategory");
+        String parent=interactive.getStringParameter("parent","");
+        interactive.setRequestAttribute("parent",parent);
+        QueryExpress queryExpress=null;
+        FormElementHidden[] hiddens=null;
+        if(StringEditor.notEmpty(parent)){
+            SimulationCategory questionCategory=simulationCategoryService.findForPrimary(parent);
+            hiddens=new FormElementHidden[]{
+                    new FormElementHidden("parent",parent)
+            };
+            queryExpress=new CompareQueryExpress("parent",CompareQueryExpress.Compare.EQUAL,questionCategory);
+            if(Objects.nonNull(questionCategory)){
+                Map<String,Object> params=new HashMap<>();
+                StreamArray<Integer> pageNumbers=getPageNumberStack(interactive);
+                boolean isback=interactive.getBoolean("isback","true",false);
+                int previous=pageNumbers.getLast();
+                if(isback){
+                    pageNumbers.removeLast();
+                    previous=pageNumbers.getLast();
+                }else{
+                    interactive.setCurrentPage(1);
+                }
+                String pageNumber=pageNumbers.joinString(m->{
+                    return m.toString();
+                },",");
+                interactive.setRequestAttribute("pageNumber",pageNumber);
+                params.put(WebInteractive.PAGINATION_PARAMETER_CURRENT_PAGE,previous);
+                params.put("pageNumber",pageNumber);
+                params.put("isback",true);
+                if(questionCategory.getParent()!=null){
+                    params.put("parent",questionCategory.getParent().getEntityId());
+                }
+                interactive.getWebPage().setBackPage(rootPath+"/questionCategory",params);
+                interactive.setRequestAttribute("hasParent",true);
+            }
+        }else{
+            queryExpress=new NullQueryExpress("parent",NullQueryExpress.NullCondition.IS_NULL);
+            hiddens=new FormElementHidden[]{
+                    new FormElementHidden("topParent","topParent"),
+                    new FormElementHidden("deliver","true")
+            };
+        }
+        mainTablePage(interactive,simulationCategoryService,queryExpress,hiddens,new DynamicGridInfo(false,DynamicGridInfo.OperMenuType.popup));
+        return rootPath+"/simulationCategory";
+    }
+
+    @RequestMapping("/simulationCategory/new")
+    @AccessControl(name = "新增模拟试题分类", weight = 5.41f,code = rootPath+ "/simulationCategory/new", parent = rootPath+"/simulationCategory")
+    public String simulationCategoryNew(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        String parent=interactive.getStringParameter("parent","");
+        if(Objects.nonNull(parent)){
+            interactive.setRequestAttribute("parent",simulationCategoryService.findForPrimary(parent));
+        }
+        newOrEditPage(interactive,simulationCategoryService,3);
+        setDefaultPage(interactive,rootPath+"/simulationCategory");
+        return rootPath+"/simulationCategoryForm";
+    }
+    @RequestMapping("/simulationCategory/modify")
+    @AccessControl(name = "编辑模拟试题分类", weight = 5.42f,code = rootPath+ "/simulationCategory/modify", parent = rootPath+"/simulationCategory")
+    public String simulationCategoryModify(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        newOrEditPage(interactive,simulationCategoryService,3);
+        setDefaultPage(interactive,rootPath+"/simulationCategory");
+        String parent=interactive.getStringParameter("parent","");
+        if(Objects.nonNull(parent)){
+            interactive.setRequestAttribute("parent",simulationCategoryService.findForPrimary(parent));
+        }
+        return rootPath+"/simulationCategoryForm";
+    }
+    @PostMapping("/simulationCategory/commit")
+    public void simulationCategoryCommit(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        JsonMessageCreator msg=executeNewOrUpdate(interactive,simulationCategoryService);
+        interactive.writeUTF8Text(msg.build());
+    }
+
+    @RequestMapping("/simulationCategoryEnableQuery")
+    public String simulationCategoryEnableQuery(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        StreamCollection<SimulationCategory> categories=simulationCategoryService.getEnableRootCategory();
+        String treeData=simulationCategoryService.toJsonTree(categories,"categoryQueryTree.ftlh");
+        if(StringEditor.isEmpty(treeData)){
+            treeData=JsonCreator.EMPTY_JSON;
+        }
+        interactive.setRequestAttribute("referenceQueryName",interactive.getStringParameter("referenceQueryName",""));
+        interactive.setRequestAttribute("referenceQueryId",interactive.getStringParameter("referenceQueryId",""));
+        interactive.setRequestAttribute("treeData",treeData);
+        return rootPath+"/simulationCategoryQuery";
+    }
 }

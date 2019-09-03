@@ -1,5 +1,7 @@
 package kaiyi.app.xhapp.service.examination;
+
 import kaiyi.app.xhapp.entity.examination.QuestionCategory;
+import kaiyi.app.xhapp.entity.examination.SimulationCategory;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.h5ui.service.H5UIService;
 import kaiyi.puer.json.JsonCreator;
@@ -12,23 +14,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class QuestionCategoryTreeJsonValuePolicy implements JsonValuePolicy<QuestionCategory> {
+public class SimulationCategoryTreeJsonValuePolicy implements JsonValuePolicy<SimulationCategory> {
     private String templateName;
     private JsonFieldReplacePolicy categoryJsonFieldReplacePolicy;
     private H5UIService h5UIService;
 
-    public QuestionCategoryTreeJsonValuePolicy(String templateName, JsonFieldReplacePolicy categoryJsonFieldReplacePolicy,
-                                               H5UIService h5UIService) {
+    public SimulationCategoryTreeJsonValuePolicy(String templateName, JsonFieldReplacePolicy categoryJsonFieldReplacePolicy,
+                                                 H5UIService h5UIService) {
         this.templateName = templateName;
         this.categoryJsonFieldReplacePolicy = categoryJsonFieldReplacePolicy;
         this.h5UIService = h5UIService;
     }
 
     @Override
-    public JsonCreator getCreator(QuestionCategory entity, String field, Object fieldValue) {
+    public JsonCreator getCreator(SimulationCategory entity, String field, Object fieldValue) {
         if(field.equals("childrenList")){
-            List<QuestionCategory> categories= (List<QuestionCategory>) entity.getChildrenList();
-            return new CollectionJsonCreator<QuestionCategory>(new StreamCollection<>(categories),new String[]{
+            List<SimulationCategory> categories= (List<SimulationCategory>) entity.getChildrenList();
+            return new CollectionJsonCreator<SimulationCategory>(new StreamCollection<>(categories),new String[]{
                     "entityId", "name", "childrenList","weight","enable","level"
             },categoryJsonFieldReplacePolicy,this);
         }else if(field.equals("name")){
@@ -44,4 +46,5 @@ public class QuestionCategoryTreeJsonValuePolicy implements JsonValuePolicy<Ques
         }
         return null;
     }
+
 }

@@ -137,6 +137,11 @@
                 console.log("close");
             })
         })
+        $("#simulationCategoryReference").removeClass("popupSingleChoose").click(function(){
+            simulationQuestionCategory("选择试题模拟考试分类","simulationCategory","simulationCategoryReference",function(){
+                console.log("close");
+            })
+        })
         $("#answerListContainer").on("click",".singleRadio",function(){
             $("#answer").val($(this).attr("optionName"));
         });

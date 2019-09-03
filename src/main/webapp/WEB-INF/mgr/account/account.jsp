@@ -173,6 +173,33 @@
             }
         });
         items.push({
+            label:"设置员工姓名",
+            className:"privilege",
+            access:"/mgr/account/account/setMemberName",
+            onClick:function(){
+                bootbox.prompt("请输入员工姓名", function(result){
+                    if(result!=""){
+                        postJSON("${managerPath}/account/account/setMemberName${suffix}",{
+                            entityId:dataId,
+                            memberName:result
+                        },"正在执行,请稍后...",function(result){
+                            if(result.code==SUCCESS){
+                                bootbox.alert({
+                                    title:"消息",
+                                    message: "设置员工姓名成功,点击确认返回",
+                                    callback: function () {
+                                        reflashPageData();
+                                    }
+                                })
+                            }else{
+                                showMessage(result.msg,1500);
+                            }
+                        });
+                    }
+                });
+            }
+        });
+        items.push({
             label:active,
             className:"privilege",
             access:"/mgr/account/account/changeActive",

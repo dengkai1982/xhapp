@@ -40,9 +40,13 @@ public class Enterprise extends AbstractEntity {
     @PageField(label = "详细地址")
     private String address;
     @PageField(label = "所属账户",type = FieldType.REFERENCE,tableLength = 160)
-    @FieldReference(fieldName = "phone")
+    @FieldReference(fieldName = "showAccountName")
     private Account owner;
-    @PageField(label = "简介",type = FieldType.AREATEXT,tableLength = 600)
+    @PageField(label = "归属内部员工",type = FieldType.REFERENCE,showForm = false,showTable = false,
+            showQuery = false,showSearch = false,tableLength = 140)
+    @FieldReference(fieldName = "showAccountName")
+    private Account parentInsideAccount;
+    @PageField(label = "简介",type = FieldType.AREATEXT,tableLength = 600,formColumnLength = 3)
     @FieldArea(row = 4)
     private String content;
 
@@ -135,5 +139,13 @@ public class Enterprise extends AbstractEntity {
         }else{
             return "";
         }
+    }
+    @Transient
+    public Account getParentInsideAccount() {
+        return parentInsideAccount;
+    }
+
+    public void setParentInsideAccount(Account parentInsideAccount) {
+        this.parentInsideAccount = parentInsideAccount;
     }
 }

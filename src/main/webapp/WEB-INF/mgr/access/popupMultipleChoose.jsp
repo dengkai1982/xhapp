@@ -36,6 +36,7 @@
         </div>
     </div>
 </main>
+<script type="text/javascript" src="${contextPath}/js/category.js"></script>
 <script type="text/javascript">
     function pageReady(doc){
         <c:if test="${requestScope.hasData}">
@@ -54,6 +55,30 @@
                 window.parent.popupMultipleChooseTrigger.close();
             }
         })
+    }
+    function customDataConvertCell(valueType,dataValue,cell, dataGrid){
+        if(cell.colIndex==1){
+            var dv=HTMLDecode(dataValue);
+            return "<a title='"+dv+"'>"+dv+"</dv>";
+        }
+        console.log(cell.colIndex+","+dataValue);
+        return null;
+    }
+    function interceptorSelectModal(showName,showValue,serviceName,fieldName,searchTitleName,actionButtonName){
+        if(serviceName=="questionCategoryService"){
+            $("#category").attr("name","category")
+            queryQuestionCategory("选择试题所属类别","category","categoryReference",function(){
+                console.log("close");
+            })
+            return true;
+        }else if(serviceName=="simulationCategoryService"){
+            $("#simulationCategory").attr("name","simulationCategory");
+            simulationQuestionCategory("选择试题模拟考试分类","simulationCategory","simulationCategoryReference",function(){
+                console.log("close");
+            })
+            return true;
+        }
+        return false;
     }
 </script>
 </body>
