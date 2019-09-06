@@ -229,5 +229,17 @@ public enum ConfigureItem {
 		public String toString() {
 			return "内部会员提成比例";
 		}
+	},
+	CURRENT_ANDROID_VERSION{
+		@Override
+		public String toString() {
+			return "当前Android版本";
+		}
+	},
+	CURRENT_IOS_VERSION{
+		@Override
+		public String toString() {
+			return "当前IOS版本";
+		}
 	}
 }

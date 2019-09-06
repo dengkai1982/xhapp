@@ -141,6 +141,11 @@ public class CurriculumAction extends SuperAction {
                                     public JsonCreator getCreator(Chapter entity, String field, Object fieldValue) {
                                         if(field.equals("courseMovies")){
                                             StreamCollection<CourseMovie> movies=entity.getCourseMovieList();
+                                            List<CourseMovie> movieList=movies.toList();
+                                            Collections.sort(movieList,(o1,o2)->{
+                                                return Integer.valueOf(o1.getWeight()).compareTo(o2.getWeight());
+                                            });
+                                            movies=new StreamCollection<>(movieList);
                                             return new CollectionJsonCreator<CourseMovie>(movies, new String[]{
                                                     "name", "longTime", "mediaLibrary", "weight"
                                             }, new JsonValuePolicy<CourseMovie>() {

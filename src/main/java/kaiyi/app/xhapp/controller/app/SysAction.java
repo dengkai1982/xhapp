@@ -1,5 +1,7 @@
 package kaiyi.app.xhapp.controller.app;
 
+import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
+import kaiyi.app.xhapp.service.pub.ConfigureService;
 import kaiyi.app.xhapp.service.sys.ConsultationService;
 import kaiyi.app.xhapp.service.sys.QNumberManagerService;
 import kaiyi.puer.db.orm.ServiceException;
@@ -21,6 +23,8 @@ public class SysAction extends SuperAction{
     private ConsultationService consultationService;
     @Resource
     private QNumberManagerService qNumberManagerService;
+    @Resource
+    private ConfigureService configureService;
     /**
      * 系统留言
      * @param interactive
@@ -46,5 +50,21 @@ public class SysAction extends SuperAction{
         JsonMessageCreator jmc=getSuccessMessage();
         jmc.setBody(qNumberManagerService.getRandomQQNumber());
         interactive.writeUTF8Text(jmc.build());
+    }
+
+    /**
+     * 查询应用版本
+     * @param interactive
+     * @param response
+     */
+    @RequestMapping("/queryVersion")
+    public void queryVersion(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        String type=interactive.getStringParameter("ios","");
+        JsonMessageCreator jmc=getSuccessMessage();
+        if(type.equals("ios")){
+            jmc.setBody(configureService.getStringValue(ConfigureItem.CURRENT_IOS_VERSION));
+        }else{
+            jmc.setBody(configureService.getStringValue(ConfigureItem.CURRENT_ANDROID_VERSION));
+        }
     }
 }
