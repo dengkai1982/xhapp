@@ -68,10 +68,23 @@
                     </div>
                 </fieldset>
                 <fieldset>
-                    <legend>课程提现配置</legend>
+                    <legend>提现限制</legend>
                     <label for="LIMIT_WITHDRAW_AMOUNT" class="col-sm-1">提成金额上限</label>
                     <div class="col-sm-2">
                         <input type="number" class="form-control" id="LIMIT_WITHDRAW_AMOUNT" value="${configure['LIMIT_WITHDRAW_AMOUNT']}" name="LIMIT_WITHDRAW_AMOUNT" placeholder="请填写提成金额上限">
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend>应用版本</legend>
+                    <div class="form-group">
+                        <label for="CURRENT_ANDROID_VERSION" class="col-sm-1">android</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control" id="CURRENT_ANDROID_VERSION" value="${configure['CURRENT_ANDROID_VERSION']}" name="CURRENT_ANDROID_VERSION" placeholder="">
+                        </div>
+                        <label for="CURRENT_IOS_VERSION" class="col-sm-1">IOS</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control" id="CURRENT_IOS_VERSION" value="${configure['CURRENT_IOS_VERSION']}" name="CURRENT_IOS_VERSION" placeholder="">
+                        </div>
                     </div>
                 </fieldset>
                 <div style="text-align: center;">

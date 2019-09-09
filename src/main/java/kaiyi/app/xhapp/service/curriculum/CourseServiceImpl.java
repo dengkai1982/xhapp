@@ -10,18 +10,16 @@ import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.JavaDataTyper;
 import kaiyi.puer.commons.utils.EnumUtils;
 import kaiyi.puer.db.orm.ServiceException;
-import kaiyi.puer.db.query.CompareQueryExpress;
+import kaiyi.puer.db.query.*;
 import kaiyi.puer.db.query.CompareQueryExpress.*;
-import kaiyi.puer.db.query.LinkQueryExpress;
 import kaiyi.puer.db.query.LinkQueryExpress.*;
-import kaiyi.puer.db.query.NullQueryExpress;
-import kaiyi.puer.db.query.QueryExpress;
 import kaiyi.puer.json.JsonParserException;
 import kaiyi.puer.json.JsonUtils;
 import kaiyi.puer.json.parse.ArrayJsonParser;
 import kaiyi.puer.web.html.HtmlConvertUtils;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -29,6 +27,9 @@ import java.util.Set;
 @Service("courseService")
 public class CourseServiceImpl extends InjectDao<Course> implements CourseService {
     private static final long serialVersionUID = 6202595141917981754L;
+
+    @Resource
+    private CategoryService categoryService;
 
     /*
     buyerPrivileges: [{"memberShip":"0","free":"false","amount":"100"},
@@ -105,7 +106,11 @@ public class CourseServiceImpl extends InjectDao<Course> implements CourseServic
             }else{
                 query=new LinkQueryExpress(query,LINK.AND,new NullQueryExpress("category",NullQueryExpress.NullCondition.IS_NULL));
             }
-
+        }else if(Objects.nonNull("category")){
+            String categoryId=params.get("category").stringValue();
+            StreamCollection<Category> categories=categoryService.getCategoryAndChildren(categoryId);
+            query=new LinkQueryExpress(query,LINK.AND,new ContainQueryExpress("category",ContainQueryExpress.CONTAINER.IN,
+                    categories.toList()));
         }
         return query;
     }

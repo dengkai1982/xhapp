@@ -29,4 +29,11 @@ public interface CategoryService extends DatabaseQuery<Category>,DatabaseFastOpe
      * @param entityId
      */
     void enableOrDisable(String entityId);
+
+    /**
+     * 获取所有子类别的类别集
+     * @param categoryId
+     * @return
+     */
+    StreamCollection<Category> getCategoryAndChildren(String categoryId);
 }

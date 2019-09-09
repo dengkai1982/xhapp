@@ -33,6 +33,11 @@ public class RoyaltyType  extends AbstractEntity implements ChosenInterface {
     @PageField(label = "上上级提成比例",type = FieldType.NUMBER)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int secondRate;
+    @Min(hint = "计算比例不能小于1",val = 1)
+    @Max(hint = "计算比例不能大于99",val = 99)
+    @PageField(label = "内部员工提成比例",type = FieldType.NUMBER)
+    @FieldNumber(type = FieldNumber.TYPE.INT)
+    private int insideMemberRate;
 
     public String getName() {
         return name;
@@ -84,6 +89,14 @@ public class RoyaltyType  extends AbstractEntity implements ChosenInterface {
     @Override
     public String getShowName() {
         return getName();
+    }
+
+    public int getInsideMemberRate() {
+        return insideMemberRate;
+    }
+
+    public void setInsideMemberRate(int insideMemberRate) {
+        this.insideMemberRate = insideMemberRate;
     }
 }
 

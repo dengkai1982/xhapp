@@ -27,7 +27,7 @@ public class Course extends AbstractEntity {
     @PageField(label = "课程讲师",type = FieldType.REFERENCE,tableLength =150)
     @FieldReference(fieldName = "name")
     private Teacher teacher;
-    @PageField(label = "课程类别",type = FieldType.REFERENCE,showSearch = false,showForm = false,tableLength =120)
+    @PageField(label = "课程类别",type = FieldType.REFERENCE,showSearch = false,showForm = false,tableLength =120,showQuery = false)
     @FieldReference(fieldName = "name")
     private Category category;
     @NotEmpty(hint = "课程难度必须选择")

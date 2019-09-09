@@ -60,33 +60,40 @@ public class RoyaltySettlementServiceImpl extends InjectDao<RoyaltySettlement> i
             accountService.updateObject(account);
             Account recommend=royaltySettlement.getRecommend1();
             String orderId=royaltySettlement.getOrderId();
-            if(Objects.nonNull(recommend)){
+            if(Objects.nonNull(recommend)&&!recommend.isInsideMember()){
                 accountService.grantRoyalty(recommend.getEntityId(),orderId,TradeCourse.MANUAL_CACULATION,royaltySettlement.getLevel1Amount());
                 recommend.addingTeamSaleAmount(price);
                 accountService.updateObject(recommend);
             }
             recommend=royaltySettlement.getRecommend2();
-            if(Objects.nonNull(recommend)){
+            if(Objects.nonNull(recommend)&&!recommend.isInsideMember()){
                 accountService.grantRoyalty(recommend.getEntityId(),orderId,TradeCourse.MANUAL_CACULATION,royaltySettlement.getLevel2Amount());
                 recommend.addingTeamSaleAmount(price);
                 accountService.updateObject(recommend);
             }
             updateObject(royaltySettlement);
+            recommend=royaltySettlement.getInsideMember();
+            if(Objects.nonNull(recommend)){
+                accountService.grantRoyalty(recommend.getEntityId(),orderId,
+                        TradeCourse.INSIDE_MANUAL_CACULATION,royaltySettlement.getInsideAmount());
+                accountService.updateObject(recommend);
+            }
             //内部员工结算
-            Account insideMember=accountService.findParentInsideMember(account.getEntityId());
+            /*Account insideMember=accountService.findParentInsideMember(account.getEntityId());
             if(Objects.nonNull(insideMember)){
                 int insideRate=configureService.getIntegerValue(ConfigureItem.INSIDE_MEMBER_COMMISSION);
                 int royalty=Currency.computerPercentage(insideRate,price).getNoDecimalPointToInteger();
                 accountService.grantRoyalty(insideMember.getEntityId(),orderId,
                         TradeCourse.INSIDE_MANUAL_CACULATION,royalty);
                 accountService.updateObject(insideMember);
-            }
+            }*/
         }
     }
 
     @Override
     public RoyaltySettlement generatorRoyaltySettlement(String accountId, String royaltyTypeId) {
         Account account=accountService.findForPrimary(accountId);
+        Account insideMember=accountService.findParentInsideMember(accountId);
         RoyaltyType royaltyType=royaltyTypeService.findForPrimary(royaltyTypeId);
         RoyaltySettlement rs=new RoyaltySettlement();
         Currency price=Currency.noDecimalBuild(royaltyType.getPrice(),2);
@@ -95,15 +102,24 @@ public class RoyaltySettlementServiceImpl extends InjectDao<RoyaltySettlement> i
             Account recommend=account.getRecommend();
             if(Objects.nonNull(recommend)){
                 rs.setRecommend1(recommend);
-                royalty=Currency.computerPercentage(royaltyType.getFirstRate(),price.doubleValue());
-                rs.setLevel1Amount(royalty.getNoDecimalPointToInteger());
+                if(!recommend.isInsideMember()){
+                    royalty=Currency.computerPercentage(royaltyType.getFirstRate(),price.doubleValue());
+                    rs.setLevel1Amount(royalty.getNoDecimalPointToInteger());
+                }
                 recommend=recommend.getRecommend();
                 if(Objects.nonNull(recommend)){
-                    royalty=Currency.computerPercentage(royaltyType.getSecondRate(),price.doubleValue());
-                    rs.setLevel2Amount(royalty.getNoDecimalPointToInteger());
                     rs.setRecommend2(recommend);
+                    if(!recommend.isInsideMember()){
+                        royalty=Currency.computerPercentage(royaltyType.getSecondRate(),price.doubleValue());
+                        rs.setLevel2Amount(royalty.getNoDecimalPointToInteger());
+                    }
                 }
             }
+        }
+        if(Objects.nonNull(insideMember)){
+            rs.setInsideMember(insideMember);
+            rs.setInsideAmount(Currency.computerPercentage(royaltyType.getInsideMemberRate(),price.doubleValue())
+            .getNoDecimalPointToInteger());
         }
         return rs;
     }

@@ -1,6 +1,7 @@
 package kaiyi.app.xhapp.service.curriculum;
 
 import kaiyi.app.xhapp.entity.curriculum.Category;
+import kaiyi.app.xhapp.entity.examination.QuestionCategory;
 import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.puer.commons.collection.Cascadeable;
 import kaiyi.puer.commons.collection.StreamCollection;
@@ -94,5 +95,25 @@ public class CategoryServiceImpl extends InjectDao<Category> implements Category
             category.setLevel(parent.getLevel()+1);
         }
         category.setEnable(true);
+    }
+
+    @Override
+    public StreamCollection<Category> getCategoryAndChildren(String categoryId) {
+        Category category=findForPrimary(categoryId);
+        StreamCollection<Category> questionCategories=new StreamCollection<>();
+        if(Objects.nonNull(category)){
+            questionCategories.add(category);
+            findChildQuestion(category,questionCategories);
+        }
+        return questionCategories;
+    }
+
+    private void findChildQuestion(Category parent, StreamCollection<Category> questionCategories) {
+        CompareQueryExpress query=new CompareQueryExpress("parent",CompareQueryExpress.Compare.EQUAL,parent);
+        StreamCollection<Category> categories=getEntitys(query);
+        categories.forEachByOrder((i,d)->{
+            questionCategories.add(d);
+            findChildQuestion(d,questionCategories);
+        });
     }
 }

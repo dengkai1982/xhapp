@@ -58,13 +58,14 @@ public class SysAction extends SuperAction{
      * @param response
      */
     @RequestMapping("/queryVersion")
-    public void queryVersion(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
-        String type=interactive.getStringParameter("ios","");
+    public void queryVersion(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String type=interactive.getStringParameter("type","");
         JsonMessageCreator jmc=getSuccessMessage();
         if(type.equals("ios")){
             jmc.setBody(configureService.getStringValue(ConfigureItem.CURRENT_IOS_VERSION));
         }else{
             jmc.setBody(configureService.getStringValue(ConfigureItem.CURRENT_ANDROID_VERSION));
         }
+        interactive.writeUTF8Text(jmc.build());
     }
 }

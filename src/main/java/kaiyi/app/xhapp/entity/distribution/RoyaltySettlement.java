@@ -49,6 +49,12 @@ public class RoyaltySettlement extends AbstractEntity {
     @ICurrency
     @PageField(label = "上上级提成金额",type = FieldType.NUMBER,tableLength = 140)
     private int level2Amount;
+    @PageField(label = "内部员工",type = FieldType.REFERENCE,tableLength = 140)
+    @FieldReference(fieldName = "insideMember")
+    private Account insideMember;
+    @ICurrency
+    @PageField(label = "内部员工提成比例",type = FieldType.NUMBER,tableLength = 140)
+    private int insideAmount;
     @PageField(label = "发放人",type = FieldType.REFERENCE,showForm = false,tableLength = 120)
     @FieldReference(fieldName = "showVisitorUserName")
     private VisitorUser granter;
@@ -165,5 +171,22 @@ public class RoyaltySettlement extends AbstractEntity {
 
     public void setGrantTime(Date grantTime) {
         this.grantTime = grantTime;
+    }
+    @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
+    @JoinColumn(name="insideMember")
+    public Account getInsideMember() {
+        return insideMember;
+    }
+
+    public void setInsideMember(Account insideMember) {
+        this.insideMember = insideMember;
+    }
+
+    public int getInsideAmount() {
+        return insideAmount;
+    }
+
+    public void setInsideAmount(int insideAmount) {
+        this.insideAmount = insideAmount;
     }
 }

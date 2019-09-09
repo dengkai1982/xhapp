@@ -113,6 +113,8 @@ public class CurriculumAction extends SuperAction {
         interactive.writeUTF8Text(getSuccessMessage().build());
     }
 
+
+
     /**
      * 根据ID获取课程信息
      * @param interactive

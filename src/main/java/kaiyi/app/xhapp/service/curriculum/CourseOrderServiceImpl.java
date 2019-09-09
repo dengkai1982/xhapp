@@ -129,21 +129,26 @@ public class CourseOrderServiceImpl extends InjectDao<CourseOrder> implements Co
             account.addingPersonSaleAmount(saleAmount);
             accountService.updateObject(account);
             Currency amount=Currency.noDecimalBuild(courseOrder.getAmount(),2);
+            int royalty=0;
             if(Objects.nonNull(recommend1)){
-                int commissionRate1=configureService.getIntegerValue(ConfigureItem.SALE_LEVEL_COMMISSION_1);
-                int royalty=Currency.computerPercentage(commissionRate1,amount.doubleValue()).getNoDecimalPointToInteger();
-                accountService.grantRoyalty(recommend1.getEntityId(),courseOrder.getOrderId(),
-                        TradeCourse.SETTLEMENT_ROYALTY,royalty);
-                recommend1.addingTeamSaleAmount(saleAmount);
-                accountService.updateObject(recommend1);
+                if(!recommend1.isInsideMember()){
+                    int commissionRate1=configureService.getIntegerValue(ConfigureItem.SALE_LEVEL_COMMISSION_1);
+                    royalty=Currency.computerPercentage(commissionRate1,amount.doubleValue()).getNoDecimalPointToInteger();
+                    accountService.grantRoyalty(recommend1.getEntityId(),courseOrder.getOrderId(),
+                            TradeCourse.SETTLEMENT_ROYALTY,royalty);
+                    recommend1.addingTeamSaleAmount(saleAmount);
+                    accountService.updateObject(recommend1);
+                }
                 Account recommend2=recommend1.getRecommend();
                 if(Objects.nonNull(recommend2)){
-                    int commissionRate2=configureService.getIntegerValue(ConfigureItem.SALE_LEVEL_COMMISSION_2);
-                    royalty=Currency.computerPercentage(commissionRate2,amount.doubleValue()).getNoDecimalPointToInteger();
-                    accountService.grantRoyalty(recommend2.getEntityId(),courseOrder.getOrderId(),
-                            TradeCourse.SETTLEMENT_ROYALTY,royalty);
-                    recommend2.addingTeamSaleAmount(saleAmount);
-                    accountService.updateObject(recommend2);
+                    if(!recommend2.isInsideMember()){
+                        int commissionRate2=configureService.getIntegerValue(ConfigureItem.SALE_LEVEL_COMMISSION_2);
+                        royalty=Currency.computerPercentage(commissionRate2,amount.doubleValue()).getNoDecimalPointToInteger();
+                        accountService.grantRoyalty(recommend2.getEntityId(),courseOrder.getOrderId(),
+                                TradeCourse.SETTLEMENT_ROYALTY,royalty);
+                        recommend2.addingTeamSaleAmount(saleAmount);
+                        accountService.updateObject(recommend2);
+                    }
                 }
 
             }
@@ -151,7 +156,7 @@ public class CourseOrderServiceImpl extends InjectDao<CourseOrder> implements Co
             Account insideMember=accountService.findParentInsideMember(account.getEntityId());
             if(Objects.nonNull(insideMember)){
                 int insideRate=configureService.getIntegerValue(ConfigureItem.INSIDE_MEMBER_COMMISSION);
-                int royalty=Currency.computerPercentage(insideRate,amount.doubleValue()).getNoDecimalPointToInteger();
+                royalty=Currency.computerPercentage(insideRate,amount.doubleValue()).getNoDecimalPointToInteger();
                 accountService.grantRoyalty(insideMember.getEntityId(),courseOrder.getOrderId(),
                         TradeCourse.INSIDE_SETTLEMENT_ROYALTY,royalty);
                 accountService.updateObject(insideMember);
