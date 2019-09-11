@@ -16,9 +16,9 @@
     &nbsp;课：<input type="submit" name="subimt"><br>
 </form>
 --%>
-<form action="${contextPath}/app/job/concernResume${suffix}" method="post">
-    &nbsp;enterprise：<input type="text" name="enterprise"/><br>
-    &nbsp;resume：<input type="text" name="resume"/><br>
+<form action="${contextPath}/app/examination/generatorExamQuestionBySimulationCategory${suffix}" method="post">
+    &nbsp;categoryId：<input type="text" name="categoryId"/><br>
+    &nbsp;accountId：<input type="text" name="accountId"/><br>
     &nbsp;课：<input type="submit" name="subimt"><br>
 </form>
 </body>

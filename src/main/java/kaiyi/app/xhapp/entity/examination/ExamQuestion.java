@@ -2,6 +2,7 @@ package kaiyi.app.xhapp.entity.examination;
 
 import kaiyi.app.xhapp.entity.AbstractEntity;
 import kaiyi.app.xhapp.entity.access.Account;
+import kaiyi.app.xhapp.entity.examination.enums.ResourceType;
 import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.data.IDate;
 import kaiyi.puer.h5ui.annotations.*;
@@ -42,6 +43,11 @@ public class ExamQuestion extends AbstractEntity {
     @PageField(label = "全部完成",type = FieldType.BOOLEAN)
     @FieldBoolean(values = {"已完成","未完成"})
     private boolean finished;
+    @PageField(label = "考试类别",type = FieldType.CHOSEN)
+    @FieldChosen
+    private ResourceType resourceType;
+    @PageField(label = "参考ID")
+    private String referenceId;
 
     private Set<ExamQuestionItem> questionItems;
 
@@ -144,5 +150,22 @@ public class ExamQuestion extends AbstractEntity {
 
     public void setFinished(boolean finished) {
         this.finished = finished;
+    }
+
+
+    public String getReferenceId() {
+        return referenceId;
+    }
+
+    public void setReferenceId(String referenceId) {
+        this.referenceId = referenceId;
+    }
+    @Enumerated(EnumType.STRING)
+    public ResourceType getResourceType() {
+        return resourceType;
+    }
+
+    public void setResourceType(ResourceType resourceType) {
+        this.resourceType = resourceType;
     }
 }

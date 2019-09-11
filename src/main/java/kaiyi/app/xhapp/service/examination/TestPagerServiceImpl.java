@@ -1,15 +1,14 @@
 package kaiyi.app.xhapp.service.examination;
 
-import kaiyi.app.xhapp.entity.examination.ChoiceAnswer;
-import kaiyi.app.xhapp.entity.examination.Question;
-import kaiyi.app.xhapp.entity.examination.TestPager;
-import kaiyi.app.xhapp.entity.examination.TestPagerQuestion;
+import kaiyi.app.xhapp.entity.curriculum.Category;
+import kaiyi.app.xhapp.entity.examination.*;
 import kaiyi.app.xhapp.entity.examination.enums.QuestionType;
 import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.JavaDataTyper;
 import kaiyi.puer.db.orm.ServiceException;
 import kaiyi.puer.db.query.ContainQueryExpress;
+import kaiyi.puer.db.query.LinkQueryExpress;
 import kaiyi.puer.db.query.QueryExpress;
 import kaiyi.puer.json.JsonParserException;
 import kaiyi.puer.json.JsonUtils;
@@ -24,6 +23,8 @@ import java.util.*;
 @Service("testPagerService")
 public class TestPagerServiceImpl extends InjectDao<TestPager> implements TestPagerService {
     private static final long serialVersionUID = 1768606717840651039L;
+    @Resource
+    private QuestionCategoryService questionCategoryService;
     @Resource
     private QuestionService questionService;
     @Override
@@ -124,5 +125,16 @@ public class TestPagerServiceImpl extends InjectDao<TestPager> implements TestPa
             testPager.setEnable(!testPager.isEnable());
             updateObject(testPager);
         }
+    }
+    @Override
+    public QueryExpress getCustomerQuery(Map<String, JavaDataTyper> params) {
+        QueryExpress query = super.getCustomerQuery(params);
+        if(Objects.nonNull(params.get("category"))){
+            String categoryId=params.get("category").stringValue();
+            StreamCollection<QuestionCategory> categories=questionCategoryService.getCategoryAndChildren(categoryId);
+            query=new LinkQueryExpress(query,LinkQueryExpress.LINK.AND,new ContainQueryExpress("category",ContainQueryExpress.CONTAINER.IN,
+                    categories.toList()));
+        }
+        return query;
     }
 }

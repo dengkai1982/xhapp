@@ -55,6 +55,7 @@ public class ExaminationAction extends SuperAction {
         String accountId=interactive.getStringParameter("accountId","");
         MutilJsonCreator mjc=new MutilJsonCreator();
         JsonMessageCreator jmc=getSuccessMessage();
+        mjc.addJsonCreator(jmc);
         try {
             ExamQuestion examQuestion=examQuestionService.generatorByCategory(accountId,categoryId);
             mjc.addJsonCreator(defaultWriteObject(examQuestion));
@@ -72,6 +73,7 @@ public class ExaminationAction extends SuperAction {
         String accountId=interactive.getStringParameter("accountId","");
         MutilJsonCreator mjc=new MutilJsonCreator();
         JsonMessageCreator jmc=getSuccessMessage();
+        mjc.addJsonCreator(jmc);
         try {
             ExamQuestion examQuestion=examQuestionService.generatorBySimulationCategory(accountId,categoryId);
             mjc.addJsonCreator(defaultWriteObject(examQuestion));

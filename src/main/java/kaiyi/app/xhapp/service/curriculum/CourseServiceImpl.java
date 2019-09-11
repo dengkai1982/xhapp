@@ -106,7 +106,7 @@ public class CourseServiceImpl extends InjectDao<Course> implements CourseServic
             }else{
                 query=new LinkQueryExpress(query,LINK.AND,new NullQueryExpress("category",NullQueryExpress.NullCondition.IS_NULL));
             }
-        }else if(Objects.nonNull("category")){
+        }else if(Objects.nonNull(params.get("category"))){
             String categoryId=params.get("category").stringValue();
             StreamCollection<Category> categories=categoryService.getCategoryAndChildren(categoryId);
             query=new LinkQueryExpress(query,LINK.AND,new ContainQueryExpress("category",ContainQueryExpress.CONTAINER.IN,

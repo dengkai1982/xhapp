@@ -60,7 +60,7 @@ public class ConfigureServiceImpl extends InjectDao<Configure> implements Config
         em.createQuery("update "+getEntityName(entityClass)+" o set o.value=:value" +
                 " where o.item=:item").setParameter("value",value).setParameter("item",item)
                 .executeUpdate();
-
+        changeValue(item,value);
     }
 
     private void changeValue(ConfigureItem item, String value){

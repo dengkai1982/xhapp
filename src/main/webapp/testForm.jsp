@@ -9,19 +9,30 @@
     <h1>测试</h1>
     <script src="${contextPath}/js/app.js" type="text/javascript"></script>
     <script type="text/javascript">
-        queryDataOfOrderBySetUrl("${contextPath}/app/query/pagination${suffix}","orderItemService",
+        queryDataOfOrderBySetUrl("${contextPath}/app/query/pagination${suffix}?category=15656874680660119","testPagerService",
             [{
-                field:"course",
+                field:"enable",
                 condition:"0",
-                value:"15640260548320091"
-            },{
-                field:"account",
-                condition:"0",
-                value:"15577347786510046",
-                link:"0"
-            }],0,100,"orderTime","ase",function(d){
+                value:"true"
+            }],0,100,"name","ase",function(d){
                 console.log(d);
             })
     </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

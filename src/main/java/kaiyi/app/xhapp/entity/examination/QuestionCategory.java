@@ -113,7 +113,7 @@ public class QuestionCategory extends AbstractEntity implements Cascadeable,Comp
         this.parent = parent;
     }
 
-    @OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY,mappedBy="parent")
+    @OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER,mappedBy="parent")
     public Set<QuestionCategory> getChildren() {
         return children;
     }

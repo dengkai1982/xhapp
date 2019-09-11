@@ -366,7 +366,7 @@ public class QuestionController extends ManagerController {
                 if(questionCategory.getParent()!=null){
                     params.put("parent",questionCategory.getParent().getEntityId());
                 }
-                interactive.getWebPage().setBackPage(rootPath+"/questionCategory",params);
+                interactive.getWebPage().setBackPage(rootPath+"/simulationCategory",params);
                 interactive.setRequestAttribute("hasParent",true);
             }
         }else{

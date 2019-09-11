@@ -74,7 +74,7 @@ public class ImportData {
     public void excelImport() throws IOException {
         QuestionCategoryService categoryService=sel.getBean(QuestionCategoryService.class);
         QuestionService questionService=sel.getBean(QuestionService.class);
-        File file=new File("/Users/dengkai/金红/证书/试题导入/市政工程管理与实务.xlsx");
+        File file=new File("/Users/dengkai/金红/证书/试题导入/工作簿1.xlsx");
         AtomicReference<Question> questionReference=new AtomicReference<>();
         StreamCollection<QuestionCategory> categories=categoryService.getEntitys();
         if(Objects.nonNull(file)&&file.exists()){

@@ -4,6 +4,7 @@ import kaiyi.app.xhapp.ServiceExceptionDefine;
 import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.app.xhapp.entity.examination.*;
 import kaiyi.app.xhapp.entity.examination.enums.QuestionType;
+import kaiyi.app.xhapp.entity.examination.enums.ResourceType;
 import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
 import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.app.xhapp.service.access.AccountService;
@@ -55,6 +56,8 @@ public class ExamQuestionServiceImpl extends InjectDao<ExamQuestion> implements 
             items.add(item);
         }
         exam.setQuestionItems(items);
+        exam.setResourceType(ResourceType.TEST_PAGER);
+        exam.setReferenceId(testPagerId);
         saveObject(exam);
         return exam;
     }
@@ -119,6 +122,8 @@ public class ExamQuestionServiceImpl extends InjectDao<ExamQuestion> implements 
             items.add(item);
         }
         exam.setQuestionItems(items);
+        exam.setResourceType(ResourceType.SIMULATION);
+        exam.setReferenceId(questionCategoryId);
         saveObject(exam);
         return exam;
     }
@@ -158,6 +163,8 @@ public class ExamQuestionServiceImpl extends InjectDao<ExamQuestion> implements 
             items.add(item);
         }
         exam.setQuestionItems(items);
+        exam.setResourceType(ResourceType.QUESTION);
+        exam.setReferenceId(categoryId);
         saveObject(exam);
         return exam;
     }
@@ -203,6 +210,7 @@ public class ExamQuestionServiceImpl extends InjectDao<ExamQuestion> implements 
         QueryExpress query=new ContainQueryExpress("simulationCategory",ContainQueryExpress.CONTAINER.IN,categorys.toList());
         query=new LinkQueryExpress(query, LinkQueryExpress.LINK.AND,new CompareQueryExpress("questionType", CompareQueryExpress.Compare.EQUAL,
                 questionType));
+        query=new LinkQueryExpress(query,LinkQueryExpress.LINK.AND,new CompareQueryExpress("enable",CompareQueryExpress.Compare.EQUAL,Boolean.TRUE));
         StreamCollection<Question> questions=questionService.getEntitys(query);
         Random random=new Random();
         getQuestionByRandom(result,questions,random,totalScore);
@@ -220,6 +228,7 @@ public class ExamQuestionServiceImpl extends InjectDao<ExamQuestion> implements 
         QueryExpress query=new ContainQueryExpress<QuestionCategory>("category",ContainQueryExpress.CONTAINER.IN,categorys.toList());
         query=new LinkQueryExpress(query, LinkQueryExpress.LINK.AND,new CompareQueryExpress("questionType", CompareQueryExpress.Compare.EQUAL,
                 questionType));
+        query=new LinkQueryExpress(query,LinkQueryExpress.LINK.AND,new CompareQueryExpress("enable",CompareQueryExpress.Compare.EQUAL,Boolean.TRUE));
         StreamCollection<Question> questions=questionService.getEntitys(query);
         Random random=new Random();
         getQuestionByRandom(result,questions,random,totalScore);
