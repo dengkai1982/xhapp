@@ -1,4 +1,5 @@
 package kaiyi.app.xhapp.service.examination;
+
 import kaiyi.app.xhapp.entity.examination.ExamChoiceAnswer;
 import kaiyi.app.xhapp.entity.examination.ExamQuestion;
 import kaiyi.app.xhapp.entity.examination.ExamQuestionItem;
@@ -16,7 +17,6 @@ import kaiyi.puer.json.creator.JsonBuilder;
 import kaiyi.puer.json.creator.ObjectJsonCreator;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
 import java.util.Objects;
 
 @Service("examQuestionItemService")

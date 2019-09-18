@@ -1,10 +1,7 @@
 package kaiyi.app.xhapp.entity.examination;
 
 import kaiyi.app.xhapp.entity.AbstractEntity;
-import kaiyi.puer.h5ui.annotations.FieldReference;
-import kaiyi.puer.h5ui.annotations.FieldType;
-import kaiyi.puer.h5ui.annotations.PageEntity;
-import kaiyi.puer.h5ui.annotations.PageField;
+import kaiyi.puer.h5ui.annotations.*;
 
 import javax.persistence.*;
 
@@ -15,6 +12,9 @@ public class ExamChoiceAnswer extends AbstractEntity {
     public static final String TABLE_NAME="exam_choice_answer";
     @PageField(label = "选项名称")
     private String optionName;
+    @PageField(label = "答案类型",type = FieldType.BOOLEAN)
+    @FieldBoolean(values = {"图片","文字"})
+    private boolean imageType;
     @PageField(label = "选择值")
     private String detailValue;
     @PageField(label = "所属问题",type = FieldType.REFERENCE)
@@ -44,5 +44,13 @@ public class ExamChoiceAnswer extends AbstractEntity {
 
     public void setExamQuestionItem(ExamQuestionItem examQuestionItem) {
         this.examQuestionItem = examQuestionItem;
+    }
+
+    public boolean isImageType() {
+        return imageType;
+    }
+
+    public void setImageType(boolean imageType) {
+        this.imageType = imageType;
     }
 }

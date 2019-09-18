@@ -1,9 +1,7 @@
 package kaiyi.app.xhapp.service.examination;
 
-import kaiyi.app.xhapp.entity.curriculum.Category;
 import kaiyi.app.xhapp.entity.examination.QuestionCategory;
 import kaiyi.app.xhapp.service.InjectDao;
-import kaiyi.app.xhapp.service.curriculum.CategoryTreeJsonValuePolicy;
 import kaiyi.puer.commons.collection.Cascadeable;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.JavaDataTyper;

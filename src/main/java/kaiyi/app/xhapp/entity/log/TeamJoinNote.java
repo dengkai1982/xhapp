@@ -12,6 +12,11 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity(name=TeamJoinNote.TABLE_NAME)
+@Table(indexes = {
+        @Index(name="team_join_index_parent_account",columnList = "parentAccount",unique = false),
+        @Index(name="team_join_index_join_account",columnList = "joinAccount",unique = false),
+        @Index(name="team_join_index_join_time",columnList = "joinTime",unique = false)
+})
 @PageEntity(showName = "团队人员加入记录",entityName = "teamJoinNote",serviceName = "teamJoinNoteService")
 public class TeamJoinNote extends AbstractEntity {
     public static final String TABLE_NAME="team_join_note";

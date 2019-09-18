@@ -8,7 +8,6 @@ import kaiyi.puer.http.HttpResponse;
 import kaiyi.puer.http.connect.HttpConnector;
 import kaiyi.puer.http.connect.OKHttpConnection;
 import kaiyi.puer.http.parse.JsonParser;
-import kaiyi.puer.http.parse.TextParser;
 import kaiyi.puer.http.request.HttpPostRequest;
 
 import java.util.Map;

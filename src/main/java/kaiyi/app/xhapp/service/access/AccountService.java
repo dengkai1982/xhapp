@@ -11,8 +11,6 @@ import kaiyi.puer.db.orm.DatabaseOperator;
 import kaiyi.puer.db.orm.DatabaseQuery;
 import kaiyi.puer.db.orm.ServiceException;
 
-import java.util.stream.Stream;
-
 public interface AccountService extends DatabaseQuery<Account>,DatabaseFastOper<Account>,DatabaseOperator<Account> {
     /**
      * 账户注册

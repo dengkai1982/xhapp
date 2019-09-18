@@ -1,7 +1,9 @@
 package kaiyi.app.xhapp.service.examination;
 
-import kaiyi.app.xhapp.entity.curriculum.Category;
-import kaiyi.app.xhapp.entity.examination.*;
+import kaiyi.app.xhapp.entity.examination.Question;
+import kaiyi.app.xhapp.entity.examination.QuestionCategory;
+import kaiyi.app.xhapp.entity.examination.TestPager;
+import kaiyi.app.xhapp.entity.examination.TestPagerQuestion;
 import kaiyi.app.xhapp.entity.examination.enums.QuestionType;
 import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.puer.commons.collection.StreamCollection;
@@ -13,9 +15,7 @@ import kaiyi.puer.db.query.QueryExpress;
 import kaiyi.puer.json.JsonParserException;
 import kaiyi.puer.json.JsonUtils;
 import kaiyi.puer.json.parse.ArrayJsonParser;
-import org.aspectj.weaver.ast.Test;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.annotation.Resource;
 import java.util.*;

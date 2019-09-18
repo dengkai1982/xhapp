@@ -1,18 +1,14 @@
 package kaiyi.app.xhapp.entity.examination;
 
 import kaiyi.app.xhapp.entity.AbstractEntity;
-import kaiyi.app.xhapp.entity.curriculum.Category;
 import kaiyi.app.xhapp.entity.examination.enums.TestPagerType;
 import kaiyi.puer.commons.collection.StreamArray;
-import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.IDate;
 import kaiyi.puer.commons.validate.NotEmpty;
 import kaiyi.puer.h5ui.annotations.*;
 
 import javax.persistence.*;
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 @Entity(name= TestPager.TABLE_NAME)

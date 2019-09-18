@@ -10,8 +10,8 @@ import kaiyi.app.xhapp.service.access.AccountService;
 import kaiyi.app.xhapp.service.access.VisitorUserService;
 import kaiyi.puer.commons.data.Currency;
 import kaiyi.puer.db.orm.ORMException;
-import org.springframework.stereotype.Service;
 import kaiyi.puer.db.orm.ServiceException;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.Serializable;

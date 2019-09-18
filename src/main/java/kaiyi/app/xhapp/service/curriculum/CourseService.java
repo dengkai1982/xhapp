@@ -1,6 +1,5 @@
 package kaiyi.app.xhapp.service.curriculum;
 
-import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.app.xhapp.entity.curriculum.Course;
 import kaiyi.puer.db.orm.DatabaseFastOper;
 import kaiyi.puer.db.orm.DatabaseOperator;

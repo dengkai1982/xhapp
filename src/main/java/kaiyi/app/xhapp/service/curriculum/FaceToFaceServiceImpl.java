@@ -3,7 +3,6 @@ package kaiyi.app.xhapp.service.curriculum;
 import kaiyi.app.xhapp.ServiceExceptionDefine;
 import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.app.xhapp.entity.access.VisitorUser;
-import kaiyi.app.xhapp.entity.curriculum.CourseProblem;
 import kaiyi.app.xhapp.entity.curriculum.FaceToFace;
 import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.app.xhapp.service.access.AccountService;

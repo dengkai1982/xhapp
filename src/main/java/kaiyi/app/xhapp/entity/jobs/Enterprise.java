@@ -1,12 +1,9 @@
 package kaiyi.app.xhapp.entity.jobs;
+
 import kaiyi.app.xhapp.entity.AbstractEntity;
 import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.puer.commons.validate.NotEmpty;
 import kaiyi.puer.h5ui.annotations.*;
-import kaiyi.puer.web.elements.UIColumn;
-import kaiyi.puer.web.elements.UIColumnType;
-import kaiyi.puer.web.elements.UIEntity;
-import org.apache.poi.ss.formula.functions.T;
 
 import javax.persistence.*;
 import java.lang.reflect.Field;

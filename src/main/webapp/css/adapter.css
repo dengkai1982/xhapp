@@ -413,3 +413,6 @@ html,body{
 .detailLine .detailItem .text{
 	flex-grow:1;
 }
+#mainContent{
+	margin-bottom:60px;
+}

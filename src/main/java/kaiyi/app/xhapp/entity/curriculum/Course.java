@@ -2,12 +2,10 @@ package kaiyi.app.xhapp.entity.curriculum;
 
 import kaiyi.app.xhapp.entity.AbstractEntity;
 import kaiyi.app.xhapp.entity.access.Account;
-import kaiyi.app.xhapp.entity.access.enums.MemberShip;
 import kaiyi.app.xhapp.entity.curriculum.enums.Difficulty;
 import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.Currency;
-import kaiyi.puer.commons.data.ICurrency;
 import kaiyi.puer.commons.validate.NotEmpty;
 import kaiyi.puer.h5ui.annotations.*;
 
@@ -16,6 +14,12 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 @Entity(name=Course.TABLE_NAME)
+@Table(indexes = {
+        @Index(name="course_index_name",columnList = "name",unique = false),
+        @Index(name="course_index_teacher",columnList = "teacher",unique = false),
+        @Index(name="course_index_free_course",columnList = "freeCourse",unique = false),
+        @Index(name="course_index_free_sale",columnList = "sale",unique = false)
+})
 @PageEntity(showName = "课程",entityName = "course",serviceName = "courseService")
 public class Course extends AbstractEntity {
     private static final long serialVersionUID = -516765397341241977L;

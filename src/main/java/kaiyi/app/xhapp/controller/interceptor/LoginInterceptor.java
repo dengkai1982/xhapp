@@ -1,6 +1,6 @@
 package kaiyi.app.xhapp.controller.interceptor;
+
 import kaiyi.app.xhapp.controller.mgr.ManagerController;
-import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.h5ui.controller.H5Controller;
 import kaiyi.puer.json.creator.JsonMessageCreator;
 import kaiyi.puer.web.servlet.ServletUtils;

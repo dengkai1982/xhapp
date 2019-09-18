@@ -4,7 +4,7 @@
     <a href="{{href}}" class="{{classStyle}}" target="{{#if isBlank}}_blank{{else}}_self{{/if}}" access="{{access}}" entityId="{{entityId}}" title="{{title}}">{{showName}}</a>
 </script>
 <script id="answerList" type="text/template7">
-    <tr data-id="{{answer.entityId}}">
+    <tr data-id="{{answer.entityId}}" data-image="{{answer.image}}" data-edit="{{answer.edit}}">
         <td class="optionName">{{answer.optionName}}</td>
         <td class="detailValue">{{answer.detailValue}}</td>
         {{#if answer.single}}

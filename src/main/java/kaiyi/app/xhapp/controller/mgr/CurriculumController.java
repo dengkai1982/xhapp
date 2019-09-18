@@ -5,7 +5,10 @@ import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.vod.model.v20170321.CreateUploadVideoResponse;
 import com.aliyuncs.vod.model.v20170321.RefreshUploadVideoResponse;
 import kaiyi.app.xhapp.entity.access.enums.MemberShip;
-import kaiyi.app.xhapp.entity.curriculum.*;
+import kaiyi.app.xhapp.entity.curriculum.Category;
+import kaiyi.app.xhapp.entity.curriculum.Chapter;
+import kaiyi.app.xhapp.entity.curriculum.Course;
+import kaiyi.app.xhapp.entity.curriculum.MediaLibrary;
 import kaiyi.app.xhapp.entity.pojo.CreateUploadVideoRequestInfo;
 import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
 import kaiyi.app.xhapp.service.AliyunVodHelper;
@@ -13,7 +16,6 @@ import kaiyi.app.xhapp.service.curriculum.*;
 import kaiyi.app.xhapp.service.pub.ConfigureService;
 import kaiyi.puer.commons.access.AccessControl;
 import kaiyi.puer.commons.collection.StreamCollection;
-import kaiyi.puer.commons.data.JavaDataTyper;
 import kaiyi.puer.commons.data.StringEditor;
 import kaiyi.puer.db.orm.ORMException;
 import kaiyi.puer.db.orm.ServiceException;
@@ -32,11 +34,10 @@ import kaiyi.puer.web.springmvc.IWebInteractive;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
 import javax.annotation.Resource;
-import javax.annotation.Resources;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Map;
 
 @Controller
 @RequestMapping(CurriculumController.rootPath)
@@ -102,7 +103,7 @@ public class CurriculumController extends ManagerController{
     }
     @PostMapping("/teacher/commit")
     public void teacherCommit(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
-        JsonMessageCreator msg=executeNewOrUpdate(interactive,studentService);
+        JsonMessageCreator msg=executeNewOrUpdate(interactive,studentService,configureService.getStringValue(ConfigureItem.DOC_SAVE_PATH));
         interactive.writeUTF8Text(msg.build());
     }
 

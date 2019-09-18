@@ -11,6 +11,9 @@
             width:20px;
             height:20px;
         }
+        .modal-dialog .close,.modal-dialog .prev,.modal-dialog .next,.modal-dialog .caption{
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -57,9 +60,16 @@
                         </thead>
                         <tbody id="answerListContainer">
                             <c:forEach items="${entity.choiceAnswerStream}" var="answer">
-                                <tr data-id="${answer.entityId}">
+                                <tr data-id="${answer.entityId}" data-image="${answer.imageType}" data-edit="true">
                                     <td class="optionName">${answer.optionName}</td>
-                                    <td class="detailValue">${answer.detailValue}</td>
+                                    <c:choose>
+                                        <c:when test="${answer.imageType}">
+                                            <td class="detailValue"><img style="height:60px" hex="${answer.detailValue}" src="${managerPath}/access/accessStorageFile${suffix}?hex=${answer.detailValue}"/></td>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <td class="detailValue">${answer.detailValue}</td>
+                                        </c:otherwise>
+                                    </c:choose>
                                     <c:choose>
                                         <c:when test="${entity.questionType.itemNumber==0}">
                                             <c:choose>
@@ -104,16 +114,39 @@
                 <form class="form-horizontal" id="newOrEditAnswerForm">
                     <input type="hidden" name="modal_answerId">
                     <input type="hidden" name="modal_is_editor">
-                    <div class="form-group">
+                    <%--<div class="form-group">
                         <label for="optionName_name" class="col-sm-2 required">答案编号</label>
                         <div class="col-sm-9 ref_optionName_name">
                             <input type="text"  class="form-control" validate="required:答案编号必须输入" name="optionName_name" id="optionName_name">
                         </div>
-                    </div>
+                    </div>--%>
                     <div class="form-group">
+                        <label for="imageType" class="col-sm-2 required">答案类型</label>
+                        <div class="col-sm-9 ref_imageType">
+                            <select name="imageType" id="imageType"  data-placeholder="" class="form-control chosen-select">
+                                <option value="false" key="单选题 danxuanti">文本类型</option>
+                                <option value="true" key="多选题 duoxuanti">图片类型</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="isImageType">
+                        <div class="form-group">
+                            <label for="imagePath" class="col-sm-2 required">图片选择</label>
+                            <div class="col-sm-9">
+                                <input type="hidden" id="imagePath" name="imagePath"/>
+                                <div id="questionImage" style="display:none;margin:10px 0;width:240px;height:160px;
+                                background-repeat:no-repeat;background-size:100% 100%;-moz-background-size:100% 100%;"></div>
+                                <div id='questionImageUploader' class="questionImageUploader">
+                                    <button type="button" class="btn btn-primary uploader-btn-browse">选择文件</button>
+                                    <button type="button" id="deleteImage" class="btn btn-danger">删除文件</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="notImageType" class="form-group">
                         <label for="detailValue_name" class="col-sm-2 required">答案描述</label>
                         <div class="col-sm-9 ref_detailValue_name">
-                            <input type="text"  class="form-control" validate="required:答案描述必须输入" name="detailValue_name" id="detailValue_name">
+                            <input type="text"  class="form-control" name="detailValue_name" id="detailValue_name">
                         </div>
                     </div>
                 </form>
@@ -131,7 +164,32 @@
     var detailEditor;
     var analysisEditor;
     var single=false;
+    var chartArray=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U',
+    'V','W','X','Y','Z'];
+    function showOrHideImageType(){
+        var imageType=$("#imageType").val();
+        if(imageType=="true"){
+            $("#isImageType").show();
+            $("#notImageType").hide();
+        }else{
+            $("#isImageType").hide();
+            $("#notImageType").show();
+        }
+    }
+    showOrHideImageType();
     function pageReady(doc) {
+        /*
+        $("#answerContainer").on("click",".lightbox-toggle",function(){
+            var imagePath=$(this).attr("imagePath");
+            (new $.zui.ModalTrigger({
+                custom: "<img style='height:100%' src='"+imagePath+"'/>",
+                showHeader:false,
+                size:"sm"
+            })).show();
+        })*/
+        $("#imageType").change(function(){
+            showOrHideImageType();
+        });
         $("#categoryReference").removeClass("popupSingleChoose").click(function(){
             queryQuestionCategory("选择试题所属类别","category","categoryReference",function(){
                 console.log("close");
@@ -179,11 +237,24 @@
         $("#answerListContainer").on("click",".editAnswer",function(){
             var $tr=$(this).parents("tr");
             var answerId=$tr.attr("data-id");
-            var optionName=$tr.find(".optionName").html();
+            var image=$tr.attr("data-image")
             var detailValue=$tr.find(".detailValue").html();
+            var optionName=$tr.find(".optionName").html();
             $("#newOrEditAnswerModal input[name='modal_answerId']").val(answerId);
             $("#newOrEditAnswerModal input[name='optionName_name']").val(optionName);
-            $("#newOrEditAnswerModal input[name='detailValue_name']").val(detailValue);
+            if(image=="true"){
+                var src=$tr.find(".detailValue").find("img").attr("src");
+                var hex=$tr.find(".detailValue").find("img").attr("hex");
+                $("#imagePath").val();
+                $("#questionImage").css("background-image","url("+src+")").attr("accessUrl",src)
+                    .attr("hex",hex);
+                $("#imageType").val("true");
+            }else{
+                $("#imageType").val("false");
+                $("#newOrEditAnswerModal input[name='detailValue_name']").val(detailValue);
+            }
+            $('#imageType').trigger('chosen:updated');
+            showOrHideImageType();
             $("#newOrEditAnswerModal input[name='modal_is_editor']").val("true");
             $("#newOrEditAnswerModal").modal("show");
         });
@@ -196,9 +267,7 @@
             single=false;
         }else{
             $("#answerContainer").hide();
-
         }
-
         $("#questionType").change(function(){
             var questionType=$(this).val();
             if(questionType=="0"){
@@ -221,7 +290,12 @@
             $("#newOrEditAnswerModal input[name='optionName_name']").val("");
             $("#newOrEditAnswerModal input[name='detailValue_name']").val("");
             $("#newOrEditAnswerModal input[name='modal_is_editor']").val("false");
+            $("#imageType").val("false");
+            $('#imageType').trigger('chosen:updated');
+            $("#imagePath").val("");
+            $("#questionImage").hide();
             $("#newOrEditAnswerModal").modal("show");
+            showOrHideImageType();
         })
         $("#newOrEditAnswerFormAction").click(function(){
             var flag=$("#newOrEditAnswerForm").formValidate(function(el,hint){
@@ -231,9 +305,67 @@
                     $(".ref_"+el.attr("name")).removeClass("has-error");
                 })
             });
+            var imageType=$("#imageType").val();
+            if(imageType=="true"){
+                if($("input[name='imagePath']").val()==""){
+                    toast("图片未选择")
+                    return;
+                }
+            }else{
+                if($("#detailValue_name").val()==""){
+                    toast("答案描述必须输入")
+                    return;
+                }
+            }
             if(flag){
                 $("#newOrEditAnswerModal").modal("hide");
                 var $form=$("#newOrEditAnswerForm").formToJson();
+                if($form.modal_is_editor=="true"){
+                    var dataId=$form.modal_answerId;
+                    var $tr=$("#answerListContainer").find("tr[data-id='"+dataId+"']");
+                    //$tr.find(".optionName").html($form.optionName_name);
+                    if($form.imageType=="true"){
+                        var accessUrl=$("#questionImage").attr("accessUrl");
+                        detailValue="<img style='height:60px;' hex='"+$form.imagePath+"' src='"+accessUrl+"'/>";
+                        $tr.find(".detailValue").html(detailValue);
+                    }else{
+                        $tr.find(".detailValue").html($form.detailValue_name);
+                    }
+                }else{
+                    var detailValue=$form.detailValue_name;
+                    var trLength=$("#answerListContainer tr").length;
+                    if($form.imageType=="true"){
+                        detailValue="<img style='height:60px;' hex='"+$form.imagePath+"' src='${managerPath}/access/accessTempFile${suffix}?hex="+$form.imagePath+"'/>";
+                    }
+                    var context={
+                        answer:{
+                            entityId:new Date().getTime(),
+                            image:$form.imageType,
+                            optionName:chartArray[trLength],
+                            detailValue:detailValue,
+                            single:single,
+                            edit:"false"
+                        }
+                    }
+                    var html=getTemplateHtml("answerList",context,$);
+                    $("#answerListContainer").append(html);
+                }
+                /**
+                 有图片
+                 detailValue_name: ""
+                 imagePath: "2f55736572732f64656e676b61692f446f63756d656e74732f484275696c64657250726f6a656374732f6e65777a632f696d672f353433313535313737353837325f656f665f36633666363736662e6a7067"
+                 imageType: "true"
+                 modal_answerId: ""
+                 modal_is_editor: "false"
+                 optionName_name: "fdas"
+                 无图片
+                 imagePath: "2f55736572732f64656e676b61692f446f63756d656e74732f484275696c64657250726f6a656374732f6e65777a632f696d672f353433313535313737353837325f656f665f36633666363736662e6a7067"
+                 imageType: "false"
+                 modal_answerId: ""
+                 modal_is_editor: "false"
+                 optionName_name: "发送"
+                 * /
+                /*
                 if($form.modal_is_editor=="true"){
                     var dataId=$form.modal_answerId;
                     var $tr=$("#answerListContainer").find("tr[data-id='"+dataId+"']");
@@ -250,12 +382,52 @@
                     }
                     var html=getTemplateHtml("answerList",context,$);
                     $("#answerListContainer").append(html);
-                }
+                }*/
             }
         });
         detailEditor=setEditorContent("#detailEditor","${entity.detail}");
         analysisEditor=setEditorContent("#analysisEditor","${entity.analysis}")
         $(".w-e-text-container").height(150);
+        //图片上传
+        $("#questionImageUploader").uploader({
+            autoUpload: true,            // 当选择文件后立即自动进行上传操作
+            url: '${managerPath}/access/tempUpload${suffix}',  // 文件上传提交地址
+            filters:{
+                // 只允许上传图片或图标（.ico）
+                mime_types: [
+                    {title: '图片', extensions: 'jpg,jpeg,png,bmp'}
+                ],
+                max_file_size: '1mb',
+                prevent_duplicates: true
+            },
+            rename:false,
+            renameExtension:false,
+            renameByClick:false,
+            unique_names:true,
+            multi_selection:false,
+            chunk_size:0,//不执行分片
+            limitFilesCount:false,
+            flash_swf_url:"${contextPath}/zui/lib/uploader/Moxie.swf",
+            silverlight_xap_url:"${contextPath}/zui/lib/uploader/Moxie.xap",
+            responseHandler:function(resp, file){
+                var result=$.parseJSON(resp.response);
+                if(result.msg=="success"){
+                    var hex=result.body;
+                    var imageUrl="${managerPath}/access/accessTempFile${suffix}?hex="+hex;
+                    $("#questionImage").css("background-image","url("+imageUrl+")").attr("hex",hex)
+                        .attr("accessUrl",imageUrl);
+                    $("#questionImage").show();
+                    $("input[name='imagePath']").val(hex);
+                }
+            }
+        });
+        $(".uploader-files").css("display","none");
+        $("#deleteImage").click(function(){
+            confirmOper("警告","确实要删除选中的图片?",function(){
+                $("input[name='imagePath']").val("");
+                $("#questionImage").hide();
+            })
+        });
     }
 
     function setEditorContent(contentEditor,content){
@@ -341,10 +513,18 @@
         var choiceAnswer=new Array();
         $("#answerListContainer tr").each(function(){
             var $tr=$(this);
+            var dataImage=$tr.attr("data-image");
+            var detailValue=$tr.find(".detailValue").html();
+            var edit=$tr.attr("data-edit");
+            if(dataImage=="true"){
+                detailValue=$tr.find(".detailValue").find("img").attr("hex");
+            }
             choiceAnswer.push({
                 entityId:$tr.attr("data-id"),
                 optionName:$tr.find(".optionName").html(),
-                detailValue:$tr.find(".detailValue").html()
+                detailValue:detailValue,
+                isImage:dataImage,
+                edit:edit
             })
         });
         $formData["choiceAnswer"]=JSON.stringify(choiceAnswer);

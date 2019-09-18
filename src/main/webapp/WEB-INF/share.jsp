@@ -1,9 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page trimDirectiveWhitespaces="true" %>
 <%@ page isELIgnored="false" %>
+<%@ page import="kaiyi.app.xhapp.controller.mgr.ManagerController" %>
 <%@ page import="kaiyi.puer.web.servlet.WebInteractive" %>
 <%@ page import="kaiyi.puer.web.servlet.WebPage" %>
-<%@ page import="kaiyi.app.xhapp.controller.mgr.ManagerController" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>

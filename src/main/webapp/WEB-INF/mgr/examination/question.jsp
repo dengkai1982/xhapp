@@ -17,6 +17,8 @@
                 <visit:auth url="${webPage.newEntityPage}">
                     <a href="${contextPath}${webPage.newEntityPage}${suffix}?${paginationCurrentPage}=1" class="btn btn-primary"><i class="icon icon-plus"></i> 新增${requestScope.entityShowName}</a>
                 </visit:auth>
+                <a href="#" id="batchEnable" class="btn btn-primary">批量启用</a>
+                <a href="#" id="batchDisable" class="btn btn-primary">批量停用</a>
             </div>
         </div>
         <c:if test="${requestScope.hasData}">
@@ -44,10 +46,47 @@
 <%@include file="/WEB-INF/footerPage.jsp"%>
 <script type="text/javascript" src="${contextPath}/js/category.js"></script>
 <script type="text/javascript">
+    function batchEnableOrDisable(enable){
+        var datagrid=$('#remoteDataGrid').data('zui.datagrid');
+        var checkItems=datagrid.getCheckItems();
+        if(checkItems.length==0){
+            toast("没有试题被选中");
+            return;
+        }
+        var entityIdArray=new Array();
+        for(i=0;i<checkItems.length;i++){
+            var data=checkItems[i];
+            if(data!=null){
+                entityIdArray.push(data.entityId);
+            }
+        }
+        postJSON("${managerPath}/examination/question/batchEnable${suffix}",{
+            entityIdArray:entityIdArray.join(","),
+            enable:enable
+        },"正在执行,请稍后...",function(result){
+            if(result.code==SUCCESS){
+                bootbox.alert({
+                    title:"消息",
+                    message: "完成批量更新,点击确认返回",
+                    callback: function () {
+                        reflashPageData();
+                    }
+                })
+            }else{
+                showMessage(result.msg,1500);
+            }
+        });
+    }
     function pageReady(doc){
         <c:if test="${requestScope.hasData}">
         ${requestScope.tableScript}
         </c:if>
+        $("#batchEnable").click(function(){
+            batchEnableOrDisable(true);
+        })
+        $("#batchDisable").click(function(){
+            batchEnableOrDisable(false);
+        })
         /*$("input[data-service-name='questionCategoryService']").removeClass("popupSingleChoose").click(function(){
             console.log("clock")
         })*/
@@ -89,6 +128,29 @@
         },{
             url:"${contextPath}${webPage.detailEntityPage}${suffix}?entityId="+dataId+"&${paginationCurrentPage}="+getPaginationCurrentPage(),
             label:"查看详情"
+        },{
+            label:"删除试题",
+            className:"privilege",
+            access:"${webPage.deleteEntityPage}",
+            onClick:function(){
+                confirmOper("警告","确实要删除选中的试题?",function(){
+                    postJSON("${managerPath}/examination/question/delete${suffix}",{
+                        entityId:dataId
+                    },"正在执行,请稍后...",function(result){
+                        if(result.code==SUCCESS){
+                            bootbox.alert({
+                                title:"消息",
+                                message: "删除试题成功,点击确认返回",
+                                callback: function () {
+                                    reflashPageData();
+                                }
+                            })
+                        }else{
+                            showMessage(result.msg,1500);
+                        }
+                    });
+                })
+            }
         }];
         var enableName="";
         if(data.enable.name){

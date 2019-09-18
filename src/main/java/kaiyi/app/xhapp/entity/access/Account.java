@@ -16,6 +16,11 @@ import java.util.Date;
 import java.util.Objects;
 
 @Entity(name=Account.TABLE_NAME)
+@Table(indexes = {
+        @Index(name="account_index_phone",columnList = "phone",unique = false),
+        @Index(name="account_index_recommend",columnList = "recommend",unique = false),
+        @Index(name="account_index_nickName",columnList = "nickName",unique = false)
+})
 @PageEntity(showName = "用户账户",entityName = "account",serviceName = "accountService")
 public class Account extends AbstractEntity {
     private static final long serialVersionUID = -555171879389398184L;

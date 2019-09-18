@@ -1,11 +1,11 @@
 package kaiyi.app.xhapp.entity.curriculum;
+
 import kaiyi.app.xhapp.entity.AbstractEntity;
 import kaiyi.puer.commons.collection.Cascadeable;
 import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.validate.NotEmpty;
 import kaiyi.puer.h5ui.annotations.*;
-import kaiyi.puer.web.entity.LogicDeleteEntity;
 
 import javax.persistence.*;
 import java.util.*;

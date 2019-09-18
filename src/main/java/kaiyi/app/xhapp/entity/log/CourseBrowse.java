@@ -13,6 +13,11 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity(name=CourseBrowse.TABLE_NAME)
+@Table(indexes = {
+        @Index(name="course_browse_index_account",columnList = "account",unique = false),
+        @Index(name="course_browse_index_course",columnList = "course",unique = false),
+        @Index(name="course_browse_index_createTime",columnList = "createTime",unique = false)
+})
 @PageEntity(showName = "课程浏览记录",entityName = "courseBrowse",serviceName = "courseBrowseService")
 public class CourseBrowse extends AbstractEntity {
     public static final String TABLE_NAME="course_browse";

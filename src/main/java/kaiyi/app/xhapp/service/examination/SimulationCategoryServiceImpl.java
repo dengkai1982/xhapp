@@ -1,6 +1,5 @@
 package kaiyi.app.xhapp.service.examination;
 
-import kaiyi.app.xhapp.entity.examination.QuestionCategory;
 import kaiyi.app.xhapp.entity.examination.SimulationCategory;
 import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.puer.commons.collection.Cascadeable;

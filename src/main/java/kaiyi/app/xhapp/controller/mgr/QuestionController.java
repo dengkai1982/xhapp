@@ -1,11 +1,12 @@
 package kaiyi.app.xhapp.controller.mgr;
 
 
-import kaiyi.app.xhapp.entity.curriculum.Category;
 import kaiyi.app.xhapp.entity.examination.*;
 import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
-import kaiyi.app.xhapp.service.curriculum.CategoryService;
-import kaiyi.app.xhapp.service.examination.*;
+import kaiyi.app.xhapp.service.examination.QuestionCategoryService;
+import kaiyi.app.xhapp.service.examination.QuestionService;
+import kaiyi.app.xhapp.service.examination.SimulationCategoryService;
+import kaiyi.app.xhapp.service.examination.TestPagerService;
 import kaiyi.app.xhapp.service.pub.ConfigureService;
 import kaiyi.puer.commons.access.AccessControl;
 import kaiyi.puer.commons.collection.StreamArray;
@@ -13,7 +14,6 @@ import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.JavaDataTyper;
 import kaiyi.puer.commons.data.StringEditor;
 import kaiyi.puer.commons.poi.ExcelUtils;
-import kaiyi.puer.commons.time.DateTimeUtil;
 import kaiyi.puer.commons.utils.CoderUtil;
 import kaiyi.puer.db.orm.ServiceException;
 import kaiyi.puer.db.query.CompareQueryExpress;
@@ -34,11 +34,9 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Controller
@@ -61,7 +59,7 @@ public class QuestionController extends ManagerController {
     public String question(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
         setDefaultPage(interactive,rootPath+"/question");
         mainTablePage(interactive,questionService,null,null,
-                new DynamicGridInfo(false,DynamicGridInfo.OperMenuType.popup));
+                new DynamicGridInfo(true,DynamicGridInfo.OperMenuType.popup));
         return rootPath+"/question";
     }
     @RequestMapping("/question/new")
@@ -85,7 +83,7 @@ public class QuestionController extends ManagerController {
     @AccessControl(name = "试题详情", weight = 5.13f, detail = "试题详情",
             code = rootPath+ "/question/detail" +
                     "", parent = rootPath+"/question")
-    public String questionDelete(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+    public String questionDetail(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
         detailPage(interactive,questionService,3);
         setDefaultPage(interactive,rootPath+"/question");
         return rootPath+"/questionDetail";
@@ -99,6 +97,24 @@ public class QuestionController extends ManagerController {
         questionService.changeEnable(entityId);
         interactive.writeUTF8Text(getSuccessMessage().build());
     }
+
+    @RequestMapping("/question/delete")
+    @AccessControl(name = "删除试题", weight = 5.15f, detail = "删除试题",
+            code = rootPath+ "/question/delete", parent = rootPath+"/question")
+    public void questionDelete(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String entityId=interactive.getStringParameter("entityId","");
+        questionService.deleteForPrimary(entityId);
+        interactive.writeUTF8Text(getSuccessMessage().build());
+    }
+
+    @PostMapping("/question/batchEnable")
+    public void batchEnable(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        StreamArray<String> entityIdArray=interactive.getStringStreamArray("entityIdArray",",");
+        boolean enable=interactive.getBoolean("enable","true",false);
+        questionService.batchEnable(entityIdArray,enable);
+        interactive.writeUTF8Text(getSuccessMessage().build());
+    }
+
     //批量导入实体
     @PostMapping("/question/import")
     public void importQuestion(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {

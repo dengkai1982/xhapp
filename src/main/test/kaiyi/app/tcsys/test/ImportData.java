@@ -8,8 +8,6 @@ import com.alipay.api.request.AlipayTradeWapPayRequest;
 import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.exceptions.ClientException;
 import kaiyi.app.xhapp.entity.access.Account;
-import kaiyi.app.xhapp.entity.curriculum.Category;
-import kaiyi.app.xhapp.entity.curriculum.CourseOrder;
 import kaiyi.app.xhapp.entity.examination.Question;
 import kaiyi.app.xhapp.entity.examination.QuestionCategory;
 import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
@@ -29,7 +27,8 @@ import kaiyi.app.xhapp.service.sys.ConsultationService;
 import kaiyi.app.xhapp.service.sys.QNumberManagerService;
 import kaiyi.puer.commons.bean.SpringSelector;
 import kaiyi.puer.commons.collection.StreamCollection;
-import kaiyi.puer.commons.data.*;
+import kaiyi.puer.commons.data.Currency;
+import kaiyi.puer.commons.data.JavaDataTyper;
 import kaiyi.puer.commons.poi.ExcelUtils;
 import kaiyi.puer.commons.utils.CoderUtil;
 import kaiyi.puer.crypt.cipher.CipherOperator;
@@ -42,7 +41,6 @@ import kaiyi.puer.http.connect.HttpConnector;
 import kaiyi.puer.http.connect.OKHttpConnection;
 import kaiyi.puer.http.parse.TextParser;
 import kaiyi.puer.http.request.HttpGetRequest;
-import kaiyi.puer.web.servlet.ServletUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -70,11 +68,39 @@ public class ImportData {
         }
     }
 
+    /**
+     * 要写程序来删除Question
+     delete from exam_choice_answer
+
+     delete from exam_question_item
+
+     delete from exam_question
+
+     delete from test_pager_question
+
+     delete from test_pager
+
+     select * from question
+
+     update question set deleted=false
+     //这句执行不了
+     delete from choice_answer where question in (select question from choice_answer group by question having count(*)=1)
+    
+     update question set deleted=true where entityId in(select question from choice_answer group by question having count(*)=1)
+
+     * @throws IOException
+     */
+
+    @Test
+    public void deleteQuestion(){
+        QuestionService questionService=sel.getBean(QuestionService.class);
+        questionService.deleteOneQuestion();
+    }
     @Test
     public void excelImport() throws IOException {
         QuestionCategoryService categoryService=sel.getBean(QuestionCategoryService.class);
         QuestionService questionService=sel.getBean(QuestionService.class);
-        File file=new File("/Users/dengkai/金红/证书/试题导入/工作簿1.xlsx");
+        File file=new File("/Users/dengkai/金红/9.16修改/市政工程管理与实务.xlsx");
         AtomicReference<Question> questionReference=new AtomicReference<>();
         StreamCollection<QuestionCategory> categories=categoryService.getEntitys();
         if(Objects.nonNull(file)&&file.exists()){

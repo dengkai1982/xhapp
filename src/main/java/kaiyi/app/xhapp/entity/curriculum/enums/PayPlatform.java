@@ -11,7 +11,7 @@ public enum PayPlatform implements H5ChosenInterface {
         }
         @Override
         public String getHexColor() {
-            return "#a1a1a2";
+            return "#009944";
         }
     },
     ALIPAY{

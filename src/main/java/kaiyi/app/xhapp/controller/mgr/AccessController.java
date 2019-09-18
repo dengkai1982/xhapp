@@ -1,5 +1,5 @@
 package kaiyi.app.xhapp.controller.mgr;
-import kaiyi.app.xhapp.controller.mgr.ManagerController;
+
 import kaiyi.app.xhapp.entity.access.VisitorMenu;
 import kaiyi.app.xhapp.entity.access.VisitorUser;
 import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
@@ -14,7 +14,6 @@ import kaiyi.puer.db.orm.ServiceException;
 import kaiyi.puer.db.query.QueryExpress;
 import kaiyi.puer.h5ui.bean.DynamicGridInfo;
 import kaiyi.puer.h5ui.service.DocumentService;
-import kaiyi.puer.json.creator.JsonBuilder;
 import kaiyi.puer.json.creator.JsonMessageCreator;
 import kaiyi.puer.json.creator.MutilJsonCreator;
 import kaiyi.puer.web.elements.FormElementHidden;
@@ -22,7 +21,6 @@ import kaiyi.puer.web.service.EntityQueryService;
 import kaiyi.puer.web.servlet.ServletUtils;
 import kaiyi.puer.web.servlet.WebInteractive;
 import kaiyi.puer.web.springmvc.IWebInteractive;
-import kaiyi.puer.web.springmvc.SpringContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

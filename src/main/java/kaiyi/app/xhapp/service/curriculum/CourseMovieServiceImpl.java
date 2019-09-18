@@ -1,12 +1,11 @@
 package kaiyi.app.xhapp.service.curriculum;
 
-import kaiyi.app.xhapp.ServiceExceptionDefine;
 import kaiyi.app.xhapp.entity.curriculum.CourseMovie;
 import kaiyi.app.xhapp.entity.curriculum.MediaLibrary;
 import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.puer.db.orm.ORMException;
 import kaiyi.puer.db.query.CompareQueryExpress;
-import kaiyi.puer.db.query.CompareQueryExpress.*;
+import kaiyi.puer.db.query.CompareQueryExpress.Compare;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;

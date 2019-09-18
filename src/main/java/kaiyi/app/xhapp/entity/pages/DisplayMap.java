@@ -4,8 +4,12 @@ import kaiyi.app.xhapp.entity.AbstractEntity;
 import kaiyi.app.xhapp.entity.pages.enums.LinkType;
 import kaiyi.app.xhapp.service.pages.enums.DisplayColumn;
 import kaiyi.puer.commons.validate.NotEmpty;
-import kaiyi.puer.h5ui.annotations.*;
+import kaiyi.puer.h5ui.annotations.FieldChosen;
+import kaiyi.puer.h5ui.annotations.FieldType;
+import kaiyi.puer.h5ui.annotations.PageEntity;
+import kaiyi.puer.h5ui.annotations.PageField;
 import kaiyi.puer.web.html.HtmlConvertUtils;
+
 import javax.persistence.*;
 import java.util.Objects;
 @Entity(name=DisplayMap.TABLE_NAME)

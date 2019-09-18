@@ -1,6 +1,5 @@
 package kaiyi.app.xhapp.executor;
 
-import kaiyi.app.xhapp.entity.access.AccountRecharge;
 import kaiyi.app.xhapp.entity.curriculum.PaymentNotify;
 import kaiyi.app.xhapp.service.access.AccountRechargeService;
 import kaiyi.puer.commons.exec.CodeExecuter;

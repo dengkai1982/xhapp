@@ -1,13 +1,20 @@
 package kaiyi.app.xhapp.entity.curriculum;
 
 
-import kaiyi.app.xhapp.entity.curriculum.enums.PayPlatform;
 import kaiyi.app.xhapp.entity.AbstractEntity;
-import kaiyi.puer.h5ui.annotations.PageEntity;
+import kaiyi.app.xhapp.entity.curriculum.enums.PayPlatform;
+import kaiyi.puer.commons.data.IDate;
+import kaiyi.puer.h5ui.annotations.*;
 
 import javax.persistence.*;
 import java.util.Date;
 @Entity(name=PaymentNotify.TABLE_NAME)
+@Table(indexes = {
+        @Index(name="payment_notify_index_order_id",columnList = "orderId",unique = false),
+        @Index(name="payment_notify_index_platform",columnList = "platform",unique = false),
+        @Index(name="payment_notify_index_third_part_order_id",columnList = "thirdPartOrderId",unique = false),
+        @Index(name="payment_notify_index_finish_time",columnList = "finishTime",unique = false)
+})
 @PageEntity(showName = "支付通知",entityName = "paymentNotify",serviceName = "paymentNotifyService")
 public class PaymentNotify extends AbstractEntity {
     public static final String TABLE_NAME="payment_notify";
@@ -15,46 +22,61 @@ public class PaymentNotify extends AbstractEntity {
     /**
      * 订单号
      */
+    @PageField(label = "订单号",tableLength =160)
     private String orderId;
     /**
      * 支付平台
      */
+    @PageField(label = "支付方式",type = FieldType.CHOSEN,tableLength = 120)
+    @FieldChosen
     private PayPlatform platform;
     /**
      * 是否支付成功
      */
+    @PageField(label = "支付结果",type = FieldType.BOOLEAN,tableLength = 100)
+    @FieldBoolean(values = {"成功","失败"})
     private boolean success;
     /**
      * 支付结果
      */
+    @PageField(label = "三方结果",tableLength = 100)
     private String payResult;
     /**
      * 交易类型
      */
+    @PageField(label = "交易类型",tableLength = 100)
     private String tradeType;
     /**
      * 付款银行信息
      */
+    @PageField(label = "付款银行",tableLength = 100)
     private String bankType;
     /**
      * 支付金额
      */
+    @PageField(label = "付款金额")
     private String totalAmount;
     /**
      * 货币种类
      */
+    @PageField(label = "货币种类",tableLength = 100)
     private String feeType;
     /**
      * 第三方支付单号
      */
+    @PageField(label = "三方单号",tableLength =200)
     private String thirdPartOrderId;
     /**
      * 支付完成时间
      */
+    @IDate
+    @PageField(label = "完成时间",type = FieldType.DATETIME,tableLength = 160)
     private Date finishTime;
     /**
      * 是否为充值
      */
+    @PageField(label = "是否充值",type = FieldType.BOOLEAN,tableLength = 100)
+    @FieldBoolean(values = {"是","否"})
     private boolean recharge;
 
     public PaymentNotify() {

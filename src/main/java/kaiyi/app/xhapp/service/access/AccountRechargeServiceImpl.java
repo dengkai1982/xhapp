@@ -5,12 +5,16 @@ import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.app.xhapp.entity.access.AccountRecharge;
 import kaiyi.app.xhapp.entity.access.enums.RechargeStatus;
 import kaiyi.app.xhapp.entity.curriculum.PaymentNotify;
-import kaiyi.app.xhapp.entity.curriculum.enums.CourseOrderStatus;
+import kaiyi.app.xhapp.entity.pojo.FlowStatisticsPojo;
 import kaiyi.app.xhapp.service.InjectDao;
+import kaiyi.puer.commons.data.Currency;
 import kaiyi.puer.db.orm.ServiceException;
+import kaiyi.puer.db.query.OrderBy;
+import kaiyi.puer.db.query.QueryExpress;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.persistence.Query;
 import java.util.Date;
 import java.util.Objects;
 
@@ -56,4 +60,19 @@ public class AccountRechargeServiceImpl extends InjectDao<AccountRecharge> imple
     }
 
 
+    @Override
+    public FlowStatisticsPojo flowStatisticsPojo(QueryExpress queryExpress) {
+        FlowStatisticsPojo pojo=new FlowStatisticsPojo();
+        Query query=em.createQuery("select sum(o.price)" +
+                " from "+getEntityName(entityClass)+" o where "+queryExpress.build());
+        queryExpress.setParameter(query);
+        Object result=query.getSingleResult();
+        long totamAmount=Objects.isNull(result)?0l:Long.valueOf(result.toString());
+        pojo.setTotalAmount(Currency.noDecimalBuild(totamAmount,2).toString());
+        return pojo;
+    }
+    @Override
+    public OrderBy getDefaultOrderBy(String prefix) {
+        return new OrderBy(prefix,"orderTime",OrderBy.TYPE.DESC);
+    }
 }

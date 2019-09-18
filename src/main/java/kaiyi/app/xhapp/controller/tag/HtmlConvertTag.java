@@ -1,6 +1,5 @@
 package kaiyi.app.xhapp.controller.tag;
 
-import kaiyi.puer.commons.data.Currency;
 import kaiyi.puer.web.html.HtmlConvertUtils;
 
 import javax.servlet.jsp.JspException;

@@ -15,6 +15,11 @@ import java.util.Date;
  * 已购课程
  */
 @Entity(name=AlreadyCourse.TABLE_NAME)
+@Table(indexes = {
+        @Index(name="already_course_index_owner",columnList = "owner",unique = false),
+        @Index(name="already_course_index_course",columnList = "course",unique = false),
+        @Index(name="already_course_index_createTime",columnList = "createTime",unique = false)
+})
 @PageEntity(showName = "已购课程",entityName = "alreadyCourse",serviceName = "alreadyCourseService")
 public class AlreadyCourse extends AbstractEntity {
     private static final long serialVersionUID = -3842555833237366231L;

@@ -15,7 +15,6 @@ import kaiyi.app.xhapp.entity.sys.QNumberManager;
 import kaiyi.puer.commons.bean.BeanSyntacticSugar;
 import kaiyi.puer.commons.utils.ChinaIDCard;
 import kaiyi.puer.commons.utils.CoderUtil;
-import kaiyi.puer.commons.validate.VariableVerifyUtils;
 import kaiyi.puer.crypt.cipher.RSACipher;
 import kaiyi.puer.crypt.key.KeyGeneratorUtils;
 import kaiyi.puer.http.HttpException;
@@ -26,18 +25,14 @@ import kaiyi.puer.http.parse.TextParser;
 import kaiyi.puer.http.request.HttpGetRequest;
 import kaiyi.puer.json.parse.ArrayJsonParser;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.http.client.methods.HttpGet;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
 import org.junit.Test;
 
 import java.security.KeyPair;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.List;
 
 public class daima {
     @Test

@@ -1,7 +1,6 @@
 package kaiyi.app.xhapp.entity.examination;
 
 import kaiyi.app.xhapp.entity.AbstractEntity;
-import kaiyi.app.xhapp.entity.curriculum.Category;
 import kaiyi.app.xhapp.entity.examination.enums.QuestionType;
 import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.collection.StreamCollection;
@@ -9,12 +8,21 @@ import kaiyi.puer.commons.validate.Max;
 import kaiyi.puer.commons.validate.Min;
 import kaiyi.puer.commons.validate.NotEmpty;
 import kaiyi.puer.h5ui.annotations.*;
+
 import javax.persistence.*;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 @Entity(name= Question.TABLE_NAME)
+@Table(indexes = {
+        @Index(name="question_index_category",columnList = "category",unique = false),
+        @Index(name="question_index_simulation_category",columnList = "simulationCategory",unique = false),
+        @Index(name="question_index_simulation_question_type",columnList = "questionType",unique = false),
+        @Index(name="question_index_simulation_enable",columnList = "enable",unique = false),
+        @Index(name="question_index_simulation_update_time",columnList = "updateTime",unique = false)
+})
 @PageEntity(showName = "试题",entityName = "question",serviceName = "questionService")
 public class Question extends AbstractEntity {
 
@@ -50,13 +58,23 @@ public class Question extends AbstractEntity {
     @FieldBoolean(values = {"启用","停用"})
     private boolean enable;
 
+    private Date updateTime;
 
+
+    @Temporal(TemporalType.TIMESTAMP)
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
 
     private Set<ChoiceAnswer> choiceAnswers;
 
     @Override
     public StreamArray<String> filterField() {
-        return new StreamArray<>(new String[]{"choiceAnswers"});
+        return new StreamArray<>(new String[]{"choiceAnswers","updateTime"});
     }
 
     @Lob

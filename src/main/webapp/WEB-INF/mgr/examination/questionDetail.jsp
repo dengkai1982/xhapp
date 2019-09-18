@@ -30,7 +30,15 @@
                         <c:forEach items="${entity.choiceAnswerStream}" var="answer">
                             <tr data-id="${answer.entityId}">
                                 <td class="optionName">${answer.optionName}</td>
-                                <td class="detailValue">${answer.detailValue}</td>
+                                <c:choose>
+                                    <c:when test="${answer.imageType}">
+                                        <td class="detailValue"><img style="height:60px" hex="${answer.detailValue}" src="${managerPath}/access/accessStorageFile${suffix}?hex=${answer.detailValue}"/></td>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <td class="detailValue">${answer.detailValue}</td>
+                                    </c:otherwise>
+                                </c:choose>
+
                             </tr>
                         </c:forEach>
                         </tbody>

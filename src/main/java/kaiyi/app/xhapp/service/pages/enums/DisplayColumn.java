@@ -1,6 +1,5 @@
 package kaiyi.app.xhapp.service.pages.enums;
 
-import kaiyi.app.xhapp.entity.jobs.Recruitment;
 import kaiyi.puer.commons.utils.PinyinUtils;
 import kaiyi.puer.h5ui.bean.H5ChosenInterface;
 

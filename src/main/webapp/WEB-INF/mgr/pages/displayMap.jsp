@@ -66,6 +66,29 @@
             label:"编辑修改",
             className:"privilege",
             access:"${webPage.modifyEntityPage}"
+        },{
+            label:"删除图片",
+            className:"privilege",
+            access:"${webPage.deleteEntityPage}",
+            onClick:function(){
+                confirmOper("警告","确实要删除选中的展示图片?",function(){
+                    postJSON("${managerPath}/pages/displayMap/delete${suffix}",{
+                        entityId:dataId
+                    },"正在执行,请稍后...",function(result){
+                        if(result.code==SUCCESS){
+                            bootbox.alert({
+                                title:"消息",
+                                message: "删除展示图片成功,点击确认返回",
+                                callback: function () {
+                                    reflashPageData();
+                                }
+                            })
+                        }else{
+                            showMessage(result.msg,1500);
+                        }
+                    });
+                })
+            }
         }];
         checkPrivilege(items);
         return items;

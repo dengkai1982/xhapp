@@ -1,34 +1,42 @@
 package kaiyi.app.xhapp.service.examination;
 
 import kaiyi.app.xhapp.ServiceExceptionDefine;
-import kaiyi.app.xhapp.entity.curriculum.Category;
-import kaiyi.app.xhapp.entity.examination.ChoiceAnswer;
-import kaiyi.app.xhapp.entity.examination.Question;
-import kaiyi.app.xhapp.entity.examination.QuestionCategory;
+import kaiyi.app.xhapp.entity.examination.*;
 import kaiyi.app.xhapp.entity.examination.enums.QuestionType;
+import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
 import kaiyi.app.xhapp.service.InjectDao;
+import kaiyi.app.xhapp.service.pub.ConfigureService;
 import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.JavaDataTyper;
 import kaiyi.puer.commons.data.StringEditor;
+import kaiyi.puer.commons.fs.DiskFile;
 import kaiyi.puer.commons.poi.ExcelData;
+import kaiyi.puer.commons.utils.CoderUtil;
 import kaiyi.puer.db.orm.ServiceException;
 import kaiyi.puer.db.query.ContainQueryExpress;
 import kaiyi.puer.db.query.LinkQueryExpress;
+import kaiyi.puer.db.query.OrderBy;
 import kaiyi.puer.db.query.QueryExpress;
+import kaiyi.puer.h5ui.service.DocumentService;
 import kaiyi.puer.json.JsonParserException;
 import kaiyi.puer.json.JsonUtils;
 import kaiyi.puer.json.parse.ArrayJsonParser;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.*;
 
 @Service("questionService")
 public class QuestionServiceImpl extends InjectDao<Question> implements QuestionService {
     private static final long serialVersionUID = 5129246458030105241L;
 
-
-
+    @Resource
+    private ConfigureService configureService;
+    @Resource
+    private QuestionCategoryService questionCategoryService;
+    @Resource
+    private SimulationCategoryService simulationCategoryService;
 
     @Override
     public void deleteChoiceAnswer(String choiceAnswerId) {
@@ -45,6 +53,29 @@ public class QuestionServiceImpl extends InjectDao<Question> implements Question
     }
 
     @Override
+    public void deleteOneQuestion() {
+        List<Object> questions=em.createNativeQuery("select question from choice_answer group by question having count(*)=1")
+                .getResultList();
+        for(Object question:questions){
+            em.createNativeQuery("delete from choice_answer where question="+question.toString()).executeUpdate();
+            em.createNativeQuery("delete from question where entityId="+question.toString()).executeUpdate();
+        }
+    }
+
+    @Override
+    public void deleteById(String entityId) {
+        Question question=new Question();
+        question.setEntityId(entityId);
+        em.createQuery("delete from "+getEntityName(ChoiceAnswer.class)
+                +" o where o.question=:question").setParameter("question",question)
+                .executeUpdate();
+        em.createQuery("delete from "+getEntityName(TestPagerQuestion.class)
+                +" o where o.question=:question").setParameter("question",question)
+                .executeUpdate();
+        deleteForPrimary(entityId);
+    }
+
+    @Override
     public void changeEnable(String entityId) {
         Question question=findForPrimary(entityId);
         if(Objects.nonNull(question)){
@@ -55,76 +86,47 @@ public class QuestionServiceImpl extends InjectDao<Question> implements Question
 
     @Override
     public boolean isQuestion(List<ExcelData> line) {
-        return line.size()>=4;
-    }
-
-    private QuestionCategory findCategory(StreamCollection<QuestionCategory> categories,String categoryLevel1,
-                                          String categoryLevel2,String categoryLevel3,String categoryLevel4){
-        for(QuestionCategory c1:categories){
-            if(c1.getName().equals(categoryLevel1)){
-                Set<QuestionCategory> c2s=c1.getChildren();
-                for(QuestionCategory c2:c2s){
-                    if(c2.getName().equals(categoryLevel2)){
-                        Set<QuestionCategory> c3s=c2.getChildren();
-                        for(QuestionCategory c3:c3s){
-                            if(c3.getName().equals(categoryLevel3)){
-                                Set<QuestionCategory> c4s=c3.getChildren();
-                                for(QuestionCategory c4:c4s){
-                                    if(c4.getName().equals(categoryLevel4)){
-                                        return c4;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return null;
+        return !line.get(0).getData().stringValue().trim().equalsIgnoreCase("0");
     }
 
     @Override
     public Question parseQuestion(List<ExcelData> line, StreamCollection<QuestionCategory> categories) throws ServiceException {
         Question question=new Question();
         String detail = line.get(0).getData().stringValue();
-        String categoryLevel1= line.get(1).getData().stringValue();
-        String categoryLevel2= line.get(2).getData().stringValue();
-        String categoryLevel3= line.get(3).getData().stringValue();
-        String categoryLevel4= line.get(4).getData().stringValue();
-        QuestionCategory questionCategory=findCategory(categories,categoryLevel1,categoryLevel2,categoryLevel3,categoryLevel4);
+        String questionCategoryName= line.get(1).getData().stringValue();
+        String simulationCategoryName= line.get(2).getData().stringValue();
+        QuestionCategory questionCategory=questionCategoryService.signleQuery("name",questionCategoryName);
+        SimulationCategory simulationCategory=simulationCategoryService.signleQuery("name",simulationCategoryName);
         if(Objects.isNull(categories)){
             throw ServiceExceptionDefine.categoryError;
         }
-        String typeName=line.get(5).getData().stringValue();
+        String typeName=line.get(3).getData().stringValue();
         QuestionType questionType=QuestionType.getByName(typeName);
         if(Objects.isNull(questionType)){
             throw ServiceExceptionDefine.questionType;
         }
-        int score=line.get(6).getData().integerValue(0);
+        int score=line.get(4).getData().integerValue(0);
         question.setDetail(detail);
         question.setCategory(questionCategory);
         question.setQuestionType(questionType);
         question.setScore(score);
         question.setEnable(true);
-        String analysis=null;
-        String answer=null;
-        if(questionType.equals(QuestionType.QuestionsAndAnswers)){
-            if(line.size()==8){
-                analysis=line.get(7).getData().stringValue();
-            }
-            if(line.size()==9){
-                answer=line.get(8).getData().stringValue();
-            }
-        }else{
-            analysis=line.get(7).getData().stringValue();
-            answer=line.get(8).getData().stringValue();
+        question.setSimulationCategory(simulationCategory);
+        question.setUpdateTime(new Date());
+        String analysis=line.get(5).getData().stringValue();
+        String answer=line.get(6).getData().stringValue();
+        if(analysis.equalsIgnoreCase("0")){
+            analysis="";
+        }
+        if(answer.equalsIgnoreCase("0")){
+            answer="";
         }
         question.setAnalysis(analysis);
         question.setAnswer(answer);
         if(!question.getQuestionType().equals(QuestionType.QuestionsAndAnswers)){
             question.setChoiceAnswers(new HashSet<>());
-            String optionName=line.get(9).getData().stringValue();
-            String detailValue=line.get(10).getData().stringValue();
+            String optionName=line.get(7).getData().stringValue();
+            String detailValue=line.get(8).getData().stringValue();
             parseChoiceAnswer(question,optionName,detailValue);
         }
         return question;
@@ -153,14 +155,26 @@ public class QuestionServiceImpl extends InjectDao<Question> implements Question
 
     @Override
     public void parseChoiceAnswer(Question question,List<ExcelData> line) throws ServiceException {
-        String optionName=line.get(0).getData().stringValue();
-        String detailValue=line.get(1).getData().stringValue();
+        String optionName=line.get(7).getData().stringValue();
+        String detailValue=line.get(8).getData().stringValue();
         parseChoiceAnswer(question,optionName,detailValue);
+    }
+
+    @Override
+    public void batchEnable(StreamArray<String> entityIdArray, boolean enable) {
+        StreamCollection<String> questions=new StreamCollection<>();
+        entityIdArray.forEach(h->{
+            questions.add(h);
+        });
+        em.createQuery("update "+getEntityName(entityClass)+" o set o.enable=:enable where " +
+                "o.entityId in(:entityIdArray)").setParameter("enable",enable)
+                .setParameter("entityIdArray",questions.toList()).executeUpdate();
     }
 
 
     @Override
     protected void objectBeforePersistHandler(Question question, Map<String, JavaDataTyper> params) throws ServiceException {
+        question.setEnable(true);
         updateChoiceAnswer(question,params);
     }
 
@@ -170,6 +184,7 @@ public class QuestionServiceImpl extends InjectDao<Question> implements Question
     }
 
     private void updateChoiceAnswer(Question question, Map<String, JavaDataTyper> params){
+        question.setUpdateTime(new Date());
         Set<ChoiceAnswer> choiceAnswers = parseChoiceAnswer(params);
         choiceAnswers.forEach(c->{
             c.setEntityId(randomIdentifier());
@@ -197,7 +212,18 @@ public class QuestionServiceImpl extends InjectDao<Question> implements Question
                         ChoiceAnswer answer=new ChoiceAnswer();
                         answer.setEntityId(d.get("entityId").stringValue());
                         answer.setOptionName(d.get("optionName").stringValue().trim());
-                        answer.setDetailValue(d.get("detailValue").stringValue());
+                        String detailValue=d.get("detailValue").stringValue();
+                        String edit=d.get("edit").stringValue();
+                        answer.setImageType(false);
+                        if(d.get("isImage").stringValue().equalsIgnoreCase("true")){
+                            answer.setImageType(true);
+                            if(!edit.equalsIgnoreCase("true")){
+                                String accessPath=CoderUtil.hexToString(detailValue,StringEditor.DEFAULT_CHARSET.displayName());
+                                DiskFile diskFile=DocumentService.filePathToStorage(configureService.getStringValue(ConfigureItem.DOC_SAVE_PATH),accessPath);
+                                detailValue=CoderUtil.stringToHex(diskFile.getFile().getAbsolutePath());
+                            }
+                        }
+                        answer.setDetailValue(detailValue);
                         answer.setChecked(false);
                         if(Objects.nonNull(answerArray.find(h->{
                             return h.equals(answer.getOptionName());
@@ -230,6 +256,10 @@ public class QuestionServiceImpl extends InjectDao<Question> implements Question
         return queryExpress;
     }
 
+    @Override
+    public OrderBy getDefaultOrderBy(String prefix) {
+        return new OrderBy(prefix,"updateTime",OrderBy.TYPE.DESC);
+    }
 
     /*
     public static final boolean isQuestion(List<ExcelData> line){

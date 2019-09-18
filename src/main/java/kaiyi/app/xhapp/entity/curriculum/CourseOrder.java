@@ -14,6 +14,14 @@ import java.util.Date;
 import java.util.Set;
 
 @Entity(name=CourseOrder.TABLE_NAME)
+@Table(indexes = {
+        @Index(name="course_order_index_account",columnList = "account",unique = false),
+        @Index(name="course_order_index_orderId",columnList = "orderId",unique = false),
+        @Index(name="course_order_index_amount",columnList = "amount",unique = false),
+        @Index(name="course_order_index_order_time",columnList = "orderTime",unique = false),
+        @Index(name="course_order_index_status",columnList = "status",unique = false),
+        @Index(name="course_order_index_platform_order_id",columnList = "platformOrderId",unique = false)
+})
 @PageEntity(showName = "课程订单",entityName = "courseOrder",serviceName = "courseOrderService")
 public class CourseOrder extends AbstractEntity {
     public static final String TABLE_NAME="course_order";

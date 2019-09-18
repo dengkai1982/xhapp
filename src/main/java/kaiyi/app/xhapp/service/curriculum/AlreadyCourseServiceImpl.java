@@ -6,7 +6,6 @@ import kaiyi.app.xhapp.entity.curriculum.AlreadyCourse;
 import kaiyi.app.xhapp.entity.curriculum.Course;
 import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.app.xhapp.service.access.AccountService;
-import kaiyi.puer.commons.utils.PackageUtil;
 import kaiyi.puer.db.orm.ServiceException;
 import kaiyi.puer.db.query.CompareQueryExpress;
 import kaiyi.puer.db.query.LinkQueryExpress;

@@ -1,16 +1,17 @@
 package kaiyi.app.xhapp.entity.access;
+
 import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.data.IDate;
 import kaiyi.puer.h5ui.annotations.FieldBoolean;
 import kaiyi.puer.h5ui.annotations.FieldType;
 import kaiyi.puer.h5ui.annotations.PageEntity;
 import kaiyi.puer.h5ui.annotations.PageField;
-import kaiyi.puer.web.elements.UIBooleanColumn;
-import kaiyi.puer.web.elements.UIColumn;
-import kaiyi.puer.web.elements.UIColumnType;
-import kaiyi.puer.web.elements.UIEntity;
 import kaiyi.puer.web.entity.TimeStampEntity;
-import javax.persistence.*;
+
+import javax.persistence.Entity;
+import javax.persistence.Lob;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.util.Date;
 
 @Entity(name=InsideNotice.TABLE_NAME)

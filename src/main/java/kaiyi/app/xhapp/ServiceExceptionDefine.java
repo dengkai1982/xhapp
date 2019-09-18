@@ -1,6 +1,5 @@
 package kaiyi.app.xhapp;
 
-import kaiyi.app.xhapp.entity.curriculum.AlreadyCourse;
 import kaiyi.puer.db.orm.ServiceException;
 
 /**

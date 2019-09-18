@@ -13,6 +13,14 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity(name=AmountFlow.TABLE_NAME)
+@Table(indexes = {
+        @Index(name="amount_flow_index_account",columnList = "account",unique = false),
+        @Index(name="amount_flow_index_amount_type",columnList = "amountType",unique = false),
+        @Index(name="amount_flow_index_orderId",columnList = "orderId",unique = false),
+        @Index(name="amount_flow_index_trade_course",columnList = "tradeCourse",unique = false),
+        @Index(name="amount_flow_index_amount",columnList = "amount",unique = false),
+        @Index(name="amount_flow_index_create_time",columnList = "createTime",unique = false)
+})
 @PageEntity(showName = "账户资金流水",entityName = "amountFlow",serviceName = "amountFlowService")
 public class AmountFlow extends AbstractEntity {
     public static final String TABLE_NAME="amount_flow";

@@ -15,6 +15,7 @@ import kaiyi.puer.db.query.CompareQueryExpress;
 import kaiyi.puer.db.query.CompareQueryExpress.Compare;
 import kaiyi.puer.db.query.LinkQueryExpress;
 import kaiyi.puer.db.query.LinkQueryExpress.LINK;
+import kaiyi.puer.db.query.OrderBy;
 import kaiyi.puer.db.query.QueryExpress;
 import kaiyi.puer.http.HttpException;
 import org.springframework.stereotype.Service;
@@ -94,5 +95,9 @@ public class ShortMessageSenderNoteServiceImpl extends InjectDao<ShortMessageSen
                 .setParameter("invalide", Boolean.TRUE)
                 .setParameter("updateTime", new Date()).setParameter("createTime",new Date(millis))
                 .executeUpdate();
+    }
+    @Override
+    public OrderBy getDefaultOrderBy(String prefix) {
+        return new OrderBy(prefix,"createTime",OrderBy.TYPE.DESC);
     }
 }

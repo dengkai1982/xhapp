@@ -8,7 +8,6 @@ import kaiyi.app.xhapp.service.pub.ConfigureService;
 import kaiyi.app.xhapp.service.pub.NoticeService;
 import kaiyi.puer.commons.access.AccessControl;
 import kaiyi.puer.commons.data.JavaDataTyper;
-import kaiyi.puer.commons.time.DateTimeUtil;
 import kaiyi.puer.h5ui.bean.DynamicGridInfo;
 import kaiyi.puer.h5ui.entity.DocumentStorageEvent;
 import kaiyi.puer.h5ui.service.DocumentService;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
 import java.util.Map;
 
 @Controller
@@ -81,6 +79,15 @@ public class PageController extends ManagerController {
         }
         JsonMessageCreator msg=executeNewOrUpdate(interactive,displayMapService,params);
         interactive.writeUTF8Text(msg.build());
+    }
+
+    @RequestMapping("/displayMap/delete")
+    @AccessControl(name = "删除图片", weight = 2.13f,code = rootPath+ "/displayMap/delete",
+            parent = rootPath+"/displayMap")
+    public void displayDelete(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String entityId=interactive.getStringParameter("entityId","");
+        displayMapService.deleteForPrimary(entityId);
+        interactive.writeUTF8Text(getSuccessMessage().build());
     }
 
     @RequestMapping("/examInfo")

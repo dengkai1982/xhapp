@@ -4,7 +4,6 @@ import kaiyi.app.xhapp.entity.AbstractEntity;
 import kaiyi.app.xhapp.entity.access.enums.MemberShip;
 import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.data.ICurrency;
-import kaiyi.puer.commons.validate.NotEmpty;
 import kaiyi.puer.h5ui.annotations.*;
 
 import javax.persistence.*;

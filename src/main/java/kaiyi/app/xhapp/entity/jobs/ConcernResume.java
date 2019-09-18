@@ -1,7 +1,6 @@
 package kaiyi.app.xhapp.entity.jobs;
 
 import kaiyi.app.xhapp.entity.AbstractEntity;
-import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.puer.commons.data.IDate;
 import kaiyi.puer.h5ui.annotations.FieldReference;
 import kaiyi.puer.h5ui.annotations.FieldType;

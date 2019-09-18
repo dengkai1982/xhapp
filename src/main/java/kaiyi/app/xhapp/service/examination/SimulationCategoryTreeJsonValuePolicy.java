@@ -1,6 +1,5 @@
 package kaiyi.app.xhapp.service.examination;
 
-import kaiyi.app.xhapp.entity.examination.QuestionCategory;
 import kaiyi.app.xhapp.entity.examination.SimulationCategory;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.h5ui.service.H5UIService;

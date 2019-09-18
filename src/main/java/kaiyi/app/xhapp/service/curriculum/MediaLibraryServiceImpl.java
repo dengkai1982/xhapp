@@ -2,13 +2,10 @@ package kaiyi.app.xhapp.service.curriculum;
 
 import kaiyi.app.xhapp.entity.curriculum.MediaLibrary;
 import kaiyi.app.xhapp.service.InjectDao;
-import kaiyi.puer.commons.data.StringEditor;
-import kaiyi.puer.commons.utils.CoderUtil;
 import kaiyi.puer.crypt.cipher.RSACipher;
 import kaiyi.puer.db.orm.ServiceException;
 import kaiyi.puer.db.query.OrderBy;
 import org.springframework.stereotype.Service;
-import kaiyi.app.xhapp.ServiceExceptionDefine;
 
 import javax.annotation.PostConstruct;
 import java.security.NoSuchAlgorithmException;

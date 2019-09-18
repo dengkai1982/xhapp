@@ -2,7 +2,6 @@ package kaiyi.app.xhapp.entity.jobs;
 
 import kaiyi.app.xhapp.entity.AbstractEntity;
 import kaiyi.app.xhapp.entity.access.Account;
-import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.data.ICurrency;
 import kaiyi.puer.commons.data.IDate;
 import kaiyi.puer.commons.validate.IDCard;

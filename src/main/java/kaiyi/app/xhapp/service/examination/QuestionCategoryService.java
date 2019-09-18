@@ -1,5 +1,5 @@
 package kaiyi.app.xhapp.service.examination;
-import kaiyi.app.xhapp.entity.curriculum.Category;
+
 import kaiyi.app.xhapp.entity.examination.QuestionCategory;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.db.orm.DatabaseFastOper;
@@ -35,4 +35,6 @@ public interface QuestionCategoryService extends DatabaseQuery<QuestionCategory>
     String toJsonTree(StreamCollection<QuestionCategory> categories,String templateName);
 
     StreamCollection<QuestionCategory> getCategoryAndChildren(String categoryId);
+
+
 }

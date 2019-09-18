@@ -1,6 +1,5 @@
 package kaiyi.app.xhapp.service;
 
-import kaiyi.puer.commons.bean.Identify;
 import kaiyi.puer.commons.bean.Reflects;
 import kaiyi.puer.commons.bean.field.DataValueProcessor;
 import kaiyi.puer.commons.data.JavaDataTyper;

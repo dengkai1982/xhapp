@@ -2,9 +2,7 @@ package kaiyi.app.xhapp.service.jobs;
 
 import kaiyi.app.xhapp.ServiceExceptionDefine;
 import kaiyi.app.xhapp.entity.access.Account;
-import kaiyi.app.xhapp.entity.jobs.ConcernEnterprise;
 import kaiyi.app.xhapp.entity.jobs.ConcernRecruitment;
-import kaiyi.app.xhapp.entity.jobs.Enterprise;
 import kaiyi.app.xhapp.entity.jobs.Recruitment;
 import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.puer.commons.bean.BeanSyntacticSugar;

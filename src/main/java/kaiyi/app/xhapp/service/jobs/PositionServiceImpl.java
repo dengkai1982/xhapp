@@ -5,9 +5,9 @@ import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.JavaDataTyper;
 import kaiyi.puer.db.query.*;
-import kaiyi.puer.db.query.CompareQueryExpress.*;
-import kaiyi.puer.db.query.LinkQueryExpress.*;
-import kaiyi.puer.db.query.NullQueryExpress.*;
+import kaiyi.puer.db.query.CompareQueryExpress.Compare;
+import kaiyi.puer.db.query.LinkQueryExpress.LINK;
+import kaiyi.puer.db.query.NullQueryExpress.NullCondition;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;

@@ -13,6 +13,12 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity(name=WithdrawApply.TABLE_NAME)
+@Table(indexes = {
+        @Index(name="withdraw_apply_index_applyer",columnList = "applyer",unique = false),
+        @Index(name="withdraw_apply_index_order_id",columnList = "orderId",unique = false),
+        @Index(name="withdraw_apply_index_apply_time",columnList = "applyTime",unique = false),
+        @Index(name="withdraw_apply_index_apply_status",columnList = "status",unique = false),
+})
 @PageEntity(showName = "提现申请记录",entityName = "withdrawApply",serviceName = "withdrawApplyService")
 public class WithdrawApply extends AbstractEntity {
     public static final String TABLE_NAME="withdraw_apply";

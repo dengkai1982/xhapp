@@ -5,7 +5,6 @@ import kaiyi.app.xhapp.entity.access.VisitorUser;
 import kaiyi.app.xhapp.entity.distribution.RoyaltySettlement;
 import kaiyi.app.xhapp.entity.distribution.RoyaltyType;
 import kaiyi.app.xhapp.entity.log.enums.TradeCourse;
-import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
 import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.app.xhapp.service.access.AccountService;
 import kaiyi.app.xhapp.service.access.VisitorUserService;

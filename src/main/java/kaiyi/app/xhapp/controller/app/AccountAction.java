@@ -1,18 +1,14 @@
 package kaiyi.app.xhapp.controller.app;
 
 import kaiyi.app.xhapp.entity.access.Account;
-import kaiyi.app.xhapp.entity.access.AccountRecharge;
 import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
-import kaiyi.app.xhapp.service.access.AccountRechargeService;
 import kaiyi.app.xhapp.service.access.AccountService;
 import kaiyi.app.xhapp.service.log.ShortMessageSenderNoteService;
 import kaiyi.app.xhapp.service.log.TeamJoinNoteService;
 import kaiyi.app.xhapp.service.pub.ConfigureService;
-import kaiyi.puer.commons.data.Currency;
 import kaiyi.puer.commons.image.QrCodeImage;
 import kaiyi.puer.commons.image.SimpleImage;
 import kaiyi.puer.db.orm.ServiceException;
-import kaiyi.puer.json.JsonCreator;
 import kaiyi.puer.json.creator.JsonMessageCreator;
 import kaiyi.puer.json.creator.MutilJsonCreator;
 import kaiyi.puer.web.servlet.ServletUtils;
@@ -27,7 +23,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;

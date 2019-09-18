@@ -5,10 +5,8 @@ import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.app.xhapp.entity.examination.*;
 import kaiyi.app.xhapp.entity.examination.enums.QuestionType;
 import kaiyi.app.xhapp.entity.examination.enums.ResourceType;
-import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
 import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.app.xhapp.service.access.AccountService;
-import kaiyi.app.xhapp.service.pub.ConfigureService;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.db.orm.ServiceException;
 import kaiyi.puer.db.query.CompareQueryExpress;
@@ -18,7 +16,10 @@ import kaiyi.puer.db.query.QueryExpress;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Random;
+import java.util.Set;
 
 @Service("examQuestionService")
 public class ExamQuestionServiceImpl extends InjectDao<ExamQuestion> implements ExamQuestionService {
@@ -78,6 +79,7 @@ public class ExamQuestionServiceImpl extends InjectDao<ExamQuestion> implements 
         for(ChoiceAnswer answer:choiceAnswers){
             ExamChoiceAnswer examChoiceAnswer=new ExamChoiceAnswer();
             examChoiceAnswer.setOptionName(answer.getOptionName());
+            examChoiceAnswer.setImageType(answer.isImageType());
             examChoiceAnswer.setDetailValue(answer.getDetailValue());
             examChoiceAnswer.setEntityId(randomIdentifier());
             examChoiceAnswer.setExamQuestionItem(item);

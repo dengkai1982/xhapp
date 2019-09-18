@@ -1,9 +1,7 @@
 package kaiyi.app.xhapp.service.examination;
-
-import kaiyi.app.xhapp.entity.curriculum.Category;
-import kaiyi.app.xhapp.entity.examination.ChoiceAnswer;
 import kaiyi.app.xhapp.entity.examination.Question;
 import kaiyi.app.xhapp.entity.examination.QuestionCategory;
+import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.poi.ExcelData;
 import kaiyi.puer.db.orm.DatabaseFastOper;
@@ -23,6 +21,13 @@ public interface QuestionService extends DatabaseQuery<Question>, DatabaseFastOp
      */
     void removeChoiceAnswer(String questionId);
 
+    void deleteOneQuestion();
+    /**
+     * 根据ID进行删除
+     * @param entityId
+     */
+    void deleteById(String entityId);
+
     /**
      * 启用或停用试题
      * @param entityId
@@ -35,4 +40,10 @@ public interface QuestionService extends DatabaseQuery<Question>, DatabaseFastOp
     Question parseQuestion(List<ExcelData> line,StreamCollection<QuestionCategory> categories)throws ServiceException;
 
     void parseChoiceAnswer(Question question,List<ExcelData> line)throws ServiceException;
+
+    /**
+     * 批量启用或停用
+     * @param entityIdArray
+     */
+    void batchEnable(StreamArray<String> entityIdArray, boolean enable);
 }
