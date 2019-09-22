@@ -17,8 +17,9 @@
                 <visit:auth url="${webPage.newEntityPage}">
                     <a href="${contextPath}${webPage.newEntityPage}${suffix}?${paginationCurrentPage}=1" class="btn btn-primary"><i class="icon icon-plus"></i> 新增${requestScope.entityShowName}</a>
                 </visit:auth>
-                <a href="#" id="batchEnable" class="btn btn-primary">批量启用</a>
-                <a href="#" id="batchDisable" class="btn btn-primary">批量停用</a>
+                <a href="#" id="batchEnable" class="btn btn-secondary">批量启用</a>
+                <a href="#" id="batchDisable" class="btn btn-secondary">批量停用</a>
+                <a href="#" id="batchDelete" class="btn btn-secondary">批量删除</a>
             </div>
         </div>
         <c:if test="${requestScope.hasData}">
@@ -86,6 +87,36 @@
         })
         $("#batchDisable").click(function(){
             batchEnableOrDisable(false);
+        })
+        $("#batchDelete").click(function(){
+            var datagrid=$('#remoteDataGrid').data('zui.datagrid');
+            var checkItems=datagrid.getCheckItems();
+            if(checkItems.length==0){
+                toast("没有试题被选中");
+                return;
+            }
+            var entityIdArray=new Array();
+            for(i=0;i<checkItems.length;i++){
+                var data=checkItems[i];
+                if(data!=null){
+                    entityIdArray.push(data.entityId);
+                }
+            }
+            postJSON("${managerPath}/examination/question/batchDelete${suffix}",{
+                entityIdArray:entityIdArray.join(",")
+            },"正在执行,请稍后...",function(result){
+                if(result.code==SUCCESS){
+                    bootbox.alert({
+                        title:"消息",
+                        message: "批量删除完毕,点击确认返回",
+                        callback: function () {
+                            reflashPageData();
+                        }
+                    })
+                }else{
+                    showMessage(result.msg,1500);
+                }
+            });
         })
         /*$("input[data-service-name='questionCategoryService']").removeClass("popupSingleChoose").click(function(){
             console.log("clock")

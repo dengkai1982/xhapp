@@ -16,10 +16,10 @@
                 </c:if>
                 <c:if test="${requestScope.hasParent}">
                     <a href="${webPage.backPage}" type="button" class="btn btn-link"><i class="icon-back muted"></i> 返回</a>
-                    <visit:auth url="${webPage.newEntityPage}">
-                        <a href="${contextPath}${webPage.newEntityPage}${suffix}?${paginationCurrentPage}=1&parent=${requestScope.parent}" class="btn btn-primary"><i class="icon icon-plus"></i> 新增${requestScope.entityShowName}</a>
-                    </visit:auth>
                 </c:if>
+                <visit:auth url="${webPage.newEntityPage}">
+                    <a href="${contextPath}${webPage.newEntityPage}${suffix}?${paginationCurrentPage}=1&parent=${requestScope.parent}" class="btn btn-primary"><i class="icon icon-plus"></i> 新增${requestScope.entityShowName}</a>
+                </visit:auth>
             </div>
         </div>
         <c:if test="${requestScope.hasData}">

@@ -62,7 +62,7 @@
         })
     }
     function customDataConvertCell(valueType,dataValue,cell, dataGrid){
-        if(cell.colIndex==3){
+        if(cell.colIndex==4){
             return "<a href='#' class='playVideo' entity-id='"+cell.config.data.entityId+"'>点击播放</a>"
         }
         return null;

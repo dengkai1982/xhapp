@@ -29,17 +29,30 @@ public class MediaLibraryServiceImpl extends InjectDao<MediaLibrary> implements 
 
     }
 
+
+
     @Override
     public OrderBy getDefaultOrderBy(String prefix) {
         return new OrderBy(prefix,"createTime",OrderBy.TYPE.DESC);
     }
 
     @Override
-    public void newMediaLibrary(String title, String videoId) throws ServiceException {
+    public void newOnlineMediaLibrary(String title, String videoId) throws ServiceException {
         MediaLibrary lib=new MediaLibrary();
         lib.setCreateTime(new Date());
+        lib.setOnline(true);
         lib.setName(title);
         lib.setVideoId(videoId);
+        saveObject(lib);
+    }
+
+    @Override
+    public void newUrlMedialibrary(String title, String url) throws ServiceException {
+        MediaLibrary lib=new MediaLibrary();
+        lib.setCreateTime(new Date());
+        lib.setOnline(false);
+        lib.setName(title);
+        lib.setUrl(url);
         saveObject(lib);
     }
 }

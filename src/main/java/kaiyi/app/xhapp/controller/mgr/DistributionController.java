@@ -163,10 +163,10 @@ public class DistributionController extends ManagerController{
         JsonCreator jsonCreator=defaultWriteObject(royaltySettlement, new JsonValuePolicy<JsonBuilder>() {
             @Override
             public JsonCreator getCreator(JsonBuilder entity, String field, Object fieldValue) {
-                if(field.equals("level1Amount")||field.equals("level2Amount")){
+                if(field.equals("level1Amount")||field.equals("level2Amount")||field.equals("insideAmount")){
                     long amount=Long.valueOf(fieldValue.toString());
                     return new StringJsonCreator(Currency.noDecimalBuild(amount,2).toString());
-                }else if(field.equals("recommend1")||field.equals("recommend2")){
+                }else if(field.equals("recommend1")||field.equals("recommend2")||field.equals("insideMember")){
                     Account account=(Account)fieldValue;
                     if(Objects.nonNull(account)){
                         return new StringJsonCreator(account.getShowAccountName());

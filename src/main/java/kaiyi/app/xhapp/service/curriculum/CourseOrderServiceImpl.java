@@ -6,6 +6,7 @@ import kaiyi.app.xhapp.entity.access.enums.CapitalType;
 import kaiyi.app.xhapp.entity.curriculum.*;
 import kaiyi.app.xhapp.entity.curriculum.enums.CourseOrderStatus;
 import kaiyi.app.xhapp.entity.curriculum.enums.PayPlatform;
+import kaiyi.app.xhapp.entity.distribution.RoyaltySettlement;
 import kaiyi.app.xhapp.entity.log.AmountFlow;
 import kaiyi.app.xhapp.entity.log.enums.BorrowLend;
 import kaiyi.app.xhapp.entity.log.enums.TradeCourse;
@@ -17,6 +18,7 @@ import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.Currency;
 import kaiyi.puer.commons.time.ChangeCalendar;
 import kaiyi.puer.commons.time.DateTimeRange;
+import kaiyi.puer.commons.time.DateTimeUtil;
 import kaiyi.puer.db.orm.ServiceException;
 import kaiyi.puer.db.query.ContainQueryExpress;
 import org.springframework.stereotype.Service;
@@ -188,20 +190,30 @@ public class CourseOrderServiceImpl extends InjectDao<CourseOrder> implements Co
     @Override
     public Currency totalTeamSale(String entityId, String date) {
         StreamCollection<Account> accounts=accountService.getTeams(entityId);
+        System.out.println(accounts.joinString(m->{
+            return m.getEntityId();
+        },"\",\""));
         if(accounts.assertNotEmpty()){
             try {
                 DateTimeRange dateRange=parseDateRange(date);
+                System.out.println(DateTimeUtil.yyyyMMddHHmmss.format(dateRange.getDayStartDate()) +"&"+DateTimeUtil.yyyyMMddHHmmss.format(dateRange.getDayEndDate()));
                 Object result=em.createQuery("select coalesce(sum(o.amount),0) from "+getEntityName(entityClass)+" o "+
                         "where o.status=:status and o.account in(:accounts) and o.paymentDate>=:startDate and " +
                         "o.paymentDate<=:endDate").setParameter("status",CourseOrderStatus.PAYMENTED)
-                        .setParameter("accounts",accounts).setParameter("startDate",dateRange.getStartDate())
-                        .setParameter("endDate",dateRange.getEndDate()).getSingleResult();
+                        .setParameter("accounts",accounts).setParameter("startDate",dateRange.getDayStartDate())
+                        .setParameter("endDate",dateRange.getDayEndDate()).getSingleResult();
                 Long courseOrderCurrenty=Long.valueOf(result.toString());
-                result=em.createQuery("select coalesce(sum(o.amount),0) from "+getEntityName(AmountFlow.class)+" o where " +
+                //RoyaltySettlement
+                result=em.createQuery("select coalesce(sum(o.price),0) from "+getEntityName(RoyaltySettlement.class)+" o where "+
+                "o.grant=:grant and o.grantTime>=:startDate and o.grantTime<=:endDate and o.account in(:accounts)")
+                .setParameter("grant",Boolean.TRUE).setParameter("startDate",dateRange.getDayStartDate())
+                .setParameter("endDate",dateRange.getDayEndDate()).setParameter("accounts",accounts).getSingleResult();
+
+                /*result=em.createQuery("select coalesce(sum(o.amount),0) from "+getEntityName(AmountFlow.class)+" o where " +
                         "o.borrowLend=:borrowLend and o.account in(:accounts) and o.createTime>=:startDate and " +
                         "o.createTime<=:endDate").setParameter("borrowLend",BorrowLend.income)
-                        .setParameter("accounts",accounts).setParameter("startDate",dateRange.getStartDate())
-                        .setParameter("endDate",dateRange.getEndDate()).getSingleResult();
+                        .setParameter("accounts",accounts).setParameter("startDate",dateRange.getDayStartDate())
+                        .setParameter("endDate",dateRange.getDayEndDate()).getSingleResult();*/
                 courseOrderCurrenty+=Long.valueOf(result.toString());
                 return Currency.noDecimalBuild(courseOrderCurrenty,2);
             } catch (ParseException e) {
@@ -214,13 +226,23 @@ public class CourseOrderServiceImpl extends InjectDao<CourseOrder> implements Co
     private DateTimeRange parseDateRange(String date) throws ParseException {
         SimpleDateFormat sdf=new SimpleDateFormat("yyyyMM");
         Date queryDate=sdf.parse(date);
+        DateTimeRange range=new DateTimeRange();
+        Calendar start=Calendar.getInstance();
+        start.setTime(queryDate);
+        start.set(Calendar.DAY_OF_MONTH,start.getActualMinimum(Calendar.DAY_OF_MONTH ));
+        range.setStartDate(start.getTime());
+        Calendar end=Calendar.getInstance();
+        end.set(Calendar.DAY_OF_MONTH,end.getActualMaximum(Calendar.DAY_OF_MONTH ));
+        range.setEndDate(end.getTime());
+        return range;
+        /*
         return getDateTimeRange(s->{
             s.set(Calendar.YEAR, queryDate.getYear());
             s.set(Calendar.MONTH, queryDate.getMonth());
             s.set(Calendar.DAY_OF_MONTH,s.getActualMinimum(Calendar.DAY_OF_MONTH ));
         },e->{
             e.set(Calendar.DAY_OF_MONTH,e.getActualMaximum(Calendar.DAY_OF_MONTH ));
-        });
+        });*/
     }
 
     private static DateTimeRange getDateTimeRange(ChangeCalendar start, ChangeCalendar end){

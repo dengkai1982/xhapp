@@ -57,7 +57,7 @@ public class AccountServiceImpl extends InjectDao<Account> implements AccountSer
         account.setRegisterTime(new Date());
         account.setMemberShip(MemberShip.normal);
         account.setPassword(applicationService.cipherToString(password));
-        account.setNickName(account.getPhone());
+        account.setNickName("职猿"+phone.substring(7,phone.length()));
         account.setActive(true);
         Account recommend=findForPrimary(recommendId);
         if(Objects.nonNull(recommend)){
@@ -279,7 +279,7 @@ public class AccountServiceImpl extends InjectDao<Account> implements AccountSer
                 if(recommend.isInsideMember()){
                     return recommend;
                 }else{
-                    return findParentInsideMember(account);
+                    return findParentInsideMember(recommend);
                 }
             }
 

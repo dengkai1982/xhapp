@@ -9,6 +9,7 @@ import com.alipay.api.request.AlipayTradeAppPayRequest;
 import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.exceptions.ClientException;
 import kaiyi.app.xhapp.WeixinAppPayInfo;
+import kaiyi.app.xhapp.controller.mgr.ManagerController;
 import kaiyi.app.xhapp.entity.access.AccountRecharge;
 import kaiyi.app.xhapp.entity.access.enums.CapitalType;
 import kaiyi.app.xhapp.entity.curriculum.*;
@@ -185,11 +186,16 @@ public class CurriculumAction extends SuperAction {
         MediaLibrary mediaLibrary=mediaLibraryService.findForPrimary(entityId);
         JsonMessageCreator jmc=getSuccessMessage();
         try {
-            DefaultAcsClient client = AliyunVodHelper.initVodClient(
-                    configureService.getStringValue(ConfigureItem.ALIYUN_VOD_ACCESS_KEY_ID),
-                    configureService.getStringValue(ConfigureItem.ALIYUN_VOD_ACCESS_KEY_SECRET));
-            String url=AliyunVodHelper.getPlayUrl(client,mediaLibrary.getVideoId());
-            jmc.setBody(url);
+            if(mediaLibrary.isOnline()){
+                DefaultAcsClient client = AliyunVodHelper.initVodClient(
+                        configureService.getStringValue(ConfigureItem.ALIYUN_VOD_ACCESS_KEY_ID),
+                        configureService.getStringValue(ConfigureItem.ALIYUN_VOD_ACCESS_KEY_SECRET));
+                String url=AliyunVodHelper.getPlayUrl(client,mediaLibrary.getVideoId());
+                jmc.setBody(url);
+            }else{
+                jmc.setBody(mediaLibrary.getUrl());
+            }
+
         } catch (ClientException e) {
             jmc.setCode(JsonMessageCreator.FAIL);
             jmc.setMsg(e.getMessage());
@@ -252,7 +258,7 @@ public class CurriculumAction extends SuperAction {
         try {
             CourseProblem problem =courseProblemService.problem(courseId,accountId,content);
             sendInsideMessage(interactive,"有一条新的课程提问信息,提问人:"+problem.getSubmitter().getShowAccountName(),
-                    "/curriculum/courseProblem",problem.getEntityId());
+                    ManagerController.prefix+"/curriculum/courseProblem",problem.getEntityId());
         } catch (ServiceException e) {
             catchServiceException(jmc,e);
         }
@@ -353,7 +359,7 @@ public class CurriculumAction extends SuperAction {
         Date faceTime=interactive.getDateParameter("faceTime",new SimpleDateFormat("yyyy-MM-dd"));
         FaceToFace faceToFace=faceToFaceService.make(accountId,name,phone,course,faceTime);
         sendInsideMessage(interactive,"有新的预约面授,预约人:"+faceToFace.getAccount().getShowAccountName(),
-                "",faceToFace.getEntityId());
+                ManagerController.prefix+"/curriculum/faceToFace",faceToFace.getEntityId());
     }
 
     /**

@@ -48,7 +48,6 @@
                                                     <option value="true">免费观看</option>
                                                 </c:otherwise>
                                             </c:choose>
-
                                         </select>
                                     </div>
                                     <label class="col-sm-1">课程金额</label>

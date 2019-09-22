@@ -54,7 +54,7 @@ public class PaymentNotify extends AbstractEntity {
     /**
      * 支付金额
      */
-    @PageField(label = "付款金额")
+    @PageField(label = "付款金额",tableLength = 120)
     private String totalAmount;
     /**
      * 货币种类
@@ -64,7 +64,7 @@ public class PaymentNotify extends AbstractEntity {
     /**
      * 第三方支付单号
      */
-    @PageField(label = "三方单号",tableLength =200)
+    @PageField(label = "三方单号",tableLength =300)
     private String thirdPartOrderId;
     /**
      * 支付完成时间

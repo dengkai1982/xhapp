@@ -1,5 +1,6 @@
 package kaiyi.app.xhapp.controller.app;
 
+import kaiyi.app.xhapp.controller.mgr.ManagerController;
 import kaiyi.app.xhapp.entity.distribution.BankInfo;
 import kaiyi.app.xhapp.entity.distribution.WithdrawApply;
 import kaiyi.app.xhapp.entity.distribution.enums.BankType;
@@ -140,7 +141,8 @@ public class DistributionAction extends SuperAction {
         try {
             WithdrawApply apply=withdrawApplyService.apply(bankInfoId,accountId,amount.getNoDecimalPointToInteger(),phone);
             sendInsideMessage(interactive,"有一条新的提现申请,申请人:"+apply.getApplyer().getShowAccountName()+",申请金额:"+
-            Currency.noDecimalBuild(apply.getApplyAmount(),2).toString(),"/",apply.getEntityId());
+            Currency.noDecimalBuild(apply.getApplyAmount(),2).toString(),
+                    ManagerController.prefix+"/distribution/withdrawApply",apply.getEntityId());
         } catch (ServiceException e) {
             catchServiceException(jmc,e);
         }

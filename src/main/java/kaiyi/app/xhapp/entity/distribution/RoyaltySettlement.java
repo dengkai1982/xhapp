@@ -37,23 +37,26 @@ public class RoyaltySettlement extends AbstractEntity {
     @PageField(label = "结算类型",type = FieldType.REFERENCE,tableLength = 120)
     @FieldReference(fieldName = "name",pupupSelect=false)
     private RoyaltyType royaltyType;
+    @ICurrency
+    @PageField(label = "结算金额",type = FieldType.NUMBER,tableLength = 200)
+    private int price;
     @PageField(label = "直接上级",type = FieldType.REFERENCE,tableLength = 140)
     @FieldReference(fieldName = "showAccountName")
     private Account recommend1;
     @ICurrency
-    @PageField(label = "直接上级提成金额",type = FieldType.NUMBER,tableLength = 140)
+    @PageField(label = "直接上级提成金额",type = FieldType.NUMBER,tableLength = 200)
     private int level1Amount;
     @PageField(label = "上上级",type = FieldType.REFERENCE,tableLength = 140)
     @FieldReference(fieldName = "showAccountName")
     private Account recommend2;
     @ICurrency
-    @PageField(label = "上上级提成金额",type = FieldType.NUMBER,tableLength = 140)
+    @PageField(label = "上上级提成金额",type = FieldType.NUMBER,tableLength = 200)
     private int level2Amount;
     @PageField(label = "内部员工",type = FieldType.REFERENCE,tableLength = 140)
-    @FieldReference(fieldName = "insideMember")
+    @FieldReference(fieldName = "showAccountName")
     private Account insideMember;
     @ICurrency
-    @PageField(label = "内部员工提成比例",type = FieldType.NUMBER,tableLength = 140)
+    @PageField(label = "内部员工提成金额",type = FieldType.NUMBER,tableLength = 200)
     private int insideAmount;
     @PageField(label = "发放人",type = FieldType.REFERENCE,showForm = false,tableLength = 120)
     @FieldReference(fieldName = "showVisitorUserName")
@@ -188,5 +191,13 @@ public class RoyaltySettlement extends AbstractEntity {
 
     public void setInsideAmount(int insideAmount) {
         this.insideAmount = insideAmount;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
     }
 }

@@ -23,7 +23,10 @@ import java.util.List;
 public class test2 {
     @Test
     public void computerPercentage(){
+        String phone="13378789932";
+        System.out.println(phone.substring(7,phone.length()));
         System.out.println(Currency.computerPercentage(10,1000));
+
     }
     @Test
     public void sendsms() throws HttpException {

@@ -98,12 +98,21 @@ public class QuestionController extends ManagerController {
         interactive.writeUTF8Text(getSuccessMessage().build());
     }
 
+    @RequestMapping("/question/batchDelete")
+    public void questionBatchDelete(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        StreamArray<String> entityIdArray=interactive.getStringStreamArray("entityIdArray",",");
+        entityIdArray.forEachByOrder((i,d)->{
+            questionService.deleteById(d);
+        });
+        interactive.writeUTF8Text(getSuccessMessage().build());
+    }
+
     @RequestMapping("/question/delete")
     @AccessControl(name = "删除试题", weight = 5.15f, detail = "删除试题",
             code = rootPath+ "/question/delete", parent = rootPath+"/question")
     public void questionDelete(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
         String entityId=interactive.getStringParameter("entityId","");
-        questionService.deleteForPrimary(entityId);
+        questionService.deleteById(entityId);
         interactive.writeUTF8Text(getSuccessMessage().build());
     }
 

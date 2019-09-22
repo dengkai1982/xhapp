@@ -2,8 +2,10 @@ package kaiyi.app.xhapp.controller.mgr;
 
 import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.app.xhapp.entity.jobs.*;
+import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
 import kaiyi.app.xhapp.service.access.AccountService;
 import kaiyi.app.xhapp.service.jobs.*;
+import kaiyi.app.xhapp.service.pub.ConfigureService;
 import kaiyi.puer.commons.access.AccessControl;
 import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.collection.StreamCollection;
@@ -55,6 +57,8 @@ public class PersonnelController extends ManagerController{
     private ConcernResumeService concernResumeService;
     @Resource
     private AccountService accountService;
+    @Resource
+    private ConfigureService configureService;
     @RequestMapping("/position")
     @AccessControl(name = "招聘职位", weight = 4.1f, detail = "管理招聘职位", code = rootPath+ "/position", parent = rootPath)
     public String position(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
@@ -127,7 +131,8 @@ public class PersonnelController extends ManagerController{
     }
     @PostMapping("/position/commit")
     public void positionCommit(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
-        JsonMessageCreator msg=executeNewOrUpdate(interactive,positionService);
+        JsonMessageCreator msg=executeNewOrUpdate(interactive,positionService,
+                configureService.getStringValue(ConfigureItem.DOC_SAVE_PATH));
         interactive.writeUTF8Text(msg.build());
     }
 

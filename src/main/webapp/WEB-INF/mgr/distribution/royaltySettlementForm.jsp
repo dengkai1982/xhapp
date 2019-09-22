@@ -72,15 +72,23 @@
                     <div data-column-type="NUMBER" class="col-sm-3">
                         <input type="number" id="level1Amount" readonly class="form-control" value="<currency:convert value='${entity.level1Amount}'/>">
                     </div>
-                </div>
-                <div class="form-group">
                     <label for="recommend2" class="col-sm-1">上上级</label>
                     <div class="col-sm-3">
                         <input type="text" id="recommend2" readonly class="form-control" value="${entity.recommend2.showAccountName}"/>
                     </div>
+                </div>
+                <div class="form-group">
                     <label for="level2Amount" class="col-sm-1">上上级提成金额</label>
                     <div data-column-type="NUMBER" class="col-sm-3">
                         <input type="number" id="level2Amount" readonly class="form-control" value="<currency:convert value='${entity.level2Amount}'/>">
+                    </div>
+                    <label for="insideMember" class="col-sm-1">内部员工</label>
+                    <div class="col-sm-3">
+                        <input type="text" id="insideMember" readonly class="form-control" value="${entity.insideMember.showAccountName}"/>
+                    </div>
+                    <label for="insideAmount" class="col-sm-1">内部员工提成金额</label>
+                    <div class="col-sm-3">
+                        <input type="number" id="insideAmount" readonly class="form-control" value="<currency:convert value='${entity.insideAmount}'/>">
                     </div>
                 </div>
                 <%@include file="/WEB-INF/mgr/access/formCommitButton.jsp"%>
@@ -111,6 +119,10 @@
                     if(result.royaltySettlement.recommend2){
                         $("#recommend2").val(result.royaltySettlement.recommend2);
                         $("#level2Amount").val(result.royaltySettlement.level2Amount);
+                    }
+                    if(result.royaltySettlement.insideMember){
+                        $("#insideMember").val(result.royaltySettlement.insideMember);
+                        $("#insideAmount").val(result.royaltySettlement.insideAmount)
                     }
                 }
                 console.log(result);

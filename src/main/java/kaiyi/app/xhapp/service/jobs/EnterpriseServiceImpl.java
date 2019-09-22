@@ -3,6 +3,7 @@ package kaiyi.app.xhapp.service.jobs;
 import kaiyi.app.xhapp.entity.jobs.Enterprise;
 import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.puer.commons.data.JavaDataTyper;
+import kaiyi.puer.db.orm.ServiceException;
 import kaiyi.puer.db.query.CompareQueryExpress;
 import kaiyi.puer.db.query.LinkQueryExpress;
 import kaiyi.puer.db.query.QueryExpress;
@@ -14,6 +15,11 @@ import java.util.Objects;
 @Service("enterpriseService")
 public class EnterpriseServiceImpl extends InjectDao<Enterprise> implements EnterpriseService {
     private static final long serialVersionUID = 916196901732959147L;
+
+    @Override
+    protected void objectBeforeUpdateHandler(Enterprise enterprise, Map<String, JavaDataTyper> data) throws ServiceException {
+        enterprise.setVerifyed(false);
+    }
 
     @Override
     public void changeRecommend(String entityId) {

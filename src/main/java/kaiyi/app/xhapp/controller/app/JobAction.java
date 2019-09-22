@@ -1,5 +1,6 @@
 package kaiyi.app.xhapp.controller.app;
 
+import kaiyi.app.xhapp.controller.mgr.ManagerController;
 import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.app.xhapp.entity.jobs.*;
 import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
@@ -110,7 +111,8 @@ public class JobAction extends SuperAction {
         JsonMessageCreator msg=executeNewOrUpdate(interactive,enterpriseService,interactive.getRequestParameterMap(),docSavePath,
                 reference);
         Enterprise enterprise=reference.get();
-        sendInsideMessage(interactive,"有新的企业加入,企业名称:"+enterprise.getEnterpriseName(),"/personnel/enterprise",enterprise.getEntityId());
+        sendInsideMessage(interactive,"有新的企业加入,企业名称:"+enterprise.getEnterpriseName(),
+                ManagerController.prefix+"/personnel/enterprise",enterprise.getEntityId());
         interactive.writeUTF8Text(msg.build());
     }
 
@@ -131,7 +133,7 @@ public class JobAction extends SuperAction {
             ConcernResume resume=reference.get();
             Enterprise enterprise=enterpriseService.findForPrimary(resume.getEnterprise().getEntityId());
             sendInsideMessage(interactive,"有新的简历关注,企业名称:"+enterprise.getEnterpriseName(),
-                    "/personnel/concernResume",resume.getEntityId());
+                    ManagerController.prefix+"/personnel/concernResume",resume.getEntityId());
         }
         interactive.writeUTF8Text(msg.build());
     }
@@ -188,7 +190,7 @@ public class JobAction extends SuperAction {
             ConcernRecruitment concernRecruitment=reference.get();
             Account account=accountService.findForPrimary(concernRecruitment.getAccount().getEntityId());
             sendInsideMessage(interactive,"有新的招聘信息被关注,关注人:"+account.getShowAccountName(),
-                    "/personnel/concernRecruitment",concernRecruitment.getEntityId());
+                    ManagerController.prefix+"/personnel/concernRecruitment",concernRecruitment.getEntityId());
         }
         interactive.writeUTF8Text(msg.build());
     }

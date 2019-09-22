@@ -25,15 +25,36 @@
                     <div data-column-type="TEXT" class="col-sm-3">
                         <input type="text" value="${entity.name}" name="name" class="form-control" id="name" placeholder="请输入视频名称">
                     </div>
+                    <label for="online" class="col-sm-1 required">视频类型</label>
+                    <div data-column-type="TEXT" class="col-sm-3">
+                        <select name="online" id="online" data-placeholder="请选择视频类型" class="chosen-select form-control">
+                            <c:choose>
+                                <c:when test="${entity.online}">
+                                    <option value="true" selected>在线视频</option>
+                                    <option value="false">本地视频</option>
+                                </c:when>
+                                <c:otherwise>
+                                    <option value="true">在线视频</option>
+                                    <option value="false" selected>本地视频</option>
+                                </c:otherwise>
+                            </c:choose>
+                        </select>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="name" class="col-sm-1">视频文件</label>
-                    <div class="col-sm-3">
+                <div class="form-group" id="mediaUploaderPanel">
+                    <label for="mediaUploader" class="col-sm-1">视频文件</label>
+                    <div class="col-sm-7">
                         <input type="text" id="fileName" class="form-control" readonly style="margin-bottom: 10px"/>
                         <label id="upload_progress" style="display: none;">视频上传中,当前进度<span id="progress_value">0</span>%</label>
                         <div id='mediaUploader' class="mediaUploader">
                             <button type="button" class="btn btn-primary uploader-btn-browse">选择文件</button>
                         </div>
+                    </div>
+                </div>
+                <div class="form-group" id="urlPanel">
+                    <label for="url" class="col-sm-1 required">播放地址</label>
+                    <div class="col-sm-7">
+                        <input type="text" value="${entity.url}" name="url" class="form-control" id="url" placeholder="请输入视频名称">
                     </div>
                 </div>
                 <input type="file" id="fileUpload" style="display: none;" accept=".flv,.mp4,.mp3">
@@ -51,7 +72,23 @@
     var chooseFile;
     var fileTitle;
     var fileName;
+    var online=true;
+    function changeOnline(){
+        if($("#online").val()=="true"){
+            online=true;
+            $("#mediaUploaderPanel").show();
+            $("#urlPanel").hide();
+        }else{
+            online=false;
+            $("#mediaUploaderPanel").hide();
+            $("#urlPanel").show();
+        }
+    }
     function pageReady(doc) {
+        changeOnline();
+        $("#online").change(function(){
+            changeOnline();
+        })
         $(".mediaUploader .uploader-btn-browse").click(function(){
             $("#fileUpload").click();
         });
@@ -62,28 +99,52 @@
             }
         })
         $("#commitToMediaLibrary").click(function(){
-            $(this).addClass("disabled");
             var $form=$("#editor_form").formToJson();
             if($form.title==""){
                 toast("视频名称必须填写");
                 return;
             }
-            fileTitle=$form.name;
-            if($form.entityId==""&&!chooseFile){
-                toast("请先选择需要上传的文件!")
-                return
+            if(online){
+                fileTitle=$form.name;
+                if($form.entityId==""&&!chooseFile){
+                    toast("请先选择需要上传的文件!")
+                    return
+                }
+                fileName = chooseFile.name
+                var userData = '{"Vod":{}}'
+                if (uploader) {
+                    uploader.stopUpload()
+                    $('#auth-progress').text('0')
+                    $('#status').text("")
+                }
+                uploader = createUploader();
+                uploader.addFile(chooseFile, null, null, null, userData);
+                $("#upload_progress").show();
+                uploader.startUpload();
+                $(this).addClass("disabled");
+            }else{
+                if($form.url==""){
+                    toast("播放地址未指定!")
+                    return;
+                }
+                $(this).addClass("disabled");
+                postJson("${managerPath}/curriculum/commitMediaLibrary${suffix}",{
+                    title:$form.name,
+                    url:$form.url,
+                    online:false
+                },function(data){
+                    if(data.code==SUCCESS){
+                        bootbox.alert({
+                            title:'消息',
+                            message: "操作成功,点击确认返回",
+                            size: 'small',
+                            callback: function () {
+                                window.location.href="${webPage.backPage}";
+                            }
+                        });
+                    }
+                });
             }
-            fileName = chooseFile.name
-            var userData = '{"Vod":{}}'
-            if (uploader) {
-                uploader.stopUpload()
-                $('#auth-progress').text('0')
-                $('#status').text("")
-            }
-            uploader = createUploader();
-            uploader.addFile(chooseFile, null, null, null, userData);
-            $("#upload_progress").show();
-            uploader.startUpload();
         })
     }
     function resetUpload(){
@@ -147,12 +208,13 @@
                 var $form=$("#editor_form").formToJson();
                 postJson("${managerPath}/curriculum/commitMediaLibrary${suffix}",{
                     title:$form.name,
-                    videoId:uploadInfo.videoId
+                    videoId:uploadInfo.videoId,
+                    online:true
                 },function(data){
                     if(data.code==SUCCESS){
                         bootbox.alert({
                             title:'消息',
-                            message: "新增媒体库成功,点击确认返回",
+                            message: "操作成功,点击确认返回",
                             size: 'small',
                             callback: function () {
                                 window.location.href="${webPage.backPage}";

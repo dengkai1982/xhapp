@@ -8,6 +8,7 @@ import com.alipay.api.request.AlipayTradeWapPayRequest;
 import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.exceptions.ClientException;
 import kaiyi.app.xhapp.entity.access.Account;
+import kaiyi.app.xhapp.entity.curriculum.CourseOrder;
 import kaiyi.app.xhapp.entity.examination.Question;
 import kaiyi.app.xhapp.entity.examination.QuestionCategory;
 import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
@@ -66,6 +67,13 @@ public class ImportData {
             ctx=new ClassPathXmlApplicationContext("spring-context.xml");
             sel=new SpringSelector(ctx);
         }
+    }
+
+    @Test
+    public void getSale(){
+        CourseOrderService courseOrderService=sel.getBean(CourseOrderService.class);
+        Currency currency=courseOrderService.totalTeamSale("15688598106186917","201909");
+        System.out.println(currency);
     }
 
     /**

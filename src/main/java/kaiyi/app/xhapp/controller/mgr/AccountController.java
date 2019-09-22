@@ -57,8 +57,7 @@ public class AccountController extends ManagerController {
     public void readInsideNotice(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
         String entityId=interactive.getStringParameter("entityId","");
         InsideNotice insideNotice=insideNoticeService.readMessage(entityId);
-        String contextPath=interactive.getHttpServletRequest().getServletContext().getContextPath()+prefix;
-        response.sendRedirect(contextPath+insideNotice.getActionUrl());
+        response.sendRedirect(insideNotice.getActionUrl());
     }
 
     @RequestMapping("/visitorRole")

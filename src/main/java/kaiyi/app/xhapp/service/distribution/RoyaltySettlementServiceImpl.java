@@ -43,6 +43,8 @@ public class RoyaltySettlementServiceImpl extends InjectDao<RoyaltySettlement> i
         royaltySettlement.setRecommend2(computer.getRecommend2());
         royaltySettlement.setLevel1Amount(computer.getLevel1Amount());
         royaltySettlement.setLevel2Amount(computer.getLevel2Amount());
+        royaltySettlement.setInsideMember(computer.getInsideMember());
+        royaltySettlement.setInsideAmount(computer.getInsideAmount());
     }
 
     @Override
@@ -97,6 +99,7 @@ public class RoyaltySettlementServiceImpl extends InjectDao<RoyaltySettlement> i
         RoyaltySettlement rs=new RoyaltySettlement();
         Currency price=Currency.noDecimalBuild(royaltyType.getPrice(),2);
         Currency royalty;
+        rs.setPrice(royaltyType.getPrice());
         if(Objects.nonNull(account)){
             Account recommend=account.getRecommend();
             if(Objects.nonNull(recommend)){

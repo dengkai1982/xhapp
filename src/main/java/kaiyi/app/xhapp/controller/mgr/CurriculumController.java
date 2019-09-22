@@ -412,11 +412,15 @@ public class CurriculumController extends ManagerController{
         JsonMessageCreator jmc=getSuccessMessage();
         DefaultAcsClient client = null;
         try {
-            client = AliyunVodHelper.initVodClient(
-                    configureService.getStringValue(ConfigureItem.ALIYUN_VOD_ACCESS_KEY_ID),
-                    configureService.getStringValue(ConfigureItem.ALIYUN_VOD_ACCESS_KEY_SECRET));
-            String url=AliyunVodHelper.getPlayUrl(client,mediaLibrary.getVideoId());
-            jmc.setBody(url);
+            if(mediaLibrary.isOnline()){
+                client = AliyunVodHelper.initVodClient(
+                        configureService.getStringValue(ConfigureItem.ALIYUN_VOD_ACCESS_KEY_ID),
+                        configureService.getStringValue(ConfigureItem.ALIYUN_VOD_ACCESS_KEY_SECRET));
+                String url=AliyunVodHelper.getPlayUrl(client,mediaLibrary.getVideoId());
+                jmc.setBody(url);
+            }else{
+                jmc.setBody(mediaLibrary.getUrl());
+            }
         } catch (ClientException e) {
             jmc.setCode(JsonMessageCreator.FAIL);
             jmc.setMsg(e.getMessage());
@@ -427,10 +431,16 @@ public class CurriculumController extends ManagerController{
     @PostMapping("/commitMediaLibrary")
     public void commitMediaLibrary(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
         String title=interactive.getStringParameter("title","");
-        String videoId=interactive.getStringParameter("videoId","");
+        boolean online=interactive.getBoolean("online","true",false);
         JsonMessageCreator jmc=getSuccessMessage();
         try {
-            mediaLibraryService.newMediaLibrary(title,videoId);
+            if(online){
+                String videoId=interactive.getStringParameter("videoId","");
+                mediaLibraryService.newOnlineMediaLibrary(title,videoId);
+            }else{
+                String url=interactive.getStringParameter("url","");
+                mediaLibraryService.newUrlMedialibrary(title,url);
+            }
         } catch (ServiceException e) {
             catchServiceException(jmc,e);
         }

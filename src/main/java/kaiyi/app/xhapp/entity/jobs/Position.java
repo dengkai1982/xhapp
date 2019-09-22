@@ -19,6 +19,16 @@ public class Position extends AbstractEntity implements Cascadeable,Comparable<P
     @NotEmpty(hint = "职位名称必须填写")
     @PageField(label = "职位名称")
     private String name;
+    @PageField(label = "首页显示",type=FieldType.BOOLEAN)
+    @FieldBoolean(values = {"是","否"})
+    private boolean showMainPage;
+    @PageField(label = "显示权重",type=FieldType.NUMBER)
+    @FieldNumber(type = FieldNumber.TYPE.FLOAT)
+    private float weight;
+    @PageField(label = "Logo图标",type = FieldType.DOCUMENT,formColumnLength = 3,showQuery = false,showSearch = false,
+            showDetail = false,showTable = false)
+    @FieldDocument(maxFileSize = "4mb")
+    private String logo;
     @PageField(label = "显示/隐藏",type = FieldType.BOOLEAN,tableLength = 120,showForm = false)
     @FieldBoolean(values = {"显示","隐藏"})
     private boolean showable;
@@ -119,5 +129,29 @@ public class Position extends AbstractEntity implements Cascadeable,Comparable<P
 
     public void setShowable(boolean showable) {
         this.showable = showable;
+    }
+
+    public boolean isShowMainPage() {
+        return showMainPage;
+    }
+
+    public void setShowMainPage(boolean showMainPage) {
+        this.showMainPage = showMainPage;
+    }
+    @Lob
+    public String getLogo() {
+        return logo;
+    }
+
+    public void setLogo(String logo) {
+        this.logo = logo;
+    }
+
+    public float getWeight() {
+        return weight;
+    }
+
+    public void setWeight(float weight) {
+        this.weight = weight;
     }
 }

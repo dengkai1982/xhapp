@@ -2,6 +2,7 @@ package kaiyi.app.xhapp.entity.curriculum;
 
 import kaiyi.app.xhapp.entity.AbstractEntity;
 import kaiyi.puer.commons.data.IDate;
+import kaiyi.puer.h5ui.annotations.FieldBoolean;
 import kaiyi.puer.h5ui.annotations.FieldType;
 import kaiyi.puer.h5ui.annotations.PageEntity;
 import kaiyi.puer.h5ui.annotations.PageField;
@@ -19,6 +20,10 @@ public class MediaLibrary extends AbstractEntity {
     public static final String TABLE_NAME="media_library";
     @PageField(label = "视频名称")
     private String name;
+
+    @PageField(label = "视频类型",type = FieldType.BOOLEAN)
+    @FieldBoolean(values = {"在线视频","本地视频"})
+    private boolean online;
 
     private String videoId;
 
@@ -57,5 +62,13 @@ public class MediaLibrary extends AbstractEntity {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public boolean isOnline() {
+        return online;
+    }
+
+    public void setOnline(boolean online) {
+        this.online = online;
     }
 }
