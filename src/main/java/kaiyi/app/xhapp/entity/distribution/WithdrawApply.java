@@ -31,21 +31,21 @@ public class WithdrawApply extends AbstractEntity {
     @PageField(label = "申请时间",type = FieldType.DATETIME,tableLength = 160)
     private Date applyTime;
     @ICurrency
-    @PageField(label = "申请金额",type = FieldType.NUMBER)
+    @PageField(label = "申请金额",type = FieldType.NUMBER,tableLength = 120)
     @FieldNumber(type=FieldNumber.TYPE.INT)
     private int applyAmount;
-    @PageField(label = "网银类型",type = FieldType.CHOSEN)
+    @PageField(label = "网银类型",type = FieldType.CHOSEN,tableLength = 120)
     @FieldChosen
     private BankType bankType;
     @PageField(label = "申请人电话",tableLength = 140)
     private String contractPhone;
     @PageField(label = "账号/卡号",tableLength = 300)
     private String cardNumber;
-    @PageField(label = "开户行")
+    @PageField(label = "开户行",tableLength = 160)
     private String branchName;
-    @PageField(label = "账户姓名")
+    @PageField(label = "账户姓名",tableLength = 120)
     private String bankAccountName;
-    @PageField(label = "申请状态",type = FieldType.CHOSEN)
+    @PageField(label = "申请状态",type = FieldType.CHOSEN,tableLength = 120)
     @FieldChosen
     private WithdrawStatus status;
     @PageField(label = "处理人",type = FieldType.REFERENCE,showForm = false)

@@ -109,7 +109,7 @@
                 showMessage("处理结果必须选择");
                 return;
             }
-            postJSON("${managerPath}/bus/finishWithdraw${suffix}",$formData,"正在处理请稍后",function(result){
+            postJSON("${managerPath}/distribution/finishWithdraw${suffix}",$formData,"正在处理请稍后",function(result){
                     if(result.code==SUCCESS){
                         bootbox.alert({
                             title:'消息',

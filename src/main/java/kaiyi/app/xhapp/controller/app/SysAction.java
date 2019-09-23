@@ -1,6 +1,7 @@
 package kaiyi.app.xhapp.controller.app;
 
 import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
+import kaiyi.app.xhapp.entity.sys.enums.CustomerType;
 import kaiyi.app.xhapp.service.pub.ConfigureService;
 import kaiyi.app.xhapp.service.sys.ConsultationService;
 import kaiyi.app.xhapp.service.sys.QNumberManagerService;
@@ -48,7 +49,8 @@ public class SysAction extends SuperAction{
     @RequestMapping("/getRandomQQNumber")
     public void getRandomQQNumber(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
         JsonMessageCreator jmc=getSuccessMessage();
-        jmc.setBody(qNumberManagerService.getRandomQQNumber());
+        CustomerType customerType=interactive.getEnumParameterByOrdinal(CustomerType.class,"customerType", CustomerType.sy);
+        jmc.setBody(qNumberManagerService.getRandomQQNumber(customerType));
         interactive.writeUTF8Text(jmc.build());
     }
 

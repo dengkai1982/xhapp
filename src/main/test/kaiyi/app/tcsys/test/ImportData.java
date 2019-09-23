@@ -143,14 +143,6 @@ public class ImportData {
         }
     }
 
-
-    @Test
-    public void getRandomQQNumber(){
-        QNumberManagerService qNumberManagerService=sel.getBean(QNumberManagerService.class);
-        for(int i=0;i<10;i++){
-            System.out.println(qNumberManagerService.getRandomQQNumber());
-        }
-    }
     @Test
     public void commitConsultation() throws ServiceException {
         ConsultationService consultationService=sel.getBean(ConsultationService.class);

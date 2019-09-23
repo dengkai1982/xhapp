@@ -39,7 +39,7 @@ public enum CustomerType implements H5ChosenInterface {
     sy{
         @Override
         public String toString() {
-            return "在线视频客服";
+            return "首页客服";
         }
 
         @Override
