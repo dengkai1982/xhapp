@@ -14,6 +14,10 @@
                 <c:if test="${requestScope.hasData}">
                     <a href="#" class="btn btn-link querybox-toggle" id="show_or_hide_search"><i class="icon-search icon"></i> 搜索</a>
                 </c:if>
+                <a href="#" id="batchInfoUpper" class="btn btn-secondary">批量发布</a>
+                <a href="#" id="batchUnInfoUpper" class="btn btn-secondary">批量取消发布</a>
+                <a href="#" id="batchFrozen" class="btn btn-secondary">批量冻结</a>
+                <a href="#" id="batchUnFrozen" class="btn btn-secondary">批量取消冻结</a>
             </div>
         </div>
         <c:if test="${requestScope.hasData}">
@@ -38,10 +42,84 @@
 </main>
 <%@include file="/WEB-INF/footerPage.jsp"%>
 <script type="text/javascript">
+    function batchFrozen(enable){
+        var datagrid=$('#remoteDataGrid').data('zui.datagrid');
+        var checkItems=datagrid.getCheckItems();
+        if(checkItems.length==0){
+            toast("没有企业被选中");
+            return;
+        }
+        var entityIdArray=new Array();
+        for(i=0;i<checkItems.length;i++){
+            var data=checkItems[i];
+            if(data!=null){
+                entityIdArray.push(data.entityId);
+            }
+        }
+        postJSON("${managerPath}/personnel/enterprise/batchFrozen${suffix}",{
+            entityIdArray:entityIdArray.join(","),
+            enable:enable
+        },"正在执行,请稍后...",function(result){
+            if(result.code==SUCCESS){
+                bootbox.alert({
+                    title:"消息",
+                    message: "完成批量更新,点击确认返回",
+                    callback: function () {
+                        reflashPageData();
+                    }
+                })
+            }else{
+                showMessage(result.msg,1500);
+            }
+        });
+    }
+    function batchInfoUpper(enable){
+        var datagrid=$('#remoteDataGrid').data('zui.datagrid');
+        var checkItems=datagrid.getCheckItems();
+        if(checkItems.length==0){
+            toast("没有简历信息被选中");
+            return;
+        }
+        var entityIdArray=new Array();
+        for(i=0;i<checkItems.length;i++){
+            var data=checkItems[i];
+            if(data!=null){
+                entityIdArray.push(data.entityId);
+            }
+        }
+        postJSON("${managerPath}/personnel/recruitment/batchInfoUpper${suffix}",{
+            entityIdArray:entityIdArray.join(","),
+            enable:enable
+        },"正在执行,请稍后...",function(result){
+            if(result.code==SUCCESS){
+                bootbox.alert({
+                    title:"消息",
+                    message: "完成批量操作,点击确认返回",
+                    callback: function () {
+                        reflashPageData();
+                    }
+                })
+            }else{
+                showMessage(result.msg,1500);
+            }
+        });
+    }
     function pageReady(doc){
         <c:if test="${requestScope.hasData}">
         ${requestScope.tableScript}
         </c:if>
+        $("#batchInfoUpper").click(function(){
+            batchInfoUpper(true);
+        });
+        $("#batchUnInfoUpper").click(function(){
+            batchInfoUpper(false);
+        });
+        $("#batchFrozen").click(function(){
+            batchFrozen(true);
+        });
+        $("#batchUnFrozen").click(function(){
+            batchFrozen(false);
+        });
     }
     function createMenuItems(dataId,dataRow,data){
         var items = [{

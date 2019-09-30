@@ -1,8 +1,11 @@
 package kaiyi.app.xhapp.service.jobs;
 
+import kaiyi.app.xhapp.entity.jobs.ConcernResume;
 import kaiyi.app.xhapp.entity.jobs.Position;
 import kaiyi.app.xhapp.entity.jobs.Resume;
+import kaiyi.app.xhapp.entity.jobs.WorkExperience;
 import kaiyi.app.xhapp.service.InjectDao;
+import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.JavaDataTyper;
 import kaiyi.puer.db.orm.ServiceException;
@@ -54,5 +57,37 @@ public class ResumeServiceImpl extends InjectDao<Resume> implements ResumeServic
         if(Objects.nonNull(resume)){
             resume.setInfoUpper(!resume.isInfoUpper());
         }
+    }
+
+    @Override
+    public void deleteResume(String entityId) {
+        Resume resume=new Resume();
+        resume.setEntityId(entityId);
+        em.createQuery("delete from "+getEntityName(WorkExperience.class)+" o " +
+                "where o.resume=:resume").setParameter("resume",resume).executeUpdate();
+        em.createQuery("delete from "+getEntityName(ConcernResume.class)+" o " +
+                "where o.resume=:resume").setParameter("resume",resume).executeUpdate();
+        deleteForPrimary(entityId);
+    }
+
+    @Override
+    public void batchInfoUpper(StreamArray<String> entityIdArray, boolean infoUpper) {
+        StreamCollection<String> positions=new StreamCollection<>();
+        entityIdArray.forEach(h->{
+            positions.add(h);
+        });
+        em.createQuery("update "+getEntityName(entityClass)+" o set o.infoUpper=:infoUpper where " +
+                "o.entityId in(:entityIdArray)").setParameter("infoUpper",infoUpper)
+                .setParameter("entityIdArray",positions.toList()).executeUpdate();
+    }
+    @Override
+    public void batchFrozen(StreamArray<String> entityIdArray, boolean frozen) {
+        StreamCollection<String> positions=new StreamCollection<>();
+        entityIdArray.forEach(h->{
+            positions.add(h);
+        });
+        em.createQuery("update "+getEntityName(entityClass)+" o set o.frozen=:frozen where " +
+                "o.entityId in(:entityIdArray)").setParameter("frozen",frozen)
+                .setParameter("entityIdArray",positions.toList()).executeUpdate();
     }
 }

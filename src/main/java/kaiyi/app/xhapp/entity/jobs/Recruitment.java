@@ -27,22 +27,22 @@ public class Recruitment extends AbstractEntity {
     private Position position;
     @PageField(label = "推荐岗位名称",tableLength = 200)
     private String positionName;
-    @PageField(label = "推荐岗位",type = FieldType.BOOLEAN)
+    @PageField(label = "推荐岗位",type = FieldType.BOOLEAN,tableLength = 120)
     @FieldBoolean(values = {"是","否"})
     private boolean recommend;
     @NotEmpty(hint = "工作类型必须填写")
-    @PageField(label = "工作类型",type = FieldType.BOOLEAN)
+    @PageField(label = "工作类型",type = FieldType.BOOLEAN,tableLength = 120)
     @FieldBoolean(values = {"全职","兼职"})
     private boolean fullTime;
     @NotEmpty(hint = "工作城市必须填写")
     @PageField(label = "工作城市",tableLength = 280)
     private String workCity;
     @NotEmpty(hint = "招聘人数必须填写")
-    @PageField(label = "招聘人数",type = FieldType.NUMBER)
+    @PageField(label = "招聘人数",type = FieldType.NUMBER,tableLength = 120)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int personNumber;
     @NotEmpty(hint = "薪资待遇必须填写")
-    @PageField(label = "薪资待遇")
+    @PageField(label = "薪资待遇",tableLength = 120)
     private String salary;
     @NotEmpty(hint = "工作年限要求必须填写")
     @PageField(label = "工作年限要求",tableLength = 160)

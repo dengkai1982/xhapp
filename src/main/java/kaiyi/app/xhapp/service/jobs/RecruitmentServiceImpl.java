@@ -1,8 +1,10 @@
 package kaiyi.app.xhapp.service.jobs;
 
+import kaiyi.app.xhapp.entity.jobs.ConcernRecruitment;
 import kaiyi.app.xhapp.entity.jobs.Position;
 import kaiyi.app.xhapp.entity.jobs.Recruitment;
 import kaiyi.app.xhapp.service.InjectDao;
+import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.JavaDataTyper;
 import kaiyi.puer.db.orm.ServiceException;
@@ -57,5 +59,36 @@ public class RecruitmentServiceImpl extends InjectDao<Recruitment> implements Re
         if(Objects.nonNull(recruitment)){
             recruitment.setInfoUpper(!recruitment.isInfoUpper());
         }
+    }
+
+    @Override
+    public void deleteRecruitment(String entityId) {
+        Recruitment recruitment=new Recruitment();
+        recruitment.setEntityId(entityId);
+        em.createQuery("delete from "+getEntityName(ConcernRecruitment.class)+" o " +
+                "where o.recruitment=:recruitment").setParameter("recruitment",recruitment).executeUpdate();
+        deleteForPrimary(entityId);
+    }
+
+    @Override
+    public void batchInfoUpper(StreamArray<String> entityIdArray, boolean infoUpper) {
+        StreamCollection<String> positions=new StreamCollection<>();
+        entityIdArray.forEach(h->{
+            positions.add(h);
+        });
+        em.createQuery("update "+getEntityName(entityClass)+" o set o.infoUpper=:infoUpper where " +
+                "o.entityId in(:entityIdArray)").setParameter("infoUpper",infoUpper)
+                .setParameter("entityIdArray",positions.toList()).executeUpdate();
+    }
+
+    @Override
+    public void batchRecommend(StreamArray<String> entityIdArray, boolean recommend) {
+        StreamCollection<String> positions=new StreamCollection<>();
+        entityIdArray.forEach(h->{
+            positions.add(h);
+        });
+        em.createQuery("update "+getEntityName(entityClass)+" o set o.recommend=:recommend where " +
+                "o.entityId in(:entityIdArray)").setParameter("recommend",recommend)
+                .setParameter("entityIdArray",positions.toList()).executeUpdate();
     }
 }

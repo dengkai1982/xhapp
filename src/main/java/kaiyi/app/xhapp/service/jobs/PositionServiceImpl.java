@@ -2,6 +2,7 @@ package kaiyi.app.xhapp.service.jobs;
 
 import kaiyi.app.xhapp.entity.jobs.Position;
 import kaiyi.app.xhapp.service.InjectDao;
+import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.JavaDataTyper;
 import kaiyi.puer.db.query.*;
@@ -73,6 +74,17 @@ public class PositionServiceImpl extends InjectDao<Position> implements Position
         if(Objects.nonNull(position)){
             position.setShowable(!position.isShowable());
         }
+    }
+
+    @Override
+    public void batchShowOrHidden(StreamArray<String> entityIdArray, boolean showable) {
+        StreamCollection<String> positions=new StreamCollection<>();
+        entityIdArray.forEach(h->{
+            positions.add(h);
+        });
+        em.createQuery("update "+getEntityName(entityClass)+" o set o.showable=:showable where " +
+                "o.entityId in(:entityIdArray)").setParameter("showable",showable)
+                .setParameter("entityIdArray",positions.toList()).executeUpdate();
     }
 
 

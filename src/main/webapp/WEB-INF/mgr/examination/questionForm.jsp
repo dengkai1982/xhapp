@@ -44,7 +44,7 @@
                 <div class="form-group">
                     <label for="answer" class="col-sm-1 required">正确答案</label>
                     <div class="col-sm-8">
-                        <input type="text" validate="required:正确答案未选择" value="${entity.answer}" name="answer" class="form-control" id="answer" readonly>
+                        <input type="text"  value="${entity.answer}" name="answer" class="form-control" id="answer" readonly>
                     </div>
                 </div>
                 <div id="answerContainer" style="display: none;">
@@ -159,6 +159,8 @@
     </div>
 </div>
 <%@include file="/WEB-INF/footerPage.jsp"%>
+<div id="refQuestionDetail" style="display:none">${entity.detail}</div>
+<div id="refQuestionAnalysis" style="display:none">${entity.analysis}</div>
 <script type="text/javascript" src="${contextPath}/js/category.js"></script>
 <script type="text/javascript">
     var detailEditor;
@@ -385,8 +387,8 @@
                 }*/
             }
         });
-        detailEditor=setEditorContent("#detailEditor","${entity.detail}");
-        analysisEditor=setEditorContent("#analysisEditor","${entity.analysis}")
+        detailEditor=setEditorContent("#detailEditor",$("#refQuestionDetail").html());
+        analysisEditor=setEditorContent("#analysisEditor",$("#refQuestionAnalysis").html())
         $(".w-e-text-container").height(150);
         //图片上传
         $("#questionImageUploader").uploader({

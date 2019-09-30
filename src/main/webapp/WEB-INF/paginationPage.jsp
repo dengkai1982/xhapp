@@ -157,10 +157,18 @@
                             itemLink:itemLink
                         }
                         if(value!=null&&value!=undefined&&value!=""){
-                            if($this.hasClass("left_group")){
-                                searchCondition.leftGroupItem.push(jsonIitem);
+                            if(functionExist("customerFormQuery")){
+                                if($this.hasClass("left_group")){
+                                    customerFormQuery(searchCondition.leftGroupItem,jsonIitem);
+                                }else{
+                                    customerFormQuery(searchCondition.rightGroupItem,jsonIitem);
+                                }
                             }else{
-                                searchCondition.rightGroupItem.push(jsonIitem);
+                                if($this.hasClass("left_group")){
+                                    searchCondition.leftGroupItem.push(jsonIitem);
+                                }else{
+                                    searchCondition.rightGroupItem.push(jsonIitem);
+                                }
                             }
                         }
                     });

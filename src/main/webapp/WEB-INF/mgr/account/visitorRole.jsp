@@ -50,10 +50,14 @@
     }
     function createMenuItems(dataId,dataRow,data){
         var items = [{
-            url:"${contextPath}${webPage.modifyEntityPage}${suffix}?entityId="+dataId+"&${paginationCurrentPage}="+getPaginationCurrentPage(),
+            //url:"${contextPath}${webPage.modifyEntityPage}${suffix}?entityId="+dataId+"&${paginationCurrentPage}="+getPaginationCurrentPage(),
             label:"编辑修改",
             className:"privilege",
-            access:"${webPage.modifyEntityPage}"
+            access:"${webPage.modifyEntityPage}",
+            onClick:function(e){
+                var url="${contextPath}${webPage.modifyEntityPage}${suffix}?entityId="+dataId+"&${paginationCurrentPage}="+getPaginationCurrentPage();
+                window.open(url,'_blank');
+            }
         },{
             url:"${contextPath}${webPage.detailEntityPage}${suffix}?entityId="+dataId+"&${paginationCurrentPage}="+getPaginationCurrentPage(),
             label:"查看详情"

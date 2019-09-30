@@ -87,6 +87,20 @@ public class JobAction extends SuperAction {
         JsonMessageCreator msg=executeNewOrUpdate(interactive,certificateService,docSavePath);
         interactive.writeUTF8Text(msg.build());
     }
+
+    /**
+     * 删除个人证书
+     * @param interactive
+     * @param response
+     */
+    @PostMapping("/deleteCertificate")
+    public void deleteCertificate(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String entityId=interactive.getStringParameter("entityId","");
+        certificateService.deleteCertificate(entityId);
+        interactive.writeUTF8Text(getSuccessMessage().build());
+    }
+
+
     /**
      * 新增修改招聘信息
      * @param interactive
@@ -253,4 +267,51 @@ public class JobAction extends SuperAction {
         interactive.writeUTF8Text(JsonCreator.EMPTY_JSON);
     }
 
+    /**
+     * 企业招聘信息上下架
+     * @param interactive
+     * @param response
+     */
+    @RequestMapping("/uppperRecruitment")
+    public void uppperRecruitment(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String entityId=interactive.getStringParameter("entityId","");
+        recruitmentService.changeUpper(entityId);
+        interactive.writeUTF8Text(getSuccessMessage().build());
+    }
+
+    /**
+     * 删除企业招聘信息
+     * @param interactive
+     * @param response
+     */
+    @RequestMapping("/deleteRecruitment")
+    public void deleteRecruitment(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String entityId=interactive.getStringParameter("entityId","");
+        recruitmentService.deleteRecruitment(entityId);
+        interactive.writeUTF8Text(getSuccessMessage().build());
+    }
+
+    /**
+     * 个人简历上下架
+     * @param interactive
+     * @param response
+     */
+    @RequestMapping("/upperResume")
+    public void upperResume(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String entityId=interactive.getStringParameter("entityId","");
+        resumeService.changeUpper(entityId);
+        interactive.writeUTF8Text(getSuccessMessage().build());
+    }
+
+    /**
+     * 删除个人简历
+     * @param interactive
+     * @param response
+     */
+    @RequestMapping("/deleteResume")
+    public void deleteResume(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String entityId=interactive.getStringParameter("entityId","");
+        resumeService.deleteResume(entityId);
+        interactive.writeUTF8Text(getSuccessMessage().build());
+    }
 }

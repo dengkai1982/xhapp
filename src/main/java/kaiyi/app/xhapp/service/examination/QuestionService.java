@@ -8,10 +8,13 @@ import kaiyi.puer.db.orm.DatabaseFastOper;
 import kaiyi.puer.db.orm.DatabaseOperator;
 import kaiyi.puer.db.orm.DatabaseQuery;
 import kaiyi.puer.db.orm.ServiceException;
+import kaiyi.puer.h5ui.controller.H5PageQueryExpress;
+import kaiyi.puer.web.service.EntityQueryService;
 
 import java.util.List;
 
-public interface QuestionService extends DatabaseQuery<Question>, DatabaseFastOper<Question>, DatabaseOperator<Question> {
+public interface QuestionService extends DatabaseQuery<Question>, DatabaseFastOper<Question>, DatabaseOperator<Question>,
+        H5PageQueryExpress {
     /**
      * 删除参考答案
      */
@@ -37,7 +40,7 @@ public interface QuestionService extends DatabaseQuery<Question>, DatabaseFastOp
     boolean isQuestion(List<ExcelData> line);
 
 
-    Question parseQuestion(List<ExcelData> line,StreamCollection<QuestionCategory> categories)throws ServiceException;
+    Question parseQuestion(List<ExcelData> line/*,StreamCollection<QuestionCategory> categories*/)throws ServiceException;
 
     void parseChoiceAnswer(Question question,List<ExcelData> line)throws ServiceException;
 
@@ -46,4 +49,10 @@ public interface QuestionService extends DatabaseQuery<Question>, DatabaseFastOp
      * @param entityIdArray
      */
     void batchEnable(StreamArray<String> entityIdArray, boolean enable);
+
+    /**
+     * 批量启用或停用所有
+     * @param enable
+     */
+    void batchEnableAll(boolean enable);
 }

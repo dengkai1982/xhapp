@@ -2,6 +2,8 @@ package kaiyi.app.xhapp.service.jobs;
 
 import kaiyi.app.xhapp.entity.jobs.Enterprise;
 import kaiyi.app.xhapp.service.InjectDao;
+import kaiyi.puer.commons.collection.StreamArray;
+import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.JavaDataTyper;
 import kaiyi.puer.db.orm.ServiceException;
 import kaiyi.puer.db.query.CompareQueryExpress;
@@ -35,6 +37,39 @@ public class EnterpriseServiceImpl extends InjectDao<Enterprise> implements Ente
         if(Objects.nonNull(enterprise)){
             enterprise.setVerifyed(!enterprise.isVerifyed());
         }
+    }
+
+    @Override
+    public void batchVerifyed(StreamArray<String> entityIdArray, boolean verifyed) {
+        StreamCollection<String> positions=new StreamCollection<>();
+        entityIdArray.forEach(h->{
+            positions.add(h);
+        });
+        em.createQuery("update "+getEntityName(entityClass)+" o set o.verifyed=:verifyed where " +
+                "o.entityId in(:entityIdArray)").setParameter("verifyed",verifyed)
+                .setParameter("entityIdArray",positions.toList()).executeUpdate();
+    }
+
+    @Override
+    public void batchRecommend(StreamArray<String> entityIdArray, boolean recommend) {
+        StreamCollection<String> positions=new StreamCollection<>();
+        entityIdArray.forEach(h->{
+            positions.add(h);
+        });
+        em.createQuery("update "+getEntityName(entityClass)+" o set o.recommend=:recommend where " +
+                "o.entityId in(:entityIdArray)").setParameter("recommend",recommend)
+                .setParameter("entityIdArray",positions.toList()).executeUpdate();
+    }
+
+    @Override
+    public void batchFrozen(StreamArray<String> entityIdArray, boolean frozen) {
+        StreamCollection<String> positions=new StreamCollection<>();
+        entityIdArray.forEach(h->{
+            positions.add(h);
+        });
+        em.createQuery("update "+getEntityName(entityClass)+" o set o.frozen=:frozen where " +
+                "o.entityId in(:entityIdArray)").setParameter("frozen",frozen)
+                .setParameter("entityIdArray",positions.toList()).executeUpdate();
     }
 
     @Override

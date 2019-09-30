@@ -7,4 +7,6 @@ import kaiyi.puer.db.orm.DatabaseQuery;
 
 public interface CertificateService extends DatabaseQuery<Certificate>,
         DatabaseFastOper<Certificate>,DatabaseOperator<Certificate> {
+
+    void deleteCertificate(String entityId);
 }

@@ -1,6 +1,7 @@
 package kaiyi.app.xhapp.service.jobs;
 
 import kaiyi.app.xhapp.entity.jobs.Position;
+import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.db.orm.DatabaseFastOper;
 import kaiyi.puer.db.orm.DatabaseOperator;
@@ -20,6 +21,13 @@ public interface PositionService extends DatabaseQuery<Position> , DatabaseFastO
     StreamCollection<Position> getSameLevel(String districtId);
 
     void newJobs(String name,String parentName);
-
+    //显示影藏
     void changeShowable(String entityId);
+
+    /**
+     * 批量显示影藏
+     * @param entityIdArray
+     * @param enable
+     */
+    void batchShowOrHidden(StreamArray<String> entityIdArray, boolean enable);
 }

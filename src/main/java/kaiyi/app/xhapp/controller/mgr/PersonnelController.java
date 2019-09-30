@@ -104,7 +104,7 @@ public class PersonnelController extends ManagerController{
                     new FormElementHidden("deliver","true")
             };
         }
-        mainTablePage(interactive,positionService,queryExpress,hiddens,new DynamicGridInfo(false,DynamicGridInfo.OperMenuType.popup));
+        mainTablePage(interactive,positionService,queryExpress,hiddens,new DynamicGridInfo(true,DynamicGridInfo.OperMenuType.popup));
         return rootPath+"/position";
     }
     @RequestMapping("/position/new")
@@ -145,6 +145,15 @@ public class PersonnelController extends ManagerController{
         interactive.writeUTF8Text(getSuccessMessage().build());
     }
 
+    @RequestMapping("/position/batchShowOrHide")
+    public void positionBatchShowOrHide(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        StreamArray<String> entityIdArray=interactive.getStringStreamArray("entityIdArray",",");
+        boolean enable=interactive.getBoolean("enable","true",false);
+        positionService.batchShowOrHidden(entityIdArray,enable);
+        interactive.writeUTF8Text(getSuccessMessage().build());
+    }
+
+
 
     @RequestMapping("/enterprise")
     @AccessControl(name = "企业信息", weight = 4.2f, detail = "企业信息", code = rootPath+ "/enterprise", parent = rootPath)
@@ -162,7 +171,7 @@ public class PersonnelController extends ManagerController{
         PageElementManager pm=getH5UIService().getPageElementManager();
         StreamCollection<PageFieldData> tableFieldDatas=pm.getPageFieldDatas(enterpriseService.getEntityClassName());
         tablePage(interactive,enterpriseService,null,formElementHiddens,pm.getSearchableFieldData(enterpriseService.getEntityClassName()),
-                tableFieldDatas,new DynamicGridInfo(false,DynamicGridInfo.OperMenuType.popup));
+                tableFieldDatas,new DynamicGridInfo(true,DynamicGridInfo.OperMenuType.popup));
         return rootPath+"/enterprise";
     }
     @RequestMapping("/enterprise/detail")
@@ -195,12 +204,37 @@ public class PersonnelController extends ManagerController{
         enterpriseService.changeVerifyed(entityId);
         interactive.writeUTF8Text(jmc.build());
     }
+    //批量认证
+    @RequestMapping("/enterprise/batchVerify")
+    public void enterpriseBatchVerify(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        StreamArray<String> entityIdArray=interactive.getStringStreamArray("entityIdArray",",");
+        boolean enable=interactive.getBoolean("enable","true",false);
+        enterpriseService.batchVerifyed(entityIdArray,enable);
+        interactive.writeUTF8Text(getSuccessMessage().build());
+    }
+    //批量推荐
+    @RequestMapping("/enterprise/batchRecommend")
+    public void enterpriseBatchRecommend(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        StreamArray<String> entityIdArray=interactive.getStringStreamArray("entityIdArray",",");
+        boolean enable=interactive.getBoolean("enable","true",false);
+        enterpriseService.batchRecommend(entityIdArray,enable);
+        interactive.writeUTF8Text(getSuccessMessage().build());
+    }
+    //批量冻结
+    @RequestMapping("/enterprise/batchFrozen")
+    public void enterpriseBatchFrozen(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        StreamArray<String> entityIdArray=interactive.getStringStreamArray("entityIdArray",",");
+        boolean enable=interactive.getBoolean("enable","true",false);
+        enterpriseService.batchFrozen(entityIdArray,enable);
+        interactive.writeUTF8Text(getSuccessMessage().build());
+    }
+
     @RequestMapping("/recruitment")
     @AccessControl(name = "招聘信息", weight = 4.3f, detail = "企业招聘信息", code = rootPath+ "/recruitment", parent = rootPath)
     public String recruitment(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
         setDefaultPage(interactive,rootPath+"/recruitment");
         mainTablePage(interactive,recruitmentService,null,null,
-                new DynamicGridInfo(false,DynamicGridInfo.OperMenuType.popup));
+                new DynamicGridInfo(true,DynamicGridInfo.OperMenuType.popup));
         return rootPath+"/recruitment";
     }
     @RequestMapping("/recruitment/detail")
@@ -232,14 +266,28 @@ public class PersonnelController extends ManagerController{
         interactive.writeUTF8Text(getSuccessMessage().build());
     }
 
-
-
+    //批量发布
+    @RequestMapping("/recruitment/batchInfoUpper")
+    public void recruitmentBatchUpper(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        StreamArray<String> entityIdArray=interactive.getStringStreamArray("entityIdArray",",");
+        boolean enable=interactive.getBoolean("enable","true",false);
+        recruitmentService.batchInfoUpper(entityIdArray,enable);
+        interactive.writeUTF8Text(getSuccessMessage().build());
+    }
+    //批量推荐
+    @RequestMapping("/recruitment/batchRecommend")
+    public void recruitmentBatchRecommend(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        StreamArray<String> entityIdArray=interactive.getStringStreamArray("entityIdArray",",");
+        boolean enable=interactive.getBoolean("enable","true",false);
+        recruitmentService.batchRecommend(entityIdArray,enable);
+        interactive.writeUTF8Text(getSuccessMessage().build());
+    }
     @RequestMapping("/resume")
     @AccessControl(name = "个人简历", weight = 4.4f, detail = "个人简历", code = rootPath+ "/resume", parent = rootPath)
     public String resume(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
         setDefaultPage(interactive,rootPath+"/resume");
         mainTablePage(interactive,resumeService,null,null,
-                new DynamicGridInfo(false,DynamicGridInfo.OperMenuType.popup));
+                new DynamicGridInfo(true,DynamicGridInfo.OperMenuType.popup));
         return rootPath+"/resume";
     }
     @RequestMapping("/resume/detail")
@@ -262,6 +310,22 @@ public class PersonnelController extends ManagerController{
     public void resumeChangeUpper(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
         String entityId=interactive.getStringParameter("entityId","");
         resumeService.changeUpper(entityId);
+        interactive.writeUTF8Text(getSuccessMessage().build());
+    }
+    //批量发布
+    @RequestMapping("/resume/batchInfoUpper")
+    public void resumeBatchUpper(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        StreamArray<String> entityIdArray=interactive.getStringStreamArray("entityIdArray",",");
+        boolean enable=interactive.getBoolean("enable","true",false);
+        resumeService.batchInfoUpper(entityIdArray,enable);
+        interactive.writeUTF8Text(getSuccessMessage().build());
+    }
+    //批量冻结
+    @RequestMapping("/resume/batchFrozen")
+    public void resumeBatchFrozen(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        StreamArray<String> entityIdArray=interactive.getStringStreamArray("entityIdArray",",");
+        boolean enable=interactive.getBoolean("enable","true",false);
+        resumeService.batchFrozen(entityIdArray,enable);
         interactive.writeUTF8Text(getSuccessMessage().build());
     }
 

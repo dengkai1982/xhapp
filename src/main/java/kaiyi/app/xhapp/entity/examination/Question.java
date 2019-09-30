@@ -1,9 +1,11 @@
 package kaiyi.app.xhapp.entity.examination;
 
 import kaiyi.app.xhapp.entity.AbstractEntity;
+import kaiyi.app.xhapp.entity.examination.enums.AscriptionType;
 import kaiyi.app.xhapp.entity.examination.enums.QuestionType;
 import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.collection.StreamCollection;
+import kaiyi.puer.commons.data.IDate;
 import kaiyi.puer.commons.validate.Max;
 import kaiyi.puer.commons.validate.Min;
 import kaiyi.puer.commons.validate.NotEmpty;
@@ -39,26 +41,31 @@ public class Question extends AbstractEntity {
     @PageField(label = "模拟考试类别",type = FieldType.REFERENCE,tableLength = 140)
     @FieldReference(fieldName = "name")
     private SimulationCategory simulationCategory;
+    @IDate
+    @PageField(label = "上传时间",type = FieldType.DATETIME,tableLength = 160)
+    private Date updateTime;
     @NotEmpty(hint = "题目类型必须选择")
-    @PageField(label = "题目类型",type = FieldType.CHOSEN)
+    @PageField(label = "题目类型",type = FieldType.CHOSEN,tableLength = 120)
     @FieldChosen
     private QuestionType questionType;
+    @NotEmpty(hint = "归属分类必须选择")
+    @PageField(label = "归属分类",type = FieldType.CHOSEN,tableLength = 120)
+    @FieldChosen
+    private AscriptionType ascriptionType;
     @NotEmpty(hint = "问题分值必须设置")
     @Min(val = 1,hint = "问题分值最少需要指定1分")
     @Max(val = 99,hint = "问题分值不能超过99分")
-    @PageField(label = "试题分值",type = FieldType.NUMBER)
+    @PageField(label = "试题分值",type = FieldType.NUMBER,tableLength = 120)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int score;
     @PageField(label = "问题解析",type = FieldType.AREATEXT,formColumnLength = 3,tableLength = 500,showForm = false,
     showQuery = false)
     private String analysis;
-    @PageField(label = "参考答案",showForm = false,showQuery = false,showSearch = false)
+    @PageField(label = "参考答案",showForm = false,showQuery = false,showSearch = false,tableLength = 120)
     private String answer;
-    @PageField(label = "启用状态",type = FieldType.BOOLEAN,showForm = false,showQuery = false,showSearch = false)
+    @PageField(label = "启用状态",type = FieldType.BOOLEAN,showForm = false,showQuery = false,showSearch = false,tableLength = 120)
     @FieldBoolean(values = {"启用","停用"})
     private boolean enable;
-
-    private Date updateTime;
 
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -74,7 +81,7 @@ public class Question extends AbstractEntity {
 
     @Override
     public StreamArray<String> filterField() {
-        return new StreamArray<>(new String[]{"choiceAnswers","updateTime"});
+        return new StreamArray<>(new String[]{"choiceAnswers"});
     }
 
     @Lob
@@ -163,4 +170,13 @@ public class Question extends AbstractEntity {
     public void setSimulationCategory(SimulationCategory simulationCategory) {
         this.simulationCategory = simulationCategory;
     }
+    @Enumerated(EnumType.STRING)
+    public AscriptionType getAscriptionType() {
+        return ascriptionType;
+    }
+
+    public void setAscriptionType(AscriptionType ascriptionType) {
+        this.ascriptionType = ascriptionType;
+    }
 }
+

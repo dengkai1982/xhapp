@@ -1,6 +1,7 @@
 package kaiyi.app.xhapp.service.examination;
 
 import kaiyi.app.xhapp.ServiceExceptionDefine;
+import kaiyi.app.xhapp.controller.mgr.QuestionController;
 import kaiyi.app.xhapp.entity.examination.*;
 import kaiyi.app.xhapp.entity.examination.enums.QuestionType;
 import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
@@ -18,10 +19,14 @@ import kaiyi.puer.db.query.ContainQueryExpress;
 import kaiyi.puer.db.query.LinkQueryExpress;
 import kaiyi.puer.db.query.OrderBy;
 import kaiyi.puer.db.query.QueryExpress;
+import kaiyi.puer.h5ui.ft.PageFieldType;
 import kaiyi.puer.h5ui.service.DocumentService;
 import kaiyi.puer.json.JsonParserException;
 import kaiyi.puer.json.JsonUtils;
 import kaiyi.puer.json.parse.ArrayJsonParser;
+import kaiyi.puer.web.elements.FormElementHidden;
+import kaiyi.puer.web.query.QueryCondition;
+import kaiyi.puer.web.servlet.WebInteractive;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -90,16 +95,16 @@ public class QuestionServiceImpl extends InjectDao<Question> implements Question
     }
 
     @Override
-    public Question parseQuestion(List<ExcelData> line, StreamCollection<QuestionCategory> categories) throws ServiceException {
+    public Question parseQuestion(List<ExcelData> line/*, StreamCollection<QuestionCategory> categories*/) throws ServiceException {
         Question question=new Question();
         String detail = line.get(0).getData().stringValue();
         String questionCategoryName= line.get(1).getData().stringValue();
         String simulationCategoryName= line.get(2).getData().stringValue();
         QuestionCategory questionCategory=questionCategoryService.signleQuery("name",questionCategoryName);
         SimulationCategory simulationCategory=simulationCategoryService.signleQuery("name",simulationCategoryName);
-        if(Objects.isNull(categories)){
+        /*if(Objects.isNull(categories)){
             throw ServiceExceptionDefine.categoryError;
-        }
+        }*/
         String typeName=line.get(3).getData().stringValue();
         QuestionType questionType=QuestionType.getByName(typeName);
         if(Objects.isNull(questionType)){
@@ -171,6 +176,12 @@ public class QuestionServiceImpl extends InjectDao<Question> implements Question
                 .setParameter("entityIdArray",questions.toList()).executeUpdate();
     }
 
+    @Override
+    public void batchEnableAll(boolean enable) {
+        em.createQuery("update "+getEntityName(entityClass)+" o set o.enable=:enable")
+                .setParameter("enable",enable).executeUpdate();
+    }
+
 
     @Override
     protected void objectBeforePersistHandler(Question question, Map<String, JavaDataTyper> params) throws ServiceException {
@@ -184,7 +195,7 @@ public class QuestionServiceImpl extends InjectDao<Question> implements Question
     }
 
     private void updateChoiceAnswer(Question question, Map<String, JavaDataTyper> params){
-        question.setUpdateTime(new Date());
+        //question.setUpdateTime(new Date());
         Set<ChoiceAnswer> choiceAnswers = parseChoiceAnswer(params);
         choiceAnswers.forEach(c->{
             c.setEntityId(randomIdentifier());
@@ -261,6 +272,34 @@ public class QuestionServiceImpl extends InjectDao<Question> implements Question
         return new OrderBy(prefix,"updateTime",OrderBy.TYPE.DESC);
     }
 
+    @Override
+    public QueryExpress getQueryExpress(PageFieldType pageFieldType, String fieldName, QueryCondition condition, JavaDataTyper value) {
+        if(fieldName.equals("category")){
+            StreamCollection<QuestionCategory> questionCategories=questionCategoryService.getCategoryAndChildren(value.stringValue());
+            if(condition.equals(QueryCondition.EQUAL)){
+                return new ContainQueryExpress<>("category",ContainQueryExpress.CONTAINER.IN,questionCategories.toList());
+            }else{
+                return new ContainQueryExpress<>("category",ContainQueryExpress.CONTAINER.NOT_IN,questionCategories.toList());
+            }
+        }else if(fieldName.equals("simulationCategory")){
+            StreamCollection<SimulationCategory> simulationCategories=simulationCategoryService.getCategoryAndChildren(value.stringValue());
+            if(condition.equals(QueryCondition.EQUAL)){
+                return new ContainQueryExpress<>("simulationCategory",ContainQueryExpress.CONTAINER.IN,simulationCategories.toList());
+            }else{
+                return new ContainQueryExpress<>("simulationCategory",ContainQueryExpress.CONTAINER.NOT_IN,simulationCategories.toList());
+            }
+        }
+        return pageFieldType.getQueryExpress(fieldName,condition,value);
+    }
+    public FormElementHidden[] gerenatorHiddenElement(WebInteractive webInteractive) {
+        String existEntityIdArray=webInteractive.getStringParameter("existEntityIdArray","");
+        if(StringEditor.notEmpty(existEntityIdArray)){
+            return new FormElementHidden[]{
+                    new FormElementHidden("existEntityIdArray",existEntityIdArray)
+            };
+        }
+        return null;
+    }
     /*
     public static final boolean isQuestion(List<ExcelData> line){
         return StringEditor.notEmpty(line.get(0).getData().stringValue());

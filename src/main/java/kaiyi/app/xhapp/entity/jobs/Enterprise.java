@@ -16,25 +16,28 @@ public class Enterprise extends AbstractEntity {
     @NotEmpty(hint = "企业名称必须填写")
     @PageField(label = "企业名称",tableLength = 260)
     private String enterpriseName;
-    @PageField(label = "企业Logo",type = FieldType.DOCUMENT,showSearch = false,showForm = false,showDetail = false)
+    @PageField(label = "企业Logo",type = FieldType.DOCUMENT,showSearch = false,showForm = false,showDetail = false,tableLength = 140)
     @FieldDocument
     private String logoImage;
-    @PageField(label = "推荐企业",type = FieldType.BOOLEAN)
+    @PageField(label = "推荐企业",type = FieldType.BOOLEAN,tableLength = 120)
     @FieldBoolean(values = {"是","否"})
     private boolean recommend;
-    @PageField(label = "认证情况",type = FieldType.BOOLEAN)
+    @PageField(label = "认证情况",type = FieldType.BOOLEAN,tableLength = 120)
     @FieldBoolean(values = {"已认证","未认证"})
     private boolean verifyed;
+    @PageField(label = "是否冻结",type = FieldType.BOOLEAN,tableLength = 120)
+    @FieldBoolean(values = {"已冻结","未冻结"})
+    private boolean frozen;
     @NotEmpty(hint = "电话必须填写")
     @PageField(label = "联系电话",tableLength = 160)
     private String phone;
     @PageField(label = "三合一编码",tableLength = 160)
     private String code;
-    @PageField(label = "营业执照",type = FieldType.DOCUMENT,showSearch = false,showForm = false,showDetail = false)
+    @PageField(label = "营业执照",type = FieldType.DOCUMENT,showSearch = false,showForm = false,showDetail = false,tableLength = 120)
     @FieldDocument
     private String licensePhoto;
     @NotEmpty(hint = "企业详细地址必须填写")
-    @PageField(label = "详细地址")
+    @PageField(label = "详细地址",tableLength = 300)
     private String address;
     @PageField(label = "所属账户",type = FieldType.REFERENCE,tableLength = 160)
     @FieldReference(fieldName = "showAccountName")
@@ -144,5 +147,13 @@ public class Enterprise extends AbstractEntity {
 
     public void setParentInsideAccount(Account parentInsideAccount) {
         this.parentInsideAccount = parentInsideAccount;
+    }
+
+    public boolean isFrozen() {
+        return frozen;
+    }
+
+    public void setFrozen(boolean frozen) {
+        this.frozen = frozen;
     }
 }

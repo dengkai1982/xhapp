@@ -20,6 +20,8 @@
                 <visit:auth url="${webPage.newEntityPage}">
                     <a href="${contextPath}${webPage.newEntityPage}${suffix}?${paginationCurrentPage}=1&parent=${requestScope.parent}" class="btn btn-primary"><i class="icon icon-plus"></i> 新增${requestScope.entityShowName}</a>
                 </visit:auth>
+                <a href="#" id="batchEnable" class="btn btn-secondary">批量显示</a>
+                <a href="#" id="batchDisable" class="btn btn-secondary">批量隐藏</a>
             </div>
         </div>
         <c:if test="${requestScope.hasData}">
@@ -48,20 +50,61 @@
 </main>
 <%@include file="/WEB-INF/footerPage.jsp"%>
 <script type="text/javascript">
+    function batchEnableOrDisable(enable){
+        var datagrid=$('#remoteDataGrid').data('zui.datagrid');
+        var checkItems=datagrid.getCheckItems();
+        if(checkItems.length==0){
+            toast("没有职位被选中");
+            return;
+        }
+        var entityIdArray=new Array();
+        for(i=0;i<checkItems.length;i++){
+            var data=checkItems[i];
+            if(data!=null){
+                entityIdArray.push(data.entityId);
+            }
+        }
+        postJSON("${managerPath}/personnel/position/batchShowOrHide${suffix}",{
+            entityIdArray:entityIdArray.join(","),
+            enable:enable
+        },"正在执行,请稍后...",function(result){
+            if(result.code==SUCCESS){
+                bootbox.alert({
+                    title:"消息",
+                    message: "完成批量更新,点击确认返回",
+                    callback: function () {
+                        reflashPageData();
+                    }
+                })
+            }else{
+                showMessage(result.msg,1500);
+            }
+        });
+    }
     function pageReady(doc){
         <c:if test="${requestScope.hasData}">
         ${requestScope.tableScript}
         </c:if>
+        $("#batchEnable").click(function(){
+            batchEnableOrDisable(true);
+        })
+        $("#batchDisable").click(function(){
+            batchEnableOrDisable(false);
+        })
     }
     function createMenuItems(dataId,dataRow,data){
         var items = [{
             url:"${managerPath}/personnel/position${suffix}?pageNumber=${requestScope.pageNumber}&parent="+dataId+"&${paginationCurrentPage}="+getPaginationCurrentPage(),
             label:"查看下级"
         },{
-            url:"${contextPath}${webPage.modifyEntityPage}${suffix}?pageNumber=${requestScope.pageNumber}&entityId="+dataId+"&${paginationCurrentPage}="+getPaginationCurrentPage(),
+            //url:"${contextPath}${webPage.modifyEntityPage}${suffix}?pageNumber=${requestScope.pageNumber}&entityId="+dataId+"&${paginationCurrentPage}="+getPaginationCurrentPage(),
             label:"编辑职务",
             className:"privilege",
-            access:"${webPage.modifyEntityPage}"
+            access:"${webPage.modifyEntityPage}",
+            onClick:function(e){
+                var url="${contextPath}${webPage.modifyEntityPage}${suffix}?entityId="+dataId+"&${paginationCurrentPage}="+getPaginationCurrentPage();
+                window.open(url,'_blank');
+            }
         }];
         var showable="";
         if(data.showable.ordinal=="true"){

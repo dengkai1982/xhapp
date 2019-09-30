@@ -117,13 +117,24 @@ public class QuestionController extends ManagerController {
     }
 
     @PostMapping("/question/batchEnable")
-    public void batchEnable(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+    public void questionBatchEnable(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
         StreamArray<String> entityIdArray=interactive.getStringStreamArray("entityIdArray",",");
         boolean enable=interactive.getBoolean("enable","true",false);
         questionService.batchEnable(entityIdArray,enable);
         interactive.writeUTF8Text(getSuccessMessage().build());
     }
 
+    /**
+     * 一键全部启用或停用
+     * @param interactive
+     * @param response
+     */
+    @PostMapping("/question/batchEnableOrDisableAll")
+    public void questionBatchEnableAll(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        boolean enable=interactive.getBoolean("enable","true",true);
+        questionService.batchEnableAll(enable);
+        interactive.writeUTF8Text(getSuccessMessage().build());
+    }
     //批量导入实体
     @PostMapping("/question/import")
     public void importQuestion(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
@@ -144,7 +155,7 @@ public class QuestionController extends ManagerController {
                                 questionService.saveObject(existQuestion);
                                 questionReference.set(null);
                             }
-                            questionReference.set(questionService.parseQuestion(line,categories));
+                            questionReference.set(questionService.parseQuestion(line));
                         }else{
                             Question question=questionReference.get();
                             if(Objects.nonNull(question)){

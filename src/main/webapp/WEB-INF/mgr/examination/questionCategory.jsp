@@ -58,10 +58,14 @@
             url:"${managerPath}/examination/questionCategory${suffix}?pageNumber=${requestScope.pageNumber}&parent="+dataId+"&${paginationCurrentPage}="+getPaginationCurrentPage(),
             label:"查看下级"
         },{
-            url:"${contextPath}${webPage.modifyEntityPage}${suffix}?pageNumber=${requestScope.pageNumber}&entityId="+dataId+"&${paginationCurrentPage}="+getPaginationCurrentPage(),
+            //url:"${contextPath}${webPage.modifyEntityPage}${suffix}?pageNumber=${requestScope.pageNumber}&entityId="+dataId+"&${paginationCurrentPage}="+getPaginationCurrentPage(),
             label:"编辑分类",
             className:"privilege",
-            access:"${webPage.modifyEntityPage}"
+            access:"${webPage.modifyEntityPage}",
+            onClick:function(e){
+                var url="${contextPath}${webPage.modifyEntityPage}${suffix}?entityId="+dataId+"&${paginationCurrentPage}="+getPaginationCurrentPage();
+                window.open(url,'_blank');
+            }
         }];
         checkPrivilege(items);
         return items;

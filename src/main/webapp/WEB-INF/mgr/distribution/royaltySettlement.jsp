@@ -56,10 +56,14 @@
         console.log(data)
         if(data.grant.ordinal=="false"){
             items.push({
-                url:"${contextPath}${webPage.modifyEntityPage}${suffix}?entityId="+dataId+"&${paginationCurrentPage}="+getPaginationCurrentPage(),
+                //url:"${contextPath}${webPage.modifyEntityPage}${suffix}?entityId="+dataId+"&${paginationCurrentPage}="+getPaginationCurrentPage(),
                 label:"编辑修改",
                 className:"privilege",
-                access:"${webPage.modifyEntityPage}"
+                access:"${webPage.modifyEntityPage}",
+                onClick:function(e){
+                    var url="${contextPath}${webPage.modifyEntityPage}${suffix}?entityId="+dataId+"&${paginationCurrentPage}="+getPaginationCurrentPage();
+                    window.open(url,'_blank');
+                }
             });
             items.push({
                 label:"删除记录",

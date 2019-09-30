@@ -23,6 +23,9 @@ public class Resume extends AbstractEntity {
     @PageField(label = "发布状态",type = FieldType.BOOLEAN,tableLength = 120)
     @FieldBoolean(values = {"已发布","未发布"})
     private boolean infoUpper;
+    @PageField(label = "是否冻结",type = FieldType.BOOLEAN,tableLength = 120)
+    @FieldBoolean(values = {"已冻结","未冻结"})
+    private boolean frozen;
     @IDate
     @PageField(label = "创建时间",type = FieldType.DATETIME,tableLength = 160)
     private Date createTime;
@@ -213,5 +216,13 @@ public class Resume extends AbstractEntity {
 
     public void setInfoUpper(boolean infoUpper) {
         this.infoUpper = infoUpper;
+    }
+
+    public boolean isFrozen() {
+        return frozen;
+    }
+
+    public void setFrozen(boolean frozen) {
+        this.frozen = frozen;
     }
 }

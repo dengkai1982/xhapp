@@ -120,7 +120,7 @@ public class AccessController extends ManagerController {
         if(Objects.nonNull(serviceName)){
             String queryCondition=interactive.getHttpServletRequest().getParameter("queryCondition");
             DatabaseQuery databaseQuery = h5UIService.getSpringContextHolder().getBean(serviceName);
-            QueryExpress query=parseQueryExpress(databaseQuery.getEntityClassName(),queryCondition);
+            QueryExpress query=parseQueryExpress(databaseQuery,databaseQuery.getEntityClassName(),queryCondition);
             query=defaultQuery(interactive,databaseQuery,query);
             executeConditionQuery(interactive,databaseQuery,query);
         }
@@ -152,7 +152,7 @@ public class AccessController extends ManagerController {
             queryExpress=((CustomQueryExpress)databaseQuery).getCustomerQuery(interactive.getRequestParameterMap());
         }
         if(databaseQuery instanceof EntityQueryService){
-            ((EntityQueryService)databaseQuery).gerenatorHiddenElement(interactive);
+            hiddens=((EntityQueryService)databaseQuery).gerenatorHiddenElement(interactive);
         }
         interactive.setRequestAttribute("actionButtonName",actionButtonName);
         interactive.setRequestAttribute("fieldName",fieldName);

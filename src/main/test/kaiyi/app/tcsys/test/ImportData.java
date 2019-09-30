@@ -106,40 +106,42 @@ public class ImportData {
     }
     @Test
     public void excelImport() throws IOException {
-        QuestionCategoryService categoryService=sel.getBean(QuestionCategoryService.class);
         QuestionService questionService=sel.getBean(QuestionService.class);
-        File file=new File("/Users/dengkai/金红/9.16修改/市政工程管理与实务.xlsx");
-        AtomicReference<Question> questionReference=new AtomicReference<>();
-        StreamCollection<QuestionCategory> categories=categoryService.getEntitys();
-        if(Objects.nonNull(file)&&file.exists()){
-            AtomicInteger index=new AtomicInteger(0);
-            ExcelUtils.readExcel(file, line->{
-                if(!line.get(0).getData().stringValue().equals("试题题目")){
-                    //表头不做处理
-                    System.out.println("index:"+index.getAndAdd(1));
-                    try {
-                        if(questionService.isQuestion(line)){
-                            Question existQuestion=questionReference.get();
-                            if(Objects.nonNull(existQuestion)){
-                                questionService.saveObject(existQuestion);
-                                questionReference.set(null);
+        File dir=new File("/Users/dengkai/金红/9-26导入/2019年人力资源管理师考前押题/");
+        File[] files=dir.listFiles();
+        for(File file:files){
+            AtomicReference<Question> questionReference=new AtomicReference<>();
+            //StreamCollection<QuestionCategory> categories=categoryService.getEntitys();
+            if(Objects.nonNull(file)&&file.exists()){
+                AtomicInteger index=new AtomicInteger(0);
+                ExcelUtils.readExcel(file, line->{
+                    if(!line.get(0).getData().stringValue().equals("试题题目")){
+                        //表头不做处理
+                        System.out.println("index:"+index.getAndAdd(1));
+                        try {
+                            if(questionService.isQuestion(line)){
+                                Question existQuestion=questionReference.get();
+                                if(Objects.nonNull(existQuestion)){
+                                    questionService.saveObject(existQuestion);
+                                    questionReference.set(null);
+                                }
+                                questionReference.set(questionService.parseQuestion(line));
+                            }else{
+                                Question question=questionReference.get();
+                                if(Objects.nonNull(question)){
+                                    questionService.parseChoiceAnswer(question,line);
+                                }
                             }
-                            questionReference.set(questionService.parseQuestion(line,categories));
-                        }else{
-                            Question question=questionReference.get();
-                            if(Objects.nonNull(question)){
-                                questionService.parseChoiceAnswer(question,line);
-                            }
+                        } catch (ServiceException e) {
+                            questionReference.set(null);
                         }
-                    } catch (ServiceException e) {
-                        questionReference.set(null);
                     }
-                }
-            });
-        }
-        if(Objects.nonNull(questionReference.get())){
-            System.out.println(questionReference.get());
-            //questionService.saveObject(questionReference.get());
+                });
+            }
+            if(Objects.nonNull(questionReference.get())){
+                System.out.println(questionReference.get());
+                //questionService.saveObject(questionReference.get());
+            }
         }
     }
 

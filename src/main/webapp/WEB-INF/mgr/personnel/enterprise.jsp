@@ -14,6 +14,12 @@
                 <c:if test="${requestScope.hasData}">
                     <a href="#" class="btn btn-link querybox-toggle" id="show_or_hide_search"><i class="icon-search icon"></i> 搜索</a>
                 </c:if>
+                <a href="#" id="batchVerifyed" class="btn btn-secondary">批量认证</a>
+                <a href="#" id="batchUnVeifyed" class="btn btn-secondary">批量取消认证</a>
+                <a href="#" id="batchRecommend" class="btn btn-secondary">批量推荐</a>
+                <a href="#" id="batchUnRecommend" class="btn btn-secondary">批量取消推荐</a>
+                <a href="#" id="batchFrozen" class="btn btn-secondary">批量冻结</a>
+                <a href="#" id="batchUnFrozen" class="btn btn-secondary">批量取消冻结</a>
             </div>
         </div>
         <c:if test="${requestScope.hasData}">
@@ -47,6 +53,100 @@
 </div>
 <%@include file="/WEB-INF/footerPage.jsp"%>
 <script type="text/javascript">
+    function batchVerify(enable){
+        var datagrid=$('#remoteDataGrid').data('zui.datagrid');
+        var checkItems=datagrid.getCheckItems();
+        if(checkItems.length==0){
+            toast("没有企业被选中");
+            return;
+        }
+        var entityIdArray=new Array();
+        for(i=0;i<checkItems.length;i++){
+            var data=checkItems[i];
+            if(data!=null){
+                entityIdArray.push(data.entityId);
+            }
+        }
+        postJSON("${managerPath}/personnel/enterprise/batchVerify${suffix}",{
+            entityIdArray:entityIdArray.join(","),
+            enable:enable
+        },"正在执行,请稍后...",function(result){
+            if(result.code==SUCCESS){
+                bootbox.alert({
+                    title:"消息",
+                    message: "完成批量操作,点击确认返回",
+                    callback: function () {
+                        reflashPageData();
+                    }
+                })
+            }else{
+                showMessage(result.msg,1500);
+            }
+        });
+    }
+
+    function batchFrozen(enable){
+        var datagrid=$('#remoteDataGrid').data('zui.datagrid');
+        var checkItems=datagrid.getCheckItems();
+        if(checkItems.length==0){
+            toast("没有企业被选中");
+            return;
+        }
+        var entityIdArray=new Array();
+        for(i=0;i<checkItems.length;i++){
+            var data=checkItems[i];
+            if(data!=null){
+                entityIdArray.push(data.entityId);
+            }
+        }
+        postJSON("${managerPath}/personnel/enterprise/batchFrozen${suffix}",{
+            entityIdArray:entityIdArray.join(","),
+            enable:enable
+        },"正在执行,请稍后...",function(result){
+            if(result.code==SUCCESS){
+                bootbox.alert({
+                    title:"消息",
+                    message: "完成批量更新,点击确认返回",
+                    callback: function () {
+                        reflashPageData();
+                    }
+                })
+            }else{
+                showMessage(result.msg,1500);
+            }
+        });
+    }
+    function batchRecommend(enable){
+        var datagrid=$('#remoteDataGrid').data('zui.datagrid');
+        var checkItems=datagrid.getCheckItems();
+        if(checkItems.length==0){
+            toast("没有企业被选中");
+            return;
+        }
+        var entityIdArray=new Array();
+        for(i=0;i<checkItems.length;i++){
+            var data=checkItems[i];
+            if(data!=null){
+                entityIdArray.push(data.entityId);
+            }
+        }
+        postJSON("${managerPath}/personnel/enterprise/batchRecommend${suffix}",{
+            entityIdArray:entityIdArray.join(","),
+            enable:enable
+        },"正在执行,请稍后...",function(result){
+            if(result.code==SUCCESS){
+                bootbox.alert({
+                    title:"消息",
+                    message: "完成批量更新,点击确认返回",
+                    callback: function () {
+                        reflashPageData();
+                    }
+                })
+            }else{
+                showMessage(result.msg,1500);
+            }
+        });
+    }
     function pageReady(doc){
         <c:if test="${requestScope.hasData}">
         ${requestScope.tableScript}
@@ -55,6 +155,24 @@
             var url=$(this).attr("url");
             $("#imageModal img").attr("src",url);
             $("#imageModal").modal("show")
+        });
+        $("#batchVerifyed").click(function(){
+            batchVerify(true);
+        });
+        $("#batchUnVeifyed").click(function(){
+            batchVerify(false);
+        });
+        $("#batchRecommend").click(function(){
+            batchRecommend(true);
+        });
+        $("#batchUnRecommend").click(function(){
+            batchRecommend(false);
+        });
+        $("#batchFrozen").click(function(){
+            batchFrozen(true);
+        });
+        $("#batchUnFrozen").click(function(){
+            batchFrozen(false);
         });
     }
     function customDataConvertCell(valueType,dataValue,cell, dataGrid){

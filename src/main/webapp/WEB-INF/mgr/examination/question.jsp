@@ -20,6 +20,8 @@
                 <a href="#" id="batchEnable" class="btn btn-secondary">批量启用</a>
                 <a href="#" id="batchDisable" class="btn btn-secondary">批量停用</a>
                 <a href="#" id="batchDelete" class="btn btn-secondary">批量删除</a>
+                <a href="#" id="batchEnableAll" class="btn btn-secondary">全部启用</a>
+                <a href="#" id="batchDisableAll" class="btn btn-secondary">全部停用</a>
             </div>
         </div>
         <c:if test="${requestScope.hasData}">
@@ -47,6 +49,26 @@
 <%@include file="/WEB-INF/footerPage.jsp"%>
 <script type="text/javascript" src="${contextPath}/js/category.js"></script>
 <script type="text/javascript">
+    function batchEnableOrDisableAll(enable){
+        var showName=enable?"启用":"停用";
+        confirmOper("警告","确实用"+showName+"所有的试题?",function(){
+            postJSON("${managerPath}/examination/question/batchEnableOrDisableAll${suffix}",{
+                enable:enable
+            },"正在执行,请稍后...",function(result){
+                if(result.code==SUCCESS){
+                    bootbox.alert({
+                        title:"消息",
+                        message: "操作成功,点击确认返回",
+                        callback: function () {
+                            reflashPageData();
+                        }
+                    })
+                }else{
+                    showMessage(result.msg,1500);
+                }
+            });
+        })
+    }
     function batchEnableOrDisable(enable){
         var datagrid=$('#remoteDataGrid').data('zui.datagrid');
         var checkItems=datagrid.getCheckItems();
@@ -88,6 +110,13 @@
         $("#batchDisable").click(function(){
             batchEnableOrDisable(false);
         })
+        $("#batchEnableAll").click(function(){
+            batchEnableOrDisableAll(true);
+        });
+        $("#batchDisableAll").click(function(){
+            batchEnableOrDisableAll(false);
+        });
+
         $("#batchDelete").click(function(){
             var datagrid=$('#remoteDataGrid').data('zui.datagrid');
             var checkItems=datagrid.getCheckItems();
@@ -144,7 +173,7 @@
         return false;
     }
     function customDataConvertCell(valueType,dataValue,cell, dataGrid){
-        if(cell.colIndex==1||cell.colIndex==6){
+        if(cell.colIndex==1||cell.colIndex==8){
             var dv=HTMLDecode(dataValue);
             return "<a title='"+dv+"'>"+dv+"</dv>";
         }
@@ -152,10 +181,14 @@
 
     function createMenuItems(dataId,dataRow,data){
         var items = [{
-            url:"${contextPath}${webPage.modifyEntityPage}${suffix}?entityId="+dataId+"&${paginationCurrentPage}="+getPaginationCurrentPage(),
+            //url:"${contextPath}${webPage.modifyEntityPage}${suffix}?entityId="+dataId+"&${paginationCurrentPage}="+getPaginationCurrentPage(),
             label:"编辑修改",
             className:"privilege",
-            access:"${webPage.modifyEntityPage}"
+            access:"${webPage.modifyEntityPage}",
+            onClick:function(e){
+                var url="${contextPath}${webPage.modifyEntityPage}${suffix}?entityId="+dataId+"&${paginationCurrentPage}="+getPaginationCurrentPage();
+                window.open(url,'_blank');
+            }
         },{
             url:"${contextPath}${webPage.detailEntityPage}${suffix}?entityId="+dataId+"&${paginationCurrentPage}="+getPaginationCurrentPage(),
             label:"查看详情"
@@ -214,6 +247,12 @@
         checkPrivilege(items);
         return items;
     };
+    /*function customerFormQuery(groupItem,joinItem){
+        console.log(joinItem);
+        if(joinItem.field!="category"&&joinItem.field!="simulationCategory"){
+            groupItem.push(joinItem);
+        }
+    }*/
 </script>
 </body>
 </html>
