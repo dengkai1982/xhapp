@@ -204,49 +204,77 @@ public class ExamQuestionServiceImpl extends InjectDao<ExamQuestion> implements 
      * 随机获取练习题
      * @param categorys 类别ID
      * @param questionType 试题类型
-     * @param totalScore 总分值
+     * @param questionNumber 试题总数量
      * @return
      */
-    private StreamCollection<Question> getRandomQuestionForSimulationCategory(StreamCollection<SimulationCategory> categorys, QuestionType questionType,int totalScore){
+    private StreamCollection<Question> getRandomQuestionForSimulationCategory(StreamCollection<SimulationCategory> categorys,
+                                                                              QuestionType questionType,int questionNumber) throws ServiceException {
         StreamCollection<Question> result=new StreamCollection<>();
         QueryExpress query=new ContainQueryExpress("simulationCategory",ContainQueryExpress.CONTAINER.IN,categorys.toList());
         query=new LinkQueryExpress(query, LinkQueryExpress.LINK.AND,new CompareQueryExpress("questionType", CompareQueryExpress.Compare.EQUAL,
                 questionType));
         query=new LinkQueryExpress(query,LinkQueryExpress.LINK.AND,new CompareQueryExpress("enable",CompareQueryExpress.Compare.EQUAL,Boolean.TRUE));
         StreamCollection<Question> questions=questionService.getEntitys(query);
+        if(questions.size()<questionNumber){
+            if(questionType.equals(QuestionType.SingleChoice)){
+                throw ServiceExceptionDefine.singleQuestionNumberError;
+            }else if(questionType.equals(QuestionType.MultipleChoice)){
+                throw ServiceExceptionDefine.multipleQuestionNumberError;
+            }
+            throw ServiceExceptionDefine.answerQuestionNumberError;
+        }
         Random random=new Random();
-        getQuestionByRandom(result,questions,random,totalScore);
+        getQuestionByRandom(result,questions,random,questionNumber);
         return result;
     }
     /**
      * 随机获取练习题
      * @param categorys 类别ID
      * @param questionType 试题类型
-     * @param totalScore 总分值
+     * @param questionNumber 总数量
      * @return
      */
-    private StreamCollection<Question> getRandomQuestion(StreamCollection<QuestionCategory> categorys, QuestionType questionType,int totalScore){
+    private StreamCollection<Question> getRandomQuestion(StreamCollection<QuestionCategory> categorys,
+                                                         QuestionType questionType,int questionNumber) throws ServiceException {
         StreamCollection<Question> result=new StreamCollection<>();
         QueryExpress query=new ContainQueryExpress<QuestionCategory>("category",ContainQueryExpress.CONTAINER.IN,categorys.toList());
         query=new LinkQueryExpress(query, LinkQueryExpress.LINK.AND,new CompareQueryExpress("questionType", CompareQueryExpress.Compare.EQUAL,
                 questionType));
         query=new LinkQueryExpress(query,LinkQueryExpress.LINK.AND,new CompareQueryExpress("enable",CompareQueryExpress.Compare.EQUAL,Boolean.TRUE));
         StreamCollection<Question> questions=questionService.getEntitys(query);
+        if(questions.size()<questionNumber){
+            if(questionType.equals(QuestionType.SingleChoice)){
+                throw ServiceExceptionDefine.singleQuestionNumberError;
+            }else if(questionType.equals(QuestionType.MultipleChoice)){
+                throw ServiceExceptionDefine.multipleQuestionNumberError;
+            }
+            throw ServiceExceptionDefine.answerQuestionNumberError;
+        }
         Random random=new Random();
-        getQuestionByRandom(result,questions,random,totalScore);
+        getQuestionByRandom(result,questions,random,questionNumber);
         return result;
     }
 
     private void getQuestionByRandom(StreamCollection<Question> result,StreamCollection<Question> questions,Random random,
-                                     int totalScore){
-        int currentScore=getTotalScore(result);
+                                     int totalNumber){
+        int currentNumber=result.size();
+        if(currentNumber==totalNumber||StreamCollection.assertEmpty(questions)){
+            return;
+        }
+        /*int currentScore=getTotalScore(result);
         if(currentScore==totalScore||StreamCollection.assertEmpty(questions)){
             return;
         }
-        int surplusScore=totalScore-currentScore;
+        int surplusScore=totalScore-currentScore;*/
         int number=random.nextInt(questions.size());
-        Question question=questions.get(number);
-        if(surplusScore>=question.getScore()){
+        final Question question=questions.get(number);
+        result.add(question);
+        questions.removeIf(p->{
+            return p.getEntityId().equals(question.getEntityId());
+        });
+        getQuestionByRandom(result,questions,random,totalNumber);
+
+        /*if(surplusScore>=question.getScore()){
             result.add(question);
             questions.removeIf(p->{
                 return p.getEntityId().equals(question.getEntityId());
@@ -259,15 +287,15 @@ public class ExamQuestionServiceImpl extends InjectDao<ExamQuestion> implements 
                     return;
                 }
             }
-        }
+        }*/
     }
 
-    private int getTotalScore(StreamCollection<Question> result){
+    /*private int getTotalScore(StreamCollection<Question> result){
         int totalScore=0;
         for(Question question:result){
             totalScore+=question.getScore();
         }
         return totalScore;
-    }
+    }*/
 
 }
