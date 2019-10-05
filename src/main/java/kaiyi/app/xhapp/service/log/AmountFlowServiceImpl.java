@@ -8,11 +8,15 @@ import kaiyi.app.xhapp.entity.log.enums.TradeCourse;
 import kaiyi.app.xhapp.entity.pojo.FlowStatisticsPojo;
 import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.puer.commons.data.Currency;
+import kaiyi.puer.commons.time.DateTimeRange;
+import kaiyi.puer.db.query.CompareQueryExpress;
+import kaiyi.puer.db.query.LinkQueryExpress;
 import kaiyi.puer.db.query.OrderBy;
 import kaiyi.puer.db.query.QueryExpress;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.Query;
+import java.text.ParseException;
 import java.util.Objects;
 
 @Service("amountFlowService")
@@ -26,6 +30,29 @@ public class AmountFlowServiceImpl extends InjectDao<AmountFlow> implements Amou
         AmountFlow flow=new AmountFlow(account,amountType,tradeCourse,orderId,beforeAmount,amount,afterAmount,borrowLend);
         saveObject(flow);
 
+    }
+
+    @Override
+    public Currency totalAccountIntegral(String accountId, String yearAndMonth){
+        try {
+            DateTimeRange dateRange=parseDateRange(yearAndMonth);
+            Account account=new Account();
+            account.setEntityId(accountId);
+            QueryExpress query=new CompareQueryExpress("account",CompareQueryExpress.Compare.EQUAL,account);
+            query=new LinkQueryExpress(query, LinkQueryExpress.LINK.AND,
+                    new CompareQueryExpress("amountType",CompareQueryExpress.Compare.EQUAL,AmountType.INTEGRAL));
+            query=new LinkQueryExpress(query, LinkQueryExpress.LINK.AND,new
+                    CompareQueryExpress("borrowLend",CompareQueryExpress.Compare.EQUAL,BorrowLend.income));
+            query=new LinkQueryExpress(query,LinkQueryExpress.LINK.AND,
+                    new CompareQueryExpress("createTime",CompareQueryExpress.Compare.GT_AND_EQUAL,dateRange.getDayStartDate()));
+            query=new LinkQueryExpress(query,LinkQueryExpress.LINK.AND,
+                    new CompareQueryExpress("createTime",CompareQueryExpress.Compare.LS_AND_EQUAL,dateRange.getDayEndDate()));
+            double sum=sum(query,"amount");
+            return Currency.build(sum,2);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return Currency.noDecimalBuild(0,2);
     }
 
     @Override

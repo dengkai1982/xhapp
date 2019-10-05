@@ -2,6 +2,7 @@ package kaiyi.app.xhapp.controller.app;
 
 import kaiyi.app.xhapp.entity.examination.ExamQuestion;
 import kaiyi.app.xhapp.service.examination.ExamQuestionService;
+import kaiyi.app.xhapp.service.examination.QuestionFavoritesService;
 import kaiyi.puer.db.orm.ServiceException;
 import kaiyi.puer.json.creator.JsonMessageCreator;
 import kaiyi.puer.json.creator.MutilJsonCreator;
@@ -24,6 +25,8 @@ public class ExaminationAction extends SuperAction {
     public static final String rootPath=PREFIX+"/examination";
     @Resource
     private ExamQuestionService examQuestionService;
+    @Resource
+    private QuestionFavoritesService questionFavoritesService;
     /**
      * 根据试卷来构建考试题
      * testPager:试卷ID
@@ -95,6 +98,17 @@ public class ExaminationAction extends SuperAction {
         String examQuestionId=interactive.getStringParameter("examQuestionId","");
         String resultAnswer=interactive.getStringParameter("resultAnswer","");
         examQuestionService.answerQuestion(examQuestionId,resultAnswer);
+        interactive.writeUTF8Text(getSuccessMessage().build());
+    }
+
+    /**
+     * 收藏或取消收藏习题，如果未收藏则收藏，如果已收藏则取消
+     */
+    @PostMapping("/questionFavorites")
+    public void questionFavorites(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        String accountId=interactive.getStringParameter("accountId","");
+        String questionId=interactive.getStringParameter("questionId","");
+        questionFavoritesService.favorites(accountId,questionId);
         interactive.writeUTF8Text(getSuccessMessage().build());
     }
 }

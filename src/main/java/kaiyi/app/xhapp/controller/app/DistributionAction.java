@@ -36,7 +36,17 @@ public class DistributionAction extends SuperAction {
     private WithdrawApplyService withdrawApplyService;
     @Resource
     private CourseOrderService courseOrderService;
+    /**
+     * accountId 当前账户ID
+     * date 统计时间，格式为201901或201912
+     */
+    @RequestMapping("/totalAccountFlow")
+    public void totalAccountFlow(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        String accountId=interactive.getStringParameter("accountId","");
+        //月份，入201909
+        String date=interactive.getStringParameter("date","");
 
+    }
     /**
      * 销量统计
      * accountId 当前账户ID

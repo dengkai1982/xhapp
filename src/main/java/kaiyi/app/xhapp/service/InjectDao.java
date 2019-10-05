@@ -4,6 +4,7 @@ import kaiyi.puer.commons.bean.Reflects;
 import kaiyi.puer.commons.bean.field.DataValueProcessor;
 import kaiyi.puer.commons.data.JavaDataTyper;
 import kaiyi.puer.commons.data.StringEditor;
+import kaiyi.puer.commons.time.DateTimeRange;
 import kaiyi.puer.db.DataChangeNotify;
 import kaiyi.puer.db.orm.*;
 import kaiyi.puer.db.query.CompareQueryExpress;
@@ -21,6 +22,10 @@ import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 
 @Transactional(propagation=Propagation.REQUIRED)
@@ -183,5 +188,27 @@ public abstract class InjectDao<T> extends JpaDataOperImpl<T> implements Databas
 	protected boolean existParameter(Map<String, JavaDataTyper> params,String name){
 		return params.get(name)!=null;
 
+	}
+
+	protected DateTimeRange parseDateRange(String date) throws ParseException {
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyyMM");
+		Date queryDate=sdf.parse(date);
+		DateTimeRange range=new DateTimeRange();
+		Calendar start=Calendar.getInstance();
+		start.setTime(queryDate);
+		start.set(Calendar.DAY_OF_MONTH,start.getActualMinimum(Calendar.DAY_OF_MONTH ));
+		range.setStartDate(start.getTime());
+		Calendar end=Calendar.getInstance();
+		end.set(Calendar.DAY_OF_MONTH,end.getActualMaximum(Calendar.DAY_OF_MONTH ));
+		range.setEndDate(end.getTime());
+		return range;
+        /*
+        return getDateTimeRange(s->{
+            s.set(Calendar.YEAR, queryDate.getYear());
+            s.set(Calendar.MONTH, queryDate.getMonth());
+            s.set(Calendar.DAY_OF_MONTH,s.getActualMinimum(Calendar.DAY_OF_MONTH ));
+        },e->{
+            e.set(Calendar.DAY_OF_MONTH,e.getActualMaximum(Calendar.DAY_OF_MONTH ));
+        });*/
 	}
 }

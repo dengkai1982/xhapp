@@ -133,4 +133,6 @@ public interface AccountService extends DatabaseQuery<Account>,DatabaseFastOper<
      * @param name
      */
     void setMemberName(String entityId,String name);
+
+
 }

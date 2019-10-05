@@ -1,7 +1,8 @@
-package kaiyi.app.xhapp.entity.curriculum;
+package kaiyi.app.xhapp.entity.examination;
 
 import kaiyi.app.xhapp.entity.AbstractEntity;
 import kaiyi.app.xhapp.entity.access.Account;
+import kaiyi.app.xhapp.entity.curriculum.Course;
 import kaiyi.puer.commons.data.IDate;
 import kaiyi.puer.h5ui.annotations.FieldReference;
 import kaiyi.puer.h5ui.annotations.FieldType;
@@ -11,17 +12,17 @@ import kaiyi.puer.h5ui.annotations.PageField;
 import javax.persistence.*;
 import java.util.Date;
 
-@Entity(name=CourseFavorites.TABLE_NAME)
-@PageEntity(showName = "课程收藏",entityName = "courseFavorites",serviceName = "courseFavoritesService")
-public class CourseFavorites extends AbstractEntity {
-    public static final String TABLE_NAME="course_favorites";
-    private static final long serialVersionUID = 2222508055746737845L;
+@Entity(name=QuestionFavorites.TABLE_NAME)
+@PageEntity(showName = "习题收藏",entityName = "courseFavorites",serviceName = "courseFavoritesService")
+public class QuestionFavorites extends AbstractEntity {
+    public static final String TABLE_NAME="question_favorites";
+    private static final long serialVersionUID = -6584425607698737099L;
     @PageField(label = "收藏用户",type = FieldType.REFERENCE)
     @FieldReference(fieldName = "showAccountName")
     private Account account;
     @PageField(label = "课程名称",type = FieldType.REFERENCE)
-    @FieldReference(fieldName = "name")
-    private Course course;
+    @FieldReference(fieldName = "detail")
+    private Question question;
     @IDate
     @PageField(label = "收藏时间",type = FieldType.DATETIME)
     private Date createTime;
@@ -35,13 +36,13 @@ public class CourseFavorites extends AbstractEntity {
         this.account = account;
     }
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
-    @JoinColumn(name="course")
-    public Course getCourse() {
-        return course;
+    @JoinColumn(name="question")
+    public Question getQuestion() {
+        return question;
     }
 
-    public void setCourse(Course course) {
-        this.course = course;
+    public void setQuestion(Question question) {
+        this.question = question;
     }
     @Temporal(TemporalType.TIMESTAMP)
     public Date getCreateTime() {

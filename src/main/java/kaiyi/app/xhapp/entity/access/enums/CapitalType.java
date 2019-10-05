@@ -16,7 +16,7 @@ public enum CapitalType implements H5ChosenInterface {
     },GOLD{
         @Override
         public String toString() {
-            return "金币";
+            return "余额";
         }
         @Override
         public String getHexColor() {

@@ -19,6 +19,9 @@ public class Certificate extends AbstractEntity {
     private String name;
     @PageField(label = "期望价值")
     private String expect;
+    @PageField(label = "永久有效",type = FieldType.BOOLEAN)
+    @FieldBoolean(values={"是","否"})
+    private boolean forever;
     @IDate(pattern = "yyyy-MM-dd")
     @PageField(label = "到期时间",type = FieldType.DATE)
     private Date expire;
@@ -82,5 +85,13 @@ public class Certificate extends AbstractEntity {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public boolean isForever() {
+        return forever;
+    }
+
+    public void setForever(boolean forever) {
+        this.forever = forever;
     }
 }

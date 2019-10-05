@@ -86,8 +86,10 @@ public class ResumeServiceImpl extends InjectDao<Resume> implements ResumeServic
         entityIdArray.forEach(h->{
             positions.add(h);
         });
-        em.createQuery("update "+getEntityName(entityClass)+" o set o.frozen=:frozen where " +
+        em.createQuery("update "+getEntityName(entityClass)+" o set o.frozen=:frozen,o.infoUpper=:infoUpper where " +
                 "o.entityId in(:entityIdArray)").setParameter("frozen",frozen)
+                .setParameter("infoUpper",!frozen)
                 .setParameter("entityIdArray",positions.toList()).executeUpdate();
+
     }
 }

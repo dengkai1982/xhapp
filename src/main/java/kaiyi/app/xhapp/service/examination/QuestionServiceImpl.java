@@ -71,6 +71,8 @@ public class QuestionServiceImpl extends InjectDao<Question> implements Question
     public void deleteById(String entityId) {
         Question question=new Question();
         question.setEntityId(entityId);
+        em.createQuery("delete from "+getEntityName(QuestionFavorites.class)+" o where o.question=:question")
+                .setParameter("question",question).executeUpdate();
         em.createQuery("delete from "+getEntityName(ChoiceAnswer.class)
                 +" o where o.question=:question").setParameter("question",question)
                 .executeUpdate();

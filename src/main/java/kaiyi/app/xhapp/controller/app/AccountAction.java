@@ -3,6 +3,7 @@ package kaiyi.app.xhapp.controller.app;
 import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
 import kaiyi.app.xhapp.service.access.AccountService;
+import kaiyi.app.xhapp.service.log.AmountFlowService;
 import kaiyi.app.xhapp.service.log.ShortMessageSenderNoteService;
 import kaiyi.app.xhapp.service.log.TeamJoinNoteService;
 import kaiyi.app.xhapp.service.pub.ConfigureService;
@@ -40,6 +41,9 @@ public class AccountAction extends SuperAction {
     private ConfigureService configureService;
     @Resource
     private TeamJoinNoteService teamJoinNoteService;
+    @Resource
+    private AmountFlowService amountFlowService;
+
 
     /**
      * 获取个人分享二维码

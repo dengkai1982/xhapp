@@ -35,7 +35,7 @@ public class Course extends AbstractEntity {
     @FieldReference(fieldName = "name")
     private Category category;
     @NotEmpty(hint = "课程难度必须选择")
-    @PageField(label = "课程难度",type = FieldType.CHOSEN)
+    @PageField(label = "课程难度",type = FieldType.CHOSEN,tableLength =120)
     @FieldChosen
     private Difficulty difficulty;
     /*@NotEmpty(hint = "课程售价必须填写")
@@ -49,7 +49,12 @@ public class Course extends AbstractEntity {
     @PageField(label = "首页推荐",type = FieldType.BOOLEAN,tableLength =120)
     @FieldBoolean(values = {"推荐","不推荐"})
     private boolean recommendMainPage;
-    @PageField(label = "课程上架/下架",type = FieldType.BOOLEAN,showForm = false,tableLength =120)
+    @PageField(label = "直播视频",type = FieldType.BOOLEAN,tableLength =120)
+    @FieldBoolean(values = {"是","否"})
+    private boolean liveMovie;
+    @PageField(label = "直播地址",tableLength =200)
+    private String playUrl;
+    @PageField(label = "课程上架/下架",type = FieldType.BOOLEAN,showForm = false,tableLength =160)
     @FieldBoolean(values = {"上架","下架"})
     private boolean sale;
     @NotEmpty(hint = "课程封面必须选择")
@@ -275,5 +280,21 @@ public class Course extends AbstractEntity {
 
     public void setFreeCourse(boolean freeCourse) {
         this.freeCourse = freeCourse;
+    }
+
+    public boolean isLiveMovie() {
+        return liveMovie;
+    }
+
+    public void setLiveMovie(boolean liveMovie) {
+        this.liveMovie = liveMovie;
+    }
+
+    public String getPlayUrl() {
+        return playUrl;
+    }
+
+    public void setPlayUrl(String playUrl) {
+        this.playUrl = playUrl;
     }
 }

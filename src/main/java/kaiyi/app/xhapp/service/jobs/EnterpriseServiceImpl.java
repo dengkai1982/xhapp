@@ -1,6 +1,7 @@
 package kaiyi.app.xhapp.service.jobs;
 
 import kaiyi.app.xhapp.entity.jobs.Enterprise;
+import kaiyi.app.xhapp.entity.jobs.Recruitment;
 import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.collection.StreamCollection;
@@ -11,6 +12,8 @@ import kaiyi.puer.db.query.LinkQueryExpress;
 import kaiyi.puer.db.query.QueryExpress;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -63,13 +66,23 @@ public class EnterpriseServiceImpl extends InjectDao<Enterprise> implements Ente
 
     @Override
     public void batchFrozen(StreamArray<String> entityIdArray, boolean frozen) {
-        StreamCollection<String> positions=new StreamCollection<>();
+        StreamCollection<String> entityIdArrayStream=new StreamCollection<>();
+        List<Enterprise> enterprises=new ArrayList<>();
         entityIdArray.forEach(h->{
-            positions.add(h);
+            entityIdArrayStream.add(h);
+            Enterprise enterprise=new Enterprise();
+            enterprise.setEntityId(h);
+            enterprises.add(enterprise);
         });
-        em.createQuery("update "+getEntityName(entityClass)+" o set o.frozen=:frozen where " +
-                "o.entityId in(:entityIdArray)").setParameter("frozen",frozen)
-                .setParameter("entityIdArray",positions.toList()).executeUpdate();
+        em.createQuery("update "+getEntityName(entityClass)+" o set o.frozen=:frozen ,o.verifyed=:verifyed where " +
+                "o.entityId in(:entityIdArray)").setParameter("frozen",frozen).setParameter("verifyed",!frozen)
+                .setParameter("entityIdArray",entityIdArrayStream.toList()).executeUpdate();
+
+
+        em.createQuery("update "+getEntityName(Recruitment.class)+" o set o.infoUpper=:infoUpper where " +
+                "o.enterprise in(:enterprises)").setParameter("infoUpper",!frozen)
+                .setParameter("enterprises",enterprises).executeUpdate();
+
     }
 
     @Override

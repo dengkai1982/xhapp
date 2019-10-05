@@ -56,7 +56,7 @@
                 entityIdArray.push(data.entityId);
             }
         }
-        postJSON("${managerPath}/personnel/enterprise/batchFrozen${suffix}",{
+        postJSON("${managerPath}/personnel/resume/batchFrozen${suffix}",{
             entityIdArray:entityIdArray.join(","),
             enable:enable
         },"正在执行,请稍后...",function(result){
