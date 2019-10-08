@@ -1,6 +1,7 @@
 package kaiyi.app.xhapp.service.examination;
 
 import kaiyi.app.xhapp.entity.access.Account;
+import kaiyi.app.xhapp.entity.examination.ExamQuestionItem;
 import kaiyi.app.xhapp.entity.examination.Question;
 import kaiyi.app.xhapp.entity.examination.QuestionFavorites;
 import kaiyi.app.xhapp.service.InjectDao;
@@ -18,7 +19,7 @@ public class QuestionFavoritesServiceImpl extends InjectDao<QuestionFavorites> i
     public void favorites(String accountId, String questionId) {
         Account account=new Account();
         account.setEntityId(accountId);
-        Question question=new Question();
+        ExamQuestionItem question=new ExamQuestionItem();
         question.setEntityId(questionId);
         QueryExpress query=new CompareQueryExpress("account",CompareQueryExpress.Compare.EQUAL,account);
         query=new LinkQueryExpress(query, LinkQueryExpress.LINK.AND,

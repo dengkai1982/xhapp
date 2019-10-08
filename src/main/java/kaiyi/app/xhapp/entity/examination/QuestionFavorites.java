@@ -22,7 +22,7 @@ public class QuestionFavorites extends AbstractEntity {
     private Account account;
     @PageField(label = "课程名称",type = FieldType.REFERENCE)
     @FieldReference(fieldName = "detail")
-    private Question question;
+    private ExamQuestionItem question;
     @IDate
     @PageField(label = "收藏时间",type = FieldType.DATETIME)
     private Date createTime;
@@ -37,11 +37,11 @@ public class QuestionFavorites extends AbstractEntity {
     }
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
     @JoinColumn(name="question")
-    public Question getQuestion() {
+    public ExamQuestionItem getQuestion() {
         return question;
     }
 
-    public void setQuestion(Question question) {
+    public void setQuestion(ExamQuestionItem question) {
         this.question = question;
     }
     @Temporal(TemporalType.TIMESTAMP)

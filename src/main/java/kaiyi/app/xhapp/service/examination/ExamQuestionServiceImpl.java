@@ -20,7 +20,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
-//TODO 修改获取试题的规则
+
 @Service("examQuestionService")
 public class ExamQuestionServiceImpl extends InjectDao<ExamQuestion> implements ExamQuestionService {
 
