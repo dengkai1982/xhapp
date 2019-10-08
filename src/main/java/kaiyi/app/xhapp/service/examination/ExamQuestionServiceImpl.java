@@ -51,11 +51,14 @@ public class ExamQuestionServiceImpl extends InjectDao<ExamQuestion> implements 
                 testPager.getMultipleChoiceNumber(),testPager.getQuestionsAndAnswersNumber());
         StreamCollection<TestPagerQuestion> testPagerQuestions=testPagerService.getTestPagerQuestion(testPager.getEntityId());
         Set<ExamQuestionItem> items=new HashSet<>();
+        int totalScore=0;
         for(TestPagerQuestion tpq:testPagerQuestions){
             Question question=tpq.getQuestion();
             ExamQuestionItem item=createExamQuestionItem(exam,question,tpq.getScore(),tpq.getWeight(),account);
+            totalScore+=question.getScore();
             items.add(item);
         }
+        exam.setTotalScore(totalScore);
         exam.setQuestionItems(items);
         exam.setResourceType(ResourceType.TEST_PAGER);
         exam.setReferenceId(testPagerId);
@@ -108,24 +111,29 @@ public class ExamQuestionServiceImpl extends InjectDao<ExamQuestion> implements 
         ExamQuestion exam=new ExamQuestion(name,account,singleQuestion.size(),
                 multipleQuestion.size(),answerQuestion.size());
         Set<ExamQuestionItem> items=new HashSet<>();
+        int totalScore=0;
         for(Question question:singleQuestion){
             ExamQuestionItem item=createExamQuestionItem(exam,question,question.getScore(),weight,account);
             weight--;
+            totalScore+=question.getScore();
             items.add(item);
         }
         for(Question question:multipleQuestion){
             ExamQuestionItem item=createExamQuestionItem(exam,question,question.getScore(),weight,account);
             weight--;
+            totalScore+=question.getScore();
             items.add(item);
         }
         for(Question question:answerQuestion){
             ExamQuestionItem item=createExamQuestionItem(exam,question,question.getScore(),weight,account);
             weight--;
+            totalScore+=question.getScore();
             items.add(item);
         }
         exam.setQuestionItems(items);
         exam.setResourceType(ResourceType.SIMULATION);
         exam.setReferenceId(questionCategoryId);
+        exam.setTotalScore(totalScore);
         saveObject(exam);
         return exam;
     }
@@ -149,24 +157,29 @@ public class ExamQuestionServiceImpl extends InjectDao<ExamQuestion> implements 
         ExamQuestion exam=new ExamQuestion(name,account,singleQuestion.size(),
                 multipleQuestion.size(),answerQuestion.size());
         Set<ExamQuestionItem> items=new HashSet<>();
+        int totalScore=0;
         for(Question question:singleQuestion){
             ExamQuestionItem item=createExamQuestionItem(exam,question,question.getScore(),weight,account);
             weight--;
+            totalScore+=question.getScore();
             items.add(item);
         }
         for(Question question:multipleQuestion){
             ExamQuestionItem item=createExamQuestionItem(exam,question,question.getScore(),weight,account);
             weight--;
+            totalScore+=question.getScore();
             items.add(item);
         }
         for(Question question:answerQuestion){
             ExamQuestionItem item=createExamQuestionItem(exam,question,question.getScore(),weight,account);
             weight--;
+            totalScore+=question.getScore();
             items.add(item);
         }
         exam.setQuestionItems(items);
         exam.setResourceType(ResourceType.QUESTION);
         exam.setReferenceId(categoryId);
+        exam.setTotalScore(totalScore);
         saveObject(exam);
         return exam;
     }

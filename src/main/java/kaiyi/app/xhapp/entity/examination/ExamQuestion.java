@@ -37,6 +37,10 @@ public class ExamQuestion extends AbstractEntity {
     @PageField(label = "完成数量",type = FieldType.NUMBER)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int finishNumber;
+
+    @PageField(label = "总分",type = FieldType.NUMBER)
+    @FieldNumber(type = FieldNumber.TYPE.INT)
+    private int totalScore;
     @PageField(label = "得分",type = FieldType.NUMBER)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int score;
@@ -167,5 +171,13 @@ public class ExamQuestion extends AbstractEntity {
 
     public void setResourceType(ResourceType resourceType) {
         this.resourceType = resourceType;
+    }
+
+    public int getTotalScore() {
+        return totalScore;
+    }
+
+    public void setTotalScore(int totalScore) {
+        this.totalScore = totalScore;
     }
 }
