@@ -13,7 +13,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity(name=QuestionFavorites.TABLE_NAME)
-@PageEntity(showName = "习题收藏",entityName = "courseFavorites",serviceName = "courseFavoritesService")
+@PageEntity(showName = "习题收藏",entityName = "questionFavorites",serviceName = "questionFavoritesService")
 public class QuestionFavorites extends AbstractEntity {
     public static final String TABLE_NAME="question_favorites";
     private static final long serialVersionUID = -6584425607698737099L;

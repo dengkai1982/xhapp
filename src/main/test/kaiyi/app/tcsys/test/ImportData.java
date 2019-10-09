@@ -20,6 +20,7 @@ import kaiyi.app.xhapp.service.curriculum.CategoryService;
 import kaiyi.app.xhapp.service.curriculum.CourseOrderService;
 import kaiyi.app.xhapp.service.examination.ExamQuestionService;
 import kaiyi.app.xhapp.service.examination.QuestionCategoryService;
+import kaiyi.app.xhapp.service.examination.QuestionFavoritesService;
 import kaiyi.app.xhapp.service.examination.QuestionService;
 import kaiyi.app.xhapp.service.jobs.PositionService;
 import kaiyi.app.xhapp.service.log.ShortMessageSenderNoteService;
@@ -67,6 +68,12 @@ public class ImportData {
             ctx=new ClassPathXmlApplicationContext("spring-context.xml");
             sel=new SpringSelector(ctx);
         }
+    }
+
+    @Test
+    public void questionFav(){
+        QuestionFavoritesService favoritesService=sel.getBean(QuestionFavoritesService.class);
+        favoritesService.favorites("15688503905390085","15689496813820040");
     }
 
     @Test
