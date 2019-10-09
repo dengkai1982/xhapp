@@ -8,6 +8,8 @@ import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.validate.Max;
 import kaiyi.puer.commons.validate.Min;
 import kaiyi.puer.h5ui.annotations.*;
+import kaiyi.puer.json.JsonCreator;
+import kaiyi.puer.json.JsonValuePolicy;
 
 import javax.persistence.*;
 import java.util.Collections;
@@ -171,4 +173,6 @@ public class ExamQuestionItem extends AbstractEntity {
     public void setOwner(Account owner) {
         this.owner = owner;
     }
+
+
 }

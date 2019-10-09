@@ -20,7 +20,7 @@ public class ExamQuestion extends AbstractEntity {
     private String name;
     @PageField(label = "用户账户",type = FieldType.REFERENCE,showForm = false,
             showTable = false,showQuery = false,showDetail = false,showSearch = false)
-    @FieldReference(fieldName = "phone")
+    @FieldReference(fieldName = "showAccountName")
     private Account account;
     @IDate
     @PageField(label = "创建时间",type = FieldType.DATETIME)

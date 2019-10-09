@@ -515,10 +515,12 @@ public class CurriculumAction extends SuperAction {
         String orderId=interactive.getStringParameter("orderId","");
         CourseOrder courseOrder=courseOrderService.signleQuery("orderId",orderId);
         JsonMessageCreator jmc=getSuccessMessage();
-        if(Objects.nonNull(courseOrder)&&courseOrder.getCapitalType().equals(CapitalType.GOLD)){
+        if(Objects.nonNull(courseOrder)){
+            String tradeType=courseOrder.getCapitalType().equals(CapitalType.GOLD)?"使用余额付款":"使用积分付款";
+            String bankType=courseOrder.getCapitalType().equals(CapitalType.GOLD)?"余额支付":"积分支付";
             Currency actualAmount=Currency.noDecimalBuild(courseOrder.getAmount(),2);
             PaymentNotify paymentNotify=new PaymentNotify(courseOrder.getOrderId(),PayPlatform.INSIDE,
-                    "完成订单","使用金币支付","金币支付",actualAmount.toString(),
+                    "完成订单",tradeType,bankType,actualAmount.toString(),
                     "none",RandomUtils.getRandomString(),new Date(),true);
             applicationService.syncExecute(new NotifyCourseOrder(applicationService,paymentNotify));
         }else{
