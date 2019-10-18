@@ -76,12 +76,12 @@ public class ImportData {
         favoritesService.favorites("15688503905390085","15689496813820040");
     }
 
-    @Test
+    /*@Test
     public void getSale(){
         CourseOrderService courseOrderService=sel.getBean(CourseOrderService.class);
         Currency currency=courseOrderService.totalTeamSale("15688598106186917","201909");
         System.out.println(currency);
-    }
+    }*/
 
     /**
      * 要写程序来删除Question
@@ -347,14 +347,14 @@ public class ImportData {
             System.out.println(c.getEntityId());
         });
     }
-    @Test
+    /*@Test
     public void saleCount(){
         CourseOrderService courseOrderService=sel.getBean(CourseOrderService.class);
         Currency currency=courseOrderService.totalPersonSale("15524007346910022","201908");
         System.out.println(currency.toString());
         currency=courseOrderService.totalTeamSale("15524007346910022","201908");
         System.out.println(currency.toString());
-    }
+    }*/
 
     @Test
     public void callAlipay(){
