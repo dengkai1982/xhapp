@@ -9,6 +9,7 @@ import kaiyi.app.xhapp.entity.pojo.FlowStatisticsPojo;
 import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.puer.commons.data.Currency;
 import kaiyi.puer.commons.time.DateTimeRange;
+import kaiyi.puer.commons.time.DateTimeUtil;
 import kaiyi.puer.db.query.CompareQueryExpress;
 import kaiyi.puer.db.query.LinkQueryExpress;
 import kaiyi.puer.db.query.OrderBy;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.Query;
 import java.text.ParseException;
+import java.util.Date;
 import java.util.Objects;
 
 @Service("amountFlowService")
@@ -33,26 +35,26 @@ public class AmountFlowServiceImpl extends InjectDao<AmountFlow> implements Amou
     }
 
     @Override
-    public Currency totalAccountIntegral(String accountId, String yearAndMonth){
-        try {
-            DateTimeRange dateRange=parseDateRange(yearAndMonth);
-            Account account=new Account();
-            account.setEntityId(accountId);
-            QueryExpress query=new CompareQueryExpress("account",CompareQueryExpress.Compare.EQUAL,account);
-            query=new LinkQueryExpress(query, LinkQueryExpress.LINK.AND,
-                    new CompareQueryExpress("amountType",CompareQueryExpress.Compare.EQUAL,AmountType.INTEGRAL));
-            query=new LinkQueryExpress(query, LinkQueryExpress.LINK.AND,new
-                    CompareQueryExpress("borrowLend",CompareQueryExpress.Compare.EQUAL,BorrowLend.income));
+    public Currency totalAccountIntegral(String accountId,Date startDate, Date endDate){
+        Account account=new Account();
+        account.setEntityId(accountId);
+        QueryExpress query=new CompareQueryExpress("account",CompareQueryExpress.Compare.EQUAL,account);
+        query=new LinkQueryExpress(query, LinkQueryExpress.LINK.AND,
+                new CompareQueryExpress("amountType",CompareQueryExpress.Compare.EQUAL,AmountType.INTEGRAL));
+        query=new LinkQueryExpress(query, LinkQueryExpress.LINK.AND,new
+                CompareQueryExpress("borrowLend",CompareQueryExpress.Compare.EQUAL,BorrowLend.income));
+        if(Objects.nonNull(startDate)){
+            DateTimeUtil.setStartDay(startDate);
             query=new LinkQueryExpress(query,LinkQueryExpress.LINK.AND,
-                    new CompareQueryExpress("createTime",CompareQueryExpress.Compare.GT_AND_EQUAL,dateRange.getDayStartDate()));
-            query=new LinkQueryExpress(query,LinkQueryExpress.LINK.AND,
-                    new CompareQueryExpress("createTime",CompareQueryExpress.Compare.LS_AND_EQUAL,dateRange.getDayEndDate()));
-            double sum=sum(query,"amount");
-            return Currency.build(sum,2);
-        } catch (ParseException e) {
-            e.printStackTrace();
+                    new CompareQueryExpress("createTime",CompareQueryExpress.Compare.GT_AND_EQUAL,startDate));
         }
-        return Currency.noDecimalBuild(0,2);
+        if(Objects.nonNull(endDate)){
+            DateTimeUtil.setEndDay(endDate);
+            query=new LinkQueryExpress(query,LinkQueryExpress.LINK.AND,
+                    new CompareQueryExpress("createTime",CompareQueryExpress.Compare.LS_AND_EQUAL,endDate));
+        }
+        double sum=sum(query,"amount");
+        return Currency.build(sum,2);
     }
 
     @Override

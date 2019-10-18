@@ -8,6 +8,8 @@ import kaiyi.puer.commons.data.Currency;
 import kaiyi.puer.db.orm.DatabaseQuery;
 import kaiyi.puer.db.orm.ServiceException;
 
+import java.util.Date;
+
 public interface CourseOrderService extends DatabaseQuery<CourseOrder> {
     /**
      * 构建订单
@@ -24,17 +26,15 @@ public interface CourseOrderService extends DatabaseQuery<CourseOrder> {
     /**
      * 按日期统计个人销量
      * @param entityId
-     * @param date
      * @return
      */
-    Currency totalPersonSale(String entityId,String date);
+    Currency totalPersonSale(String entityId,Date startDate,Date endDate);
     /**
      * 按日期统计团队销量
      * @param entityId
-     * @param date
      * @return
      */
-    Currency totalTeamSale(String entityId,String date);
+    Currency totalTeamSale(String entityId,Date startDate,Date endDate);
 
     /**
      * 删除订单

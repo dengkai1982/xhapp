@@ -20,7 +20,7 @@ public class CourseComment extends AbstractEntity {
     @PageField(label = "课程名称",type = FieldType.REFERENCE,tableLength = 200)
     @FieldReference(fieldName = "name")
     private Course course;
-    @PageField(label = "课程评分",type = FieldType.NUMBER)
+    @PageField(label = "课程评分",type = FieldType.NUMBER,tableLength = 120)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int score;
     @IDate
@@ -28,7 +28,7 @@ public class CourseComment extends AbstractEntity {
     private Date commentTime;
     @PageField(label = "评论内容",tableLength = 280)
     private String content;
-    @PageField(label = "是否回复",type = FieldType.BOOLEAN)
+    @PageField(label = "是否回复",type = FieldType.BOOLEAN,tableLength = 120)
     @FieldBoolean(values={"已回复","未回复"})
     private boolean answer;
     @PageField(label = "回复人",type = FieldType.REFERENCE)
@@ -37,7 +37,7 @@ public class CourseComment extends AbstractEntity {
     @IDate
     @PageField(label = "回复时间",type = FieldType.DATETIME,tableLength = 160)
     private Date replyTime;
-    @PageField(label = "回复内容",tableLength = 300,formColumnLength = 3)
+    @PageField(label = "回复内容",tableLength = 400,formColumnLength = 3)
     private String reply;
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
     @JoinColumn(name="commentator")

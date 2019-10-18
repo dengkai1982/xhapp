@@ -52,7 +52,7 @@ public class Resume extends AbstractEntity {
     @PageField(label = "户籍",tableLength = 220)
     private String household;
     @NotEmpty(hint = "工作类型必须填写")
-    @PageField(label = "工作类型",type = FieldType.BOOLEAN)
+    @PageField(label = "工作类型",type = FieldType.BOOLEAN,tableLength = 120)
     @FieldBoolean(values = {"全职","兼职"})
     private boolean fullTime;
     @NotEmpty(hint = "现住址必须填写")

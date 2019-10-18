@@ -25,35 +25,35 @@ import java.util.Date;
 public class AmountFlow extends AbstractEntity {
     public static final String TABLE_NAME="amount_flow";
     private static final long serialVersionUID = -3119766248121324039L;
-    @PageField(label = "归属人",type = FieldType.REFERENCE)
+    @PageField(label = "归属人",type = FieldType.REFERENCE,tableLength = 160)
     @FieldReference(fieldName = "showAccountName")
     private Account account;
-    @PageField(label = "账户类型",type = FieldType.CHOSEN)
+    @PageField(label = "账户类型",type = FieldType.CHOSEN,tableLength = 140)
     @FieldChosen
     private AmountType amountType;
     @PageField(label = "流水单号",tableLength = 160)
     private String orderId;
 
-    @PageField(label = "科目",type = FieldType.CHOSEN)
+    @PageField(label = "科目",type = FieldType.CHOSEN,tableLength = 160)
     @FieldChosen
     private TradeCourse tradeCourse;
 
     @ICurrency
-    @PageField(label = "之前金额",type = FieldType.NUMBER,tableLength = 120)
+    @PageField(label = "之前金额",type = FieldType.NUMBER,tableLength = 140)
     @FieldNumber(type = FieldNumber.TYPE.LONG)
     private int beforeAmount;
     @ICurrency
-    @PageField(label = "发生额",type = FieldType.NUMBER,tableLength = 120)
+    @PageField(label = "发生额",type = FieldType.NUMBER,tableLength = 140)
     @FieldNumber(type = FieldNumber.TYPE.LONG)
     private int amount;
     @ICurrency
-    @PageField(label = "之后金额",type = FieldType.NUMBER,tableLength = 120)
+    @PageField(label = "之后金额",type = FieldType.NUMBER,tableLength = 140)
     @FieldNumber(type = FieldNumber.TYPE.LONG)
     private int afterAmount;
     @IDate
-    @PageField(label = "发生时间",type = FieldType.DATETIME,tableLength = 160)
+    @PageField(label = "发生时间",type = FieldType.DATETIME,tableLength = 180)
     private Date createTime;
-    @PageField(label = "收入/支出",type = FieldType.CHOSEN)
+    @PageField(label = "收入/支出",type = FieldType.CHOSEN,tableLength = 140)
     @FieldChosen
     private BorrowLend borrowLend;
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)

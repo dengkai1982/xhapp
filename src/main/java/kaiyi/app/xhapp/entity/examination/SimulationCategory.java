@@ -35,16 +35,16 @@ public class SimulationCategory extends AbstractEntity implements Cascadeable,Co
             showTable = false,showQuery = false,showDetail = false,showSearch = false)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int level;
-    @NotEmpty(hint = "单选题分值必须填写")
-    @PageField(label = "单选题分值",type = FieldType.NUMBER,tableLength = 110)
+    @NotEmpty(hint = "单选题数量必须填写")
+    @PageField(label = "单选题数量",type = FieldType.NUMBER,tableLength = 110)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int singleNumber;
-    @NotEmpty(hint = "多选题分值必须填写")
-    @PageField(label = "多选选题分值",type = FieldType.NUMBER,tableLength = 110)
+    @NotEmpty(hint = "多选题数量必须填写")
+    @PageField(label = "多选选题数量",type = FieldType.NUMBER,tableLength = 110)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int multipleNumber;
-    @NotEmpty(hint = "问答题分值必须填写")
-    @PageField(label = "问答题分值",type = FieldType.NUMBER,tableLength = 110)
+    @NotEmpty(hint = "问答题数量必须填写")
+    @PageField(label = "问答题数量",type = FieldType.NUMBER,tableLength = 110)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int answerNumber;
 

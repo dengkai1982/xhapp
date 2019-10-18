@@ -64,7 +64,7 @@
         <property name="accessCompile" ref="accessCompile"/>
         <property name="executerQueue" ref="executerQueue"/>
         <property name="threadExecuterQueue" ref="threadExecuterQueue"/>
-        <property name="scanAccessMenu" value="true"/>
+        <property name="scanAccessMenu" value="false"/>
         <property name="accessPackage">
             <list>
                 <value>kaiyi.app.xhapp.controller</value>

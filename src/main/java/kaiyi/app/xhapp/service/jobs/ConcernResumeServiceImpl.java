@@ -6,6 +6,8 @@ import kaiyi.app.xhapp.entity.jobs.ConcernResume;
 import kaiyi.app.xhapp.entity.jobs.Enterprise;
 import kaiyi.app.xhapp.entity.jobs.Resume;
 import kaiyi.app.xhapp.service.InjectDao;
+import kaiyi.app.xhapp.service.access.VisitorMenuService;
+import kaiyi.app.xhapp.service.log.MenuTooltipService;
 import kaiyi.puer.commons.bean.BeanSyntacticSugar;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.JavaDataTyper;
@@ -24,6 +26,7 @@ import kaiyi.puer.json.creator.ObjectJsonCreator;
 import kaiyi.puer.json.creator.StringJsonCreator;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
@@ -31,7 +34,10 @@ import java.util.Objects;
 @Service("concernResumeService")
 public class ConcernResumeServiceImpl extends InjectDao<ConcernResume> implements ConcernResumeService {
     private static final long serialVersionUID = 2618843499288448960L;
-
+    @Resource
+    private MenuTooltipService menuTooltipService;
+    @Resource
+    private VisitorMenuService visitorMenuService;
     @Override
     public ObjectJsonCreator<Pagination> getCustomerCreator(Pagination<? extends JsonBuilder> pagination) {
         ObjectJsonCreator<Pagination> creator=new ObjectJsonCreator<Pagination>(pagination, new String[]{
@@ -86,6 +92,10 @@ public class ConcernResumeServiceImpl extends InjectDao<ConcernResume> implement
         if(exist(query)){
             throw ServiceExceptionDefine.resumeConcerned;
         }
+        String menuId="/mgr/personnel/concernResume";
+        String parentId=visitorMenuService.findForPrimary(menuId).getParent().getEntityId();
+        menuTooltipService.addMenuNotice(parentId);
+        menuTooltipService.addMenuNotice(menuId);
     }
 
     @Override

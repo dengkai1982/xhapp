@@ -7,6 +7,7 @@ import kaiyi.app.xhapp.entity.distribution.enums.BankType;
 import kaiyi.app.xhapp.service.curriculum.CourseOrderService;
 import kaiyi.app.xhapp.service.distribution.BankInfoService;
 import kaiyi.app.xhapp.service.distribution.WithdrawApplyService;
+import kaiyi.app.xhapp.service.log.AmountFlowService;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.Currency;
 import kaiyi.puer.db.orm.ServiceException;
@@ -24,6 +25,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Controller
 @RequestMapping(DistributionAction.rootPath)
@@ -36,35 +39,42 @@ public class DistributionAction extends SuperAction {
     private WithdrawApplyService withdrawApplyService;
     @Resource
     private CourseOrderService courseOrderService;
+    @Resource
+    private AmountFlowService amountFlowService;
     /**
      * accountId 当前账户ID
-     * date 统计时间，格式为201901或201912
+     * date 统计时间，格式为2019-01-01或2019-12-31
      */
     @RequestMapping("/totalAccountFlow")
-    public void totalAccountFlow(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+    public void totalAccountFlow(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
         String accountId=interactive.getStringParameter("accountId","");
-        //月份，入201909
-        String date=interactive.getStringParameter("date","");
-
+        //月份，入2019-09-01
+        Date startDate=interactive.getDateParameter("startDate",new SimpleDateFormat("yyyy-MM-dd"));
+        Date endDate=interactive.getDateParameter("endDate",new SimpleDateFormat("yyyy-MM-dd"));
+        Currency currency=amountFlowService.totalAccountIntegral(accountId,startDate,endDate);
+        JsonMessageCreator jmc=getSuccessMessage();
+        jmc.setBody(currency.toString());
+        interactive.writeUTF8Text(jmc.build());
     }
     /**
      * 销量统计
      * accountId 当前账户ID
-     * date 统计时间，格式为201901或201912
+     * date 统计时间，格式为2019-01-01或2019-12-31
      * isTeam true 获取团队销量, false获取个人销量
      * @param interactive
      * @param response
      */
-    @RequestMapping("totalSale")
+    @RequestMapping("/totalSale")
     public void totalSale(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
         String accountId=interactive.getStringParameter("accountId","");
-        String date=interactive.getStringParameter("date","");
+        Date startDate=interactive.getDateParameter("startDate",new SimpleDateFormat("yyyy-MM-dd"));
+        Date endDate=interactive.getDateParameter("endDate",new SimpleDateFormat("yyyy-MM-dd"));
         boolean isTeam=interactive.getBoolean("isTeam","true",false);
         Currency currency=null;
         if(isTeam){
-            currency=courseOrderService.totalTeamSale(accountId,date);
+            currency=courseOrderService.totalTeamSale(accountId,startDate,endDate);
         }else{
-            currency=courseOrderService.totalPersonSale(accountId,date);
+            currency=courseOrderService.totalPersonSale(accountId,startDate,endDate);
         }
         JsonMessageCreator jmc=getSuccessMessage();
         jmc.setBody(currency.toString());

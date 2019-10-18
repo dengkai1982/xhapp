@@ -416,3 +416,19 @@ html,body{
 #mainContent{
 	margin-bottom:60px;
 }
+#navbar .nav>li>a,#subNavbar .nav>li>a{
+	position: relative;
+}
+#navbar .nav>li>a>span{
+	position: absolute;
+	top:14px;
+	right:12px;
+}
+#subNavbar .nav>li>a>span{
+	position: absolute;
+	top:8px;
+	right:8px;
+}
+.ifuck{
+	display:none;
+}

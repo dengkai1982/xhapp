@@ -18,25 +18,25 @@ public class FaceToFace extends AbstractEntity {
     @PageField(label = "提交人",type = FieldType.REFERENCE,tableLength = 140)
     @FieldReference(fieldName = "showAccountName")
     private Account account;
-    @PageField(label = "预约人")
+    @PageField(label = "预约人",tableLength = 140)
     private String name;
-    @PageField(label = "联系电话")
+    @PageField(label = "联系电话",tableLength = 200)
     private String phone;
-    @PageField(label = "预约课程")
+    @PageField(label = "预约课程",tableLength = 200)
     private String course;
     @IDate(pattern = "yyyy-MM-dd")
     @PageField(label = "预约时间",type = FieldType.DATE,tableLength = 160)
     private Date faceTime;
-    @PageField(label = "是否回复",type = FieldType.BOOLEAN)
+    @PageField(label = "是否回复",type = FieldType.BOOLEAN,tableLength = 120)
     @FieldBoolean(values={"已回复","未回复"})
     private boolean answer;
-    @PageField(label = "回复人",type = FieldType.REFERENCE)
+    @PageField(label = "回复人",type = FieldType.REFERENCE,tableLength = 140)
     @FieldReference(fieldName = "realName")
     private VisitorUser replier;
     @IDate
     @PageField(label = "回复时间",type = FieldType.DATETIME,tableLength = 160)
     private Date replyTime;
-    @PageField(label = "回复内容",tableLength = 300,formColumnLength = 3)
+    @PageField(label = "回复内容",tableLength = 400,formColumnLength = 3)
     private String reply;
 
     public String getName() {

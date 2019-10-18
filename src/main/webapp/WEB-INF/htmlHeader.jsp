@@ -49,4 +49,5 @@ href="https://www.google.cn/chrome/">请下载最新浏览器</a> 来提升用�
     var manager="${managerPath}";
     var suffix="${suffix}";
     var tokenName="${tokenName}";
+
 </script>

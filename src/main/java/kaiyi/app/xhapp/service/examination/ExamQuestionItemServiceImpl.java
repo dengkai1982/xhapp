@@ -77,7 +77,7 @@ public class ExamQuestionItemServiceImpl extends InjectDao<ExamQuestionItem> imp
                             if(field.equals("choiceAnswers")){
                                 StreamCollection<ExamChoiceAnswer> examChoiceAnswers = entity.getChoiceAnswerStream();
                                 return new CollectionJsonCreator<>(examChoiceAnswers,new String[]{
-                                        "optionName","detailValue"
+                                        "optionName","detailValue","imageType"
                                 });
                             }
                             return null;

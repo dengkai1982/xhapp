@@ -328,7 +328,7 @@ function showMessage(text, timeout) {
 }
 /********************* 服务框架相关 ******************************/
 //如果有文件上传,那么提交完成后,必须清理uploaderConfig
-var uploaderConfig=new Dictionary();
+//var uploaderConfig=new Dictionary();
 $(document).ready(function(){
     initTheme();
     initApplication();

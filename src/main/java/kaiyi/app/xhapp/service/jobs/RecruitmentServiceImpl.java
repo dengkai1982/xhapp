@@ -10,6 +10,7 @@ import kaiyi.puer.commons.data.JavaDataTyper;
 import kaiyi.puer.db.orm.ServiceException;
 import kaiyi.puer.db.query.ContainQueryExpress;
 import kaiyi.puer.db.query.LinkQueryExpress;
+import kaiyi.puer.db.query.OrderBy;
 import kaiyi.puer.db.query.QueryExpress;
 import org.springframework.stereotype.Service;
 
@@ -90,5 +91,12 @@ public class RecruitmentServiceImpl extends InjectDao<Recruitment> implements Re
         em.createQuery("update "+getEntityName(entityClass)+" o set o.recommend=:recommend where " +
                 "o.entityId in(:entityIdArray)").setParameter("recommend",recommend)
                 .setParameter("entityIdArray",positions.toList()).executeUpdate();
+    }
+
+    @Override
+    public OrderBy getDefaultOrderBy(String prefix) {
+        OrderBy orderBy=new OrderBy(prefix,"recommend",OrderBy.TYPE.DESC);
+        orderBy.add(prefix,"publishTime",OrderBy.TYPE.DESC);
+        return orderBy;
     }
 }

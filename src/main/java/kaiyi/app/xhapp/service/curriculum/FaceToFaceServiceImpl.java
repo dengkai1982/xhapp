@@ -6,7 +6,9 @@ import kaiyi.app.xhapp.entity.access.VisitorUser;
 import kaiyi.app.xhapp.entity.curriculum.FaceToFace;
 import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.app.xhapp.service.access.AccountService;
+import kaiyi.app.xhapp.service.access.VisitorMenuService;
 import kaiyi.app.xhapp.service.access.VisitorUserService;
+import kaiyi.app.xhapp.service.log.MenuTooltipService;
 import kaiyi.puer.commons.data.JavaDataTyper;
 import kaiyi.puer.db.orm.ServiceException;
 import kaiyi.puer.db.query.CompareQueryExpress;
@@ -25,10 +27,18 @@ public class FaceToFaceServiceImpl extends InjectDao<FaceToFace> implements Face
     private VisitorUserService visitorUserSerivce;
     @Resource
     private AccountService accountService;
+    @Resource
+    private MenuTooltipService menuTooltipService;
+    @Resource
+    private VisitorMenuService visitorMenuService;
     @Override
     public FaceToFace make(String accountId,String name, String phone, String course, Date faceTime) {
         Account account=accountService.findForPrimary(accountId);
         FaceToFace faceToFace=new FaceToFace(account,name,phone,course,faceTime);
+        String menuId="/mgr/curriculum/faceToFace";
+        String parentId=visitorMenuService.findForPrimary(menuId).getParent().getEntityId();
+        menuTooltipService.addMenuNotice(parentId);
+        menuTooltipService.addMenuNotice(menuId);
         saveObject(faceToFace);
         return faceToFace;
     }

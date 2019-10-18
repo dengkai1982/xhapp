@@ -42,15 +42,15 @@
                         <c:if test="${mainMenu.showable}">
                             <c:choose>
                                 <c:when test="${mainMenu.active}">
-                                    <li class="active"><a  href="#">${mainMenu.name}</a></li>
+                                    <li class="active"><a  href="#" menuEntityId="${mainMenu.entityId}">${mainMenu.name}<span class="label label-dot label-danger ifuck">12</span></a></li>
                                 </c:when>
                                 <c:otherwise>
                                     <c:choose>
                                         <c:when test="${empty mainMenu.actionFlag}">
-                                            <li><a  href="${managerPath}/access/chooseFirstMenu${suffix}?entityId=${mainMenu.entityId}">${mainMenu.name}</a></li>
+                                            <li><a  menuEntityId="${mainMenu.entityId}" href="${managerPath}/access/chooseFirstMenu${suffix}?entityId=${mainMenu.entityId}">${mainMenu.name}<span class="label label-dot label-danger ifuck">12</span></a></li>
                                         </c:when>
                                         <c:otherwise>
-                                            <li><a href="${contextPath}${mainMenu.actionFlag}${suffix}">${mainMenu.name}</a></li>
+                                            <li><a menuEntityId="${mainMenu.entityId}" href="${contextPath}${mainMenu.actionFlag}${suffix}">${mainMenu.name}<span class="label label-dot label-danger ifuck">12</span></a></li>
                                         </c:otherwise>
                                     </c:choose>
                                 </c:otherwise>
@@ -119,26 +119,26 @@
                                                 <ul class="dropdown-menu">
                                             <c:choose>
                                                 <c:when test="${subMenu.active}">
-                                                    <li class="active"><a href="${contextPath}${subMenu.actionFlag}${suffix}" title="${subMenu.detail}">${subMenu.name}</a></li>
+                                                    <li class="active"><a menuEntityId="${subMenu.entityId}" href="${contextPath}${subMenu.actionFlag}${suffix}" title="${subMenu.detail}">${subMenu.name}<span class="label label-dot label-danger ifuck">12</span></a></li>
                                                 </c:when>
                                                 <c:when test="${empty subMenu.actionFlag}">
-                                                    <li><a  href="${managerPath}/access/chooseFirstMenu${suffix}?entityId=${subMenu.entityId}">${subMenu.name}</a></li>
+                                                    <li><a menuEntityId="${subMenu.entityId}" href="${managerPath}/access/chooseFirstMenu${suffix}?entityId=${subMenu.entityId}">${subMenu.name}<span class="label label-dot label-danger ifuck">12</span></a></li>
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <li><a href="${contextPath}${subMenu.actionFlag}${suffix}" title="${subMenu.detail}">${subMenu.name}</a></li>
+                                                    <li><a menuEntityId="${subMenu.entityId}" href="${contextPath}${subMenu.actionFlag}${suffix}" title="${subMenu.detail}">${subMenu.name}<span class="label label-dot label-danger ifuck">12</span></a></li>
                                                 </c:otherwise>
                                             </c:choose>
                                         </c:when>
                                         <c:when test="${varStatus.index>=10&&varStatus.last}">
                                             <c:choose>
                                                 <c:when test="${subMenu.active}">
-                                                    <li class="active"><a href="${contextPath}${subMenu.actionFlag}${suffix}" title="${subMenu.detail}">${subMenu.name}</a></li>
+                                                    <li class="active"><a menuEntityId="${subMenu.entityId}" href="${contextPath}${subMenu.actionFlag}${suffix}" title="${subMenu.detail}">${subMenu.name}<span class="label label-dot label-danger ifuck">12</span></a></li>
                                                 </c:when>
                                                 <c:when test="${empty subMenu.actionFlag}">
-                                                    <li><a  href="${managerPath}/access/chooseFirstMenu${suffix}?entityId=${subMenu.entityId}">${subMenu.name}</a></li>
+                                                    <li><a menuEntityId="${subMenu.entityId}" href="${managerPath}/access/chooseFirstMenu${suffix}?entityId=${subMenu.entityId}">${subMenu.name}<span class="label label-dot label-danger ifuck">12</span></a></li>
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <li><a href="${contextPath}${subMenu.actionFlag}${suffix}" title="${subMenu.detail}">${subMenu.name}</a></li>
+                                                    <li><a menuEntityId="${subMenu.entityId}" href="${contextPath}${subMenu.actionFlag}${suffix}" title="${subMenu.detail}">${subMenu.name}<span class="label label-dot label-danger ifuck">12</span></a></li>
                                                 </c:otherwise>
                                             </c:choose>
                                                 </ul>
@@ -147,13 +147,13 @@
                                         <c:otherwise>
                                             <c:choose>
                                                 <c:when test="${subMenu.active}">
-                                                    <li class="active"><a href="${contextPath}${subMenu.actionFlag}${suffix}" title="${subMenu.detail}">${subMenu.name}</a></li>
+                                                    <li class="active"><a menuEntityId="${subMenu.entityId}" href="${contextPath}${subMenu.actionFlag}${suffix}" title="${subMenu.detail}">${subMenu.name}<span class="label label-dot label-danger ifuck">12</span></a></li>
                                                 </c:when>
                                                 <c:when test="${empty subMenu.actionFlag}">
-                                                    <li><a  href="${managerPath}/access/chooseFirstMenu${suffix}?entityId=${subMenu.entityId}">${subMenu.name}</a></li>
+                                                    <li><a menuEntityId="${subMenu.entityId}" href="${managerPath}/access/chooseFirstMenu${suffix}?entityId=${subMenu.entityId}">${subMenu.name}<span class="label label-dot label-danger ifuck">12</span></a></li>
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <li><a href="${contextPath}${subMenu.actionFlag}${suffix}" title="${subMenu.detail}">${subMenu.name}</a></li>
+                                                    <li><a menuEntityId="${subMenu.entityId}" href="${contextPath}${subMenu.actionFlag}${suffix}" title="${subMenu.detail}">${subMenu.name}<span class="label label-dot label-danger ifuck">12</span></a></li>
                                                 </c:otherwise>
                                             </c:choose>
                                         </c:otherwise>
@@ -171,6 +171,26 @@
     <div class="hidden subAuthors" data-value="${author.menu.entityId}" visit="${author.visit}"></div>
 </c:forEach>
 <script type="text/javascript">
+    function updateTooltip(){
+        $.ajax({
+            url:"${contextPath}/mgr/access/getMenuTooltip${suffix}",
+            type:"GET", //GET
+            async:true,
+            timeout:5000,
+            dataType:"JSON",
+            success:function(data){
+                if(data.menuTooltip){
+                    var menuTooltip=data.menuTooltip;
+                    for(var i=0;i<menuTooltip.length;i++){
+                        var tip=menuTooltip[i];
+                        $("a[menuEntityId='"+tip.menuId+"']").find(".ifuck").removeClass("ifuck");
+                    }
+                }
+            }
+        })
+    }
+    updateTooltip();
+    setInterval(updateTooltip(),5000);
     $("#save_change_password").click(function(){
         var $form=$("#change_password_form").formToJson();
         if($form.oldPassword==""){

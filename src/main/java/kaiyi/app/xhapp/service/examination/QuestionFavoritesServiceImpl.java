@@ -1,6 +1,7 @@
 package kaiyi.app.xhapp.service.examination;
 
 import kaiyi.app.xhapp.entity.access.Account;
+import kaiyi.app.xhapp.entity.examination.ExamChoiceAnswer;
 import kaiyi.app.xhapp.entity.examination.ExamQuestionItem;
 import kaiyi.app.xhapp.entity.examination.Question;
 import kaiyi.app.xhapp.entity.examination.QuestionFavorites;
@@ -67,7 +68,7 @@ public class QuestionFavoritesServiceImpl extends InjectDao<QuestionFavorites> i
                                 ExamQuestionItem questionItem=(ExamQuestionItem)fieldValue;
                                 return new ObjectJsonCreator<>(questionItem, new String[]{
                                         "entityId", "questionType", "detail", "weight", "score", "analysis", "standardAnswer", "resultAnswer",
-                                        "result", "finished"
+                                        "result", "finished","choiceAnswers"
                                 }, new JsonValuePolicy<ExamQuestionItem>() {
                                     @Override
                                     public JsonCreator getCreator(ExamQuestionItem entity, String field, Object fieldValue) {
@@ -78,6 +79,11 @@ public class QuestionFavoritesServiceImpl extends InjectDao<QuestionFavorites> i
                                             mapJsonCreator.put("value",new StringJsonCreator(type.getValue()));
                                             mapJsonCreator.put("name",new StringJsonCreator(type.getShowName()));
                                             return mapJsonCreator;
+                                        }else if(field.equals("choiceAnswers")){
+                                            StreamCollection<ExamChoiceAnswer> answers=entity.getChoiceAnswerStream();
+                                            return new CollectionJsonCreator<>(answers,new String[]{
+                                                    "optionName","imageType","detailValue"
+                                            });
                                         }
                                         return null;
                                     }

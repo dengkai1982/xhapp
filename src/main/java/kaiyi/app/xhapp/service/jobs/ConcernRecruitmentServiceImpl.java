@@ -5,6 +5,8 @@ import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.app.xhapp.entity.jobs.ConcernRecruitment;
 import kaiyi.app.xhapp.entity.jobs.Recruitment;
 import kaiyi.app.xhapp.service.InjectDao;
+import kaiyi.app.xhapp.service.access.VisitorMenuService;
+import kaiyi.app.xhapp.service.log.MenuTooltipService;
 import kaiyi.puer.commons.bean.BeanSyntacticSugar;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.JavaDataTyper;
@@ -23,12 +25,17 @@ import kaiyi.puer.json.creator.ObjectJsonCreator;
 import kaiyi.puer.json.creator.StringJsonCreator;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 
 @Service("concernRecruitmentService")
 public class ConcernRecruitmentServiceImpl extends InjectDao<ConcernRecruitment> implements ConcernRecruitmentService{
+    @Resource
+    private MenuTooltipService menuTooltipService;
+    @Resource
+    private VisitorMenuService visitorMenuService;
     @Override
     protected void objectBeforePersistHandler(ConcernRecruitment concernRecruitment, Map<String, JavaDataTyper> params) throws ServiceException {
         concernRecruitment.setCreateTime(new Date());
@@ -39,6 +46,10 @@ public class ConcernRecruitmentServiceImpl extends InjectDao<ConcernRecruitment>
         if(exist(query)){
             throw ServiceExceptionDefine.enterpriseConcerned;
         }
+        String menuId="/mgr/personnel/concernRecruitment";
+        String parentId=visitorMenuService.findForPrimary(menuId).getParent().getEntityId();
+        menuTooltipService.addMenuNotice(parentId);
+        menuTooltipService.addMenuNotice(menuId);
     }
 
     @Override

@@ -44,7 +44,7 @@ public class Account extends AbstractEntity {
     @PageField(label = "推荐人",type = FieldType.REFERENCE,showForm = false,tableLength = 140)
     @FieldReference(fieldName = "showAccountName")
     private Account recommend;
-    @PageField(label = "团队人数",type = FieldType.NUMBER,showForm = false)
+    @PageField(label = "团队人数",type = FieldType.NUMBER,showForm = false,tableLength = 120)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int teamNumber;
     @PageField(label = "用户头像",type=FieldType.DOCUMENT,showSearch = false,showDetail = false)
@@ -65,11 +65,11 @@ public class Account extends AbstractEntity {
     @PageField(label = "地址",tableLength = 400,showTable = false)
     private String address;
     @ICurrency
-    @PageField(label = "账户余额",type = FieldType.NUMBER)
+    @PageField(label = "账户余额",type = FieldType.NUMBER,tableLength = 120)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int gold;
     @ICurrency
-    @PageField(label = "账户积分",type = FieldType.NUMBER)
+    @PageField(label = "账户积分",type = FieldType.NUMBER,tableLength = 120)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int integral;
     @PageField(label = "账户状态",type = FieldType.BOOLEAN,tableLength = 120)

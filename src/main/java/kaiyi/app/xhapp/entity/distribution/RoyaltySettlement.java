@@ -28,7 +28,7 @@ public class RoyaltySettlement extends AbstractEntity {
     @IDate(pattern = "yyyy-MM-dd")
     @PageField(label = "结算时间",type = FieldType.DATETIME,tableLength = 160,showForm = false)
     private Date settlementTime;
-    @PageField(label = "是否发放",type = FieldType.BOOLEAN,showForm = false)
+    @PageField(label = "是否发放",type = FieldType.BOOLEAN,showForm = false,tableLength = 120)
     @FieldBoolean(values = {"已发放","未发放"})
     private boolean grant;
     @PageField(label = "结算单号",showForm = false,tableLength = 160)

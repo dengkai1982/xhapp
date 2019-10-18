@@ -9,12 +9,17 @@
     <h1>测试</h1>
     <script src="${contextPath}/js/app.js" type="text/javascript"></script>
     <script type="text/javascript">
-        queryDataOfOrderBySetUrl("${contextPath}/app/query/pagination${suffix}?category=15656874680660119","testPagerService",
+        queryDataOfOrderBySetUrl("${contextPath}/app/query/pagination${suffix}","questionFavoritesService",
             [{
-                field:"enable",
+                field:"question",
                 condition:"0",
-                value:"true"
-            }],0,100,"name","ase",function(d){
+                value:"15689496813820040"
+            },{
+                field:"account",
+                condition:"0",
+                value:"15688503905390085",
+                link:LINK_AND
+            }],0,100,"createTime","ase",function(d){
                 console.log(d);
             })
     </script>

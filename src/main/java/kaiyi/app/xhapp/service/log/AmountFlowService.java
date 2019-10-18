@@ -10,6 +10,8 @@ import kaiyi.puer.commons.data.Currency;
 import kaiyi.puer.db.orm.DatabaseFastOper;
 import kaiyi.puer.db.orm.DatabaseQuery;
 
+import java.util.Date;
+
 public interface AmountFlowService extends DatabaseQuery<AmountFlow>,DatabaseFastOper<AmountFlow>,FlowStatisticsCount {
 
     void saveNote(Account account, AmountType amountType, TradeCourse tradeCourse,String orderId, int beforeAmount, int amount,
@@ -18,9 +20,8 @@ public interface AmountFlowService extends DatabaseQuery<AmountFlow>,DatabaseFas
     /**
      * 统计会员积分
      * @param accountId
-     * @param yearAndMonth
      * @return
      */
-    Currency totalAccountIntegral(String accountId,String yearAndMonth);
+    Currency totalAccountIntegral(String accountId,Date startDate,Date endDate);
 
 }

@@ -2,8 +2,10 @@ package kaiyi.app.xhapp.controller.mgr;
 
 import kaiyi.app.xhapp.entity.access.VisitorMenu;
 import kaiyi.app.xhapp.entity.access.VisitorUser;
+import kaiyi.app.xhapp.entity.log.MenuTooltip;
 import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
 import kaiyi.app.xhapp.service.access.VisitorUserService;
+import kaiyi.app.xhapp.service.log.MenuTooltipService;
 import kaiyi.app.xhapp.service.pub.ConfigureService;
 import kaiyi.puer.commons.collection.Cascadeable;
 import kaiyi.puer.commons.collection.StreamCollection;
@@ -11,9 +13,11 @@ import kaiyi.puer.commons.data.StringEditor;
 import kaiyi.puer.db.orm.CustomQueryExpress;
 import kaiyi.puer.db.orm.DatabaseQuery;
 import kaiyi.puer.db.orm.ServiceException;
+import kaiyi.puer.db.query.CompareQueryExpress;
 import kaiyi.puer.db.query.QueryExpress;
 import kaiyi.puer.h5ui.bean.DynamicGridInfo;
 import kaiyi.puer.h5ui.service.DocumentService;
+import kaiyi.puer.json.creator.CollectionJsonCreator;
 import kaiyi.puer.json.creator.JsonMessageCreator;
 import kaiyi.puer.json.creator.MutilJsonCreator;
 import kaiyi.puer.web.elements.FormElementHidden;
@@ -40,7 +44,8 @@ public class AccessController extends ManagerController {
     private VisitorUserService visitorUserService;
     @Resource
     private ConfigureService configureService;
-
+    @Resource
+    private MenuTooltipService menuTooltipService;
     public static final String getAccessTempFilePathPrefix(WebInteractive interactive){
         String contextPath=interactive.getHttpServletRequest().getContextPath();
         return contextPath+rootPath+"/accessTempFile"+ServletUtils.getRequestSuffix(interactive.getHttpServletRequest())
@@ -64,6 +69,17 @@ public class AccessController extends ManagerController {
         DocumentService.accessStorageFile(interactive,response,configureService.getStringValue(ConfigureItem.DOC_SAVE_PATH),
                 configureService.getStringValue(ConfigureItem.DOC_SERVER_PREFIX),"hex");
     }
+
+    @RequestMapping("/getMenuTooltip")
+    public void getMenuTooltip(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        QueryExpress query=new CompareQueryExpress("number",CompareQueryExpress.Compare.GT,0);
+        StreamCollection<MenuTooltip> tooltips = menuTooltipService.getEntitys(query);
+        CollectionJsonCreator<MenuTooltip> jsonCreator=new CollectionJsonCreator<>(tooltips,new String[]{
+                "menuId","number"
+        });
+        interactive.writeUTF8Text(jsonCreator.build());
+    }
+
     //获取菜单跳转
     @RequestMapping("/chooseFirstMenu")
     public void chooseFirstMenu(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
@@ -73,11 +89,13 @@ public class AccessController extends ManagerController {
         if(finder==null||finder.getChildrenList().isEmpty()){
             interactive.sendRedict(interactive.getWebPage().getContextPath()+"/login.jsp");
         }else{
+            menuTooltipService.clearMenuNotice(finder.getEntityId());
             List<? extends Cascadeable> cascadeList=finder.getChildrenList();
             for(Cascadeable cascade:cascadeList) {
                 VisitorMenu menu=(VisitorMenu)cascade;
                 if(menu.isShowable()) {
                     interactive.sendRedict(interactive.generatorRequestUrl(menu.getActionFlag(),null));
+                    menuTooltipService.clearMenuNotice(menu.getEntityId());
                     break;
                 }
             }

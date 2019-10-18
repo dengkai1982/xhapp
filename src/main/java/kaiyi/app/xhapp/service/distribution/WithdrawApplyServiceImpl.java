@@ -10,6 +10,8 @@ import kaiyi.app.xhapp.entity.distribution.enums.WithdrawStatus;
 import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
 import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.app.xhapp.service.access.AccountService;
+import kaiyi.app.xhapp.service.access.VisitorMenuService;
+import kaiyi.app.xhapp.service.log.MenuTooltipService;
 import kaiyi.app.xhapp.service.pub.ConfigureService;
 import kaiyi.puer.commons.data.JavaDataTyper;
 import kaiyi.puer.commons.time.DateTimeRange;
@@ -35,6 +37,10 @@ public class WithdrawApplyServiceImpl extends InjectDao<WithdrawApply> implement
     private AccountService accountService;
     @Resource
     private ConfigureService configureService;
+    @Resource
+    private MenuTooltipService menuTooltipService;
+    @Resource
+    private VisitorMenuService visitorMenuService;
     @Override
     public WithdrawApply apply(String bankInfoId, String accountId, int amount,String phone) throws ServiceException {
         if(existDay(accountId)){
@@ -63,6 +69,10 @@ public class WithdrawApplyServiceImpl extends InjectDao<WithdrawApply> implement
         apply.setApplyTime(new Date());
         apply.setContractPhone(phone);
         apply.setMark("");
+        String menuId="/mgr/distribution/withdrawApply";
+        String parentId=visitorMenuService.findForPrimary(menuId).getParent().getEntityId();
+        menuTooltipService.addMenuNotice(parentId);
+        menuTooltipService.addMenuNotice(menuId);
         saveObject(apply);
         return apply;
     }

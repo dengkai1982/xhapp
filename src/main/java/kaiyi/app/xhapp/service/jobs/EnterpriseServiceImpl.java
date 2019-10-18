@@ -3,6 +3,8 @@ package kaiyi.app.xhapp.service.jobs;
 import kaiyi.app.xhapp.entity.jobs.Enterprise;
 import kaiyi.app.xhapp.entity.jobs.Recruitment;
 import kaiyi.app.xhapp.service.InjectDao;
+import kaiyi.app.xhapp.service.access.VisitorMenuService;
+import kaiyi.app.xhapp.service.log.MenuTooltipService;
 import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.JavaDataTyper;
@@ -12,6 +14,7 @@ import kaiyi.puer.db.query.LinkQueryExpress;
 import kaiyi.puer.db.query.QueryExpress;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +23,17 @@ import java.util.Objects;
 @Service("enterpriseService")
 public class EnterpriseServiceImpl extends InjectDao<Enterprise> implements EnterpriseService {
     private static final long serialVersionUID = 916196901732959147L;
+    @Resource
+    private MenuTooltipService menuTooltipService;
+    @Resource
+    private VisitorMenuService visitorMenuService;
+    @Override
+    protected void objectBeforePersistHandler(Enterprise enterprise, Map<String, JavaDataTyper> params) throws ServiceException {
+        String menuId="/mgr/personnel/enterprise";
+        String parentId=visitorMenuService.findForPrimary(menuId).getParent().getEntityId();
+        menuTooltipService.addMenuNotice(parentId);
+        menuTooltipService.addMenuNotice(menuId);
+    }
 
     @Override
     protected void objectBeforeUpdateHandler(Enterprise enterprise, Map<String, JavaDataTyper> data) throws ServiceException {

@@ -30,6 +30,9 @@ public class Recruitment extends AbstractEntity {
     @PageField(label = "推荐岗位",type = FieldType.BOOLEAN,tableLength = 120)
     @FieldBoolean(values = {"是","否"})
     private boolean recommend;
+    @IDate
+    @PageField(label = "发布时间",type = FieldType.DATETIME,tableLength = 160)
+    public Date publishTime;
     @NotEmpty(hint = "工作类型必须填写")
     @PageField(label = "工作类型",type = FieldType.BOOLEAN,tableLength = 120)
     @FieldBoolean(values = {"全职","兼职"})
@@ -49,12 +52,9 @@ public class Recruitment extends AbstractEntity {
     private String workYear;
     @PageField(label = "其他要求",tableLength = 360)
     private String otherRequire;
-    @PageField(label = "发布人",type = FieldType.REFERENCE)
+    @PageField(label = "发布人",type = FieldType.REFERENCE,tableLength = 120)
     @FieldReference(fieldName = "phone")
     private Account publisher;
-    @IDate
-    @PageField(label = "发布时间",type = FieldType.DATETIME,tableLength = 160)
-    public Date publishTime;
     @NotEmpty(hint = "有效时间必须填写")
     @IDate(pattern = "yyyy-MM-dd")
     @PageField(label = "有效时间",type = FieldType.DATETIME,tableLength = 160)

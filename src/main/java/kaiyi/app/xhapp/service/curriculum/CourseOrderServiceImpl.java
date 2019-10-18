@@ -74,6 +74,8 @@ public class CourseOrderServiceImpl extends InjectDao<CourseOrder> implements Co
         }
         if(capitalType.equals(CapitalType.GOLD)&&account.getGold()<price){
             throw ServiceExceptionDefine.goldInsufficient;
+        }else if(capitalType.equals(CapitalType.INTEGRAL)&&account.getIntegral()<price){
+            throw ServiceExceptionDefine.integralInsufficient;
         }
         order.setStatus(CourseOrderStatus.WAIT_PAYMENT);
         order.setOrderId(orderId);
@@ -163,68 +165,73 @@ public class CourseOrderServiceImpl extends InjectDao<CourseOrder> implements Co
     }
 
     @Override
-    public Currency totalPersonSale(String entityId, String date) {
+    public Currency totalPersonSale(String entityId,Date startDate,Date endDate) {
         Account account=new Account();
         account.setEntityId(entityId);
-        try {
-            DateTimeRange dateRange=parseDateRange(date);
-            Object result=em.createQuery("select coalesce(sum(o.amount),0) from "+getEntityName(entityClass)+" o "+
-                    "where o.status=:status and o.account=:account and o.paymentDate>=:startDate and " +
-                    "o.paymentDate<=:endDate").setParameter("status",CourseOrderStatus.PAYMENTED)
-            .setParameter("account",account).setParameter("startDate",dateRange.getStartDate())
-            .setParameter("endDate",dateRange.getEndDate()).getSingleResult();
-            Long courseOrderCurrenty=Long.valueOf(result.toString());
-            result=em.createQuery("select coalesce(sum(o.amount),0) from "+getEntityName(AmountFlow.class)+" o where " +
-                    "o.borrowLend=:borrowLend and o.account=:account and o.createTime>=:startDate and " +
-                    "o.createTime<=:endDate").setParameter("borrowLend",BorrowLend.income)
-                    .setParameter("account",account).setParameter("startDate",dateRange.getStartDate())
-                    .setParameter("endDate",dateRange.getEndDate()).getSingleResult();
-            courseOrderCurrenty+=Long.valueOf(result.toString());
-            return Currency.noDecimalBuild(courseOrderCurrenty,2);
-        } catch (ParseException e) {
-            e.printStackTrace();
+        if(Objects.nonNull(startDate)){
+            DateTimeUtil.setStartDay(startDate);
+        }else{
+            startDate=new Date(1970,1,1);
         }
-        return Currency.noDecimalBuild(0,2);
+        if(Objects.nonNull(endDate)){
+            DateTimeUtil.setEndDay(endDate);
+        }else{
+            endDate=new Date();
+        }
+        Object result=em.createQuery("select coalesce(sum(o.amount),0) from "+getEntityName(entityClass)+" o "+
+                "where o.status=:status and o.account=:account and o.paymentDate>=:startDate and " +
+                "o.paymentDate<=:endDate").setParameter("status",CourseOrderStatus.PAYMENTED)
+                .setParameter("account",account).setParameter("startDate",startDate)
+                .setParameter("endDate",endDate).getSingleResult();
+        Long courseOrderCurrenty=Long.valueOf(result.toString());
+        result=em.createQuery("select coalesce(sum(o.amount),0) from "+getEntityName(AmountFlow.class)+" o where " +
+                "o.borrowLend=:borrowLend and o.account=:account and o.createTime>=:startDate and " +
+                "o.createTime<=:endDate").setParameter("borrowLend",BorrowLend.income)
+                .setParameter("account",account).setParameter("startDate",startDate)
+                .setParameter("endDate",endDate).getSingleResult();
+        courseOrderCurrenty+=Long.valueOf(result.toString());
+        return Currency.noDecimalBuild(courseOrderCurrenty,2);
     }
 
     @Override
-    public Currency totalTeamSale(String entityId, String date) {
+    public Currency totalTeamSale(String entityId,Date startDate,Date endDate) {
         StreamCollection<Account> accounts=accountService.getTeams(entityId);
-        System.out.println(accounts.joinString(m->{
-            return m.getEntityId();
-        },"\",\""));
         if(accounts.assertNotEmpty()){
-            try {
-                DateTimeRange dateRange=parseDateRange(date);
-                System.out.println(DateTimeUtil.yyyyMMddHHmmss.format(dateRange.getDayStartDate()) +"&"+DateTimeUtil.yyyyMMddHHmmss.format(dateRange.getDayEndDate()));
-                Object result=em.createQuery("select coalesce(sum(o.amount),0) from "+getEntityName(entityClass)+" o "+
-                        "where o.status=:status and o.account in(:accounts) and o.paymentDate>=:startDate and " +
-                        "o.paymentDate<=:endDate").setParameter("status",CourseOrderStatus.PAYMENTED)
-                        .setParameter("accounts",accounts).setParameter("startDate",dateRange.getDayStartDate())
-                        .setParameter("endDate",dateRange.getDayEndDate()).getSingleResult();
-                Long courseOrderCurrenty=Long.valueOf(result.toString());
-                //RoyaltySettlement
-                result=em.createQuery("select coalesce(sum(o.price),0) from "+getEntityName(RoyaltySettlement.class)+" o where "+
-                "o.grant=:grant and o.grantTime>=:startDate and o.grantTime<=:endDate and o.account in(:accounts)")
-                .setParameter("grant",Boolean.TRUE).setParameter("startDate",dateRange.getDayStartDate())
-                .setParameter("endDate",dateRange.getDayEndDate()).setParameter("accounts",accounts).getSingleResult();
+            if(Objects.nonNull(startDate)){
+                DateTimeUtil.setStartDay(startDate);
+            }else{
+                startDate=new Date(1970,1,1);
+            }
+            if(Objects.nonNull(endDate)){
+                DateTimeUtil.setEndDay(endDate);
+            }else{
+                endDate=new Date();
+            }
+            Object result=em.createQuery("select coalesce(sum(o.amount),0) from "+getEntityName(entityClass)+" o "+
+                    "where o.status=:status and o.account in(:accounts) and o.paymentDate>=:startDate and " +
+                    "o.paymentDate<=:endDate").setParameter("status",CourseOrderStatus.PAYMENTED)
+                    .setParameter("accounts",accounts).setParameter("startDate",startDate)
+                    .setParameter("endDate",endDate).getSingleResult();
+            Long courseOrderCurrenty=Long.valueOf(result.toString());
+            //RoyaltySettlement
+            result=em.createQuery("select coalesce(sum(o.price),0) from "+getEntityName(RoyaltySettlement.class)+" o where "+
+                    "o.grant=:grant and o.grantTime>=:startDate and o.grantTime<=:endDate and o.account in(:accounts)")
+                    .setParameter("grant",Boolean.TRUE).setParameter("startDate",startDate)
+                    .setParameter("endDate",endDate).setParameter("accounts",accounts).getSingleResult();
 
                 /*result=em.createQuery("select coalesce(sum(o.amount),0) from "+getEntityName(AmountFlow.class)+" o where " +
                         "o.borrowLend=:borrowLend and o.account in(:accounts) and o.createTime>=:startDate and " +
                         "o.createTime<=:endDate").setParameter("borrowLend",BorrowLend.income)
                         .setParameter("accounts",accounts).setParameter("startDate",dateRange.getDayStartDate())
                         .setParameter("endDate",dateRange.getDayEndDate()).getSingleResult();*/
-                courseOrderCurrenty+=Long.valueOf(result.toString());
-                return Currency.noDecimalBuild(courseOrderCurrenty,2);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+            courseOrderCurrenty+=Long.valueOf(result.toString());
+            return Currency.noDecimalBuild(courseOrderCurrenty,2);
         }
         return Currency.noDecimalBuild(0,2);
     }
 
 
-    private static DateTimeRange getDateTimeRange(ChangeCalendar start, ChangeCalendar end){
+    /*private static DateTimeRange getDateTimeRange(ChangeCalendar start, ChangeCalendar end){
         Calendar c=Calendar.getInstance(Locale.getDefault());
         start.doChange(c);
         DateTimeRange range=new DateTimeRange();
@@ -238,7 +245,7 @@ public class CourseOrderServiceImpl extends InjectDao<CourseOrder> implements Co
         c.set(Calendar.SECOND, 59);
         range.setEndDate(c.getTime());
         return range;
-    }
+    }*/
 
     @Override
     public void deleteOrderById(String entityId) {

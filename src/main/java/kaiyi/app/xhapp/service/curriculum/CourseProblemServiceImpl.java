@@ -7,7 +7,9 @@ import kaiyi.app.xhapp.entity.curriculum.Course;
 import kaiyi.app.xhapp.entity.curriculum.CourseProblem;
 import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.app.xhapp.service.access.AccountService;
+import kaiyi.app.xhapp.service.access.VisitorMenuService;
 import kaiyi.app.xhapp.service.access.VisitorUserService;
+import kaiyi.app.xhapp.service.log.MenuTooltipService;
 import kaiyi.puer.commons.data.JavaDataTyper;
 import kaiyi.puer.db.orm.ServiceException;
 import kaiyi.puer.db.query.CompareQueryExpress;
@@ -29,6 +31,10 @@ public class CourseProblemServiceImpl extends InjectDao<CourseProblem> implement
     private AccountService accountService;
     @Resource
     private VisitorUserService visitorUserSerivce;
+    @Resource
+    private MenuTooltipService menuTooltipService;
+    @Resource
+    private VisitorMenuService visitorMenuService;
     @Override
     public CourseProblem problem(String courseId, String commentatorId, String content) throws ServiceException {
         Course course=courseService.findForPrimary(courseId);
@@ -41,6 +47,10 @@ public class CourseProblemServiceImpl extends InjectDao<CourseProblem> implement
         problem.setCommitTime(new Date());
         problem.setContent(content);
         problem.setCourse(course);
+        String menuId="/mgr/curriculum/courseProblem";
+        String parentId=visitorMenuService.findForPrimary(menuId).getParent().getEntityId();
+        menuTooltipService.addMenuNotice(parentId);
+        menuTooltipService.addMenuNotice(menuId);
         saveObject(problem);
         return problem;
     }

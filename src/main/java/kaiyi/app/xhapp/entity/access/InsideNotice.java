@@ -28,7 +28,7 @@ public class InsideNotice extends TimeStampEntity {
     showDetail = false)
     private String actionUrl;
     @IDate
-    @PageField(label = "是否已读",type = FieldType.DATETIME,tableLength = 160)
+    @PageField(label = "消息时间",type = FieldType.DATETIME,tableLength = 160)
     private Date publishDate;
 
     @Override
