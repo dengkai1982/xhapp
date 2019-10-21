@@ -120,6 +120,32 @@ public class AccessController extends ManagerController {
         }
         interactive.writeUTF8Text(msg.build());
     }
+    private void queryList(WebInteractive interactive,ExcuterQuery excuterQuery){
+        String serviceName=interactive.getStringParameter("serviceName","");
+        if(Objects.nonNull(serviceName)){
+            String queryCondition=interactive.getHttpServletRequest().getParameter("queryCondition");
+            DatabaseQuery databaseQuery = h5UIService.getSpringContextHolder().getBean(serviceName);
+            QueryExpress query=parseQueryExpress(databaseQuery.getEntityClassName(),queryCondition);
+            query=defaultQuery(interactive,databaseQuery,query);
+            excuterQuery.excute(interactive,databaseQuery,query);
+
+        }
+    }
+    //导出excel表格
+    @RequestMapping("/exportTableToExcel")
+    public void exportTableToExcel(@IWebInteractive WebInteractive interactive,final HttpServletResponse response){
+        String downloadFileName=interactive.getStringParameter("downloadFileName","filename");
+        queryList(interactive,(web,databaseQuery,query)->{
+            //String fileName=web.getStringParameter("downloadFileName","fileName");
+            try {
+                exportExcel(downloadFileName+"_"+System.currentTimeMillis(),"sheet1",interactive,response,databaseQuery,query);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            //AbstractController.exportObjectToExcel(interactive,response,serviceName,);
+            //StreamCollection<> databaseQuery.getEntitys(query);
+        });
+    }
     //改变搜索框的内容
     @RequestMapping("/changeSearchBox")
     public void changeSearchBox(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {

@@ -390,4 +390,10 @@ public class ImportData {
             e.printStackTrace();
         }
     }
+
+    @Test
+    public void staticsticCourse(){
+        CourseOrderService courseOrderService=sel.getBean(CourseOrderService.class);
+        courseOrderService.courseSaleStatistics(null,null);
+    }
 }

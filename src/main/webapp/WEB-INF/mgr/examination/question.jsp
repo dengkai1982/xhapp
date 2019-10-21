@@ -17,11 +17,18 @@
                 <visit:auth url="${webPage.newEntityPage}">
                     <a href="${contextPath}${webPage.newEntityPage}${suffix}?${paginationCurrentPage}=1" class="btn btn-primary"><i class="icon icon-plus"></i> 新增${requestScope.entityShowName}</a>
                 </visit:auth>
-                <a href="#" id="batchEnable" class="btn btn-secondary">批量启用</a>
-                <a href="#" id="batchDisable" class="btn btn-secondary">批量停用</a>
-                <a href="#" id="batchDelete" class="btn btn-secondary">批量删除</a>
-                <a href="#" id="batchEnableAll" class="btn btn-secondary">全部启用</a>
-                <a href="#" id="batchDisableAll" class="btn btn-secondary">全部停用</a>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                        批量操作 <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu pull-right" role="menu">
+                        <li><a href="#" id="batchEnable">批量启用</a></li>
+                        <li><a href="#" id="batchDisable">批量停用</a></li>
+                        <li><a href="#" id="batchDelete">批量删除</a></li>
+                        <li><a href="#" id="batchEnableAll">全部启用</a></li>
+                        <li><a href="#" id="batchDisableAll">全部停用</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
         <c:if test="${requestScope.hasData}">

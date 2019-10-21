@@ -49,6 +49,9 @@ public class Course extends AbstractEntity {
     @PageField(label = "首页推荐",type = FieldType.BOOLEAN,tableLength =120)
     @FieldBoolean(values = {"推荐","不推荐"})
     private boolean recommendMainPage;
+    @PageField(label = "外部视频",type = FieldType.BOOLEAN,tableLength =120)
+    @FieldBoolean(values = {"是","否"})
+    private boolean outsideMovie;
     @PageField(label = "直播视频",type = FieldType.BOOLEAN,tableLength =120)
     @FieldBoolean(values = {"是","否"})
     private boolean liveMovie;
@@ -296,5 +299,13 @@ public class Course extends AbstractEntity {
 
     public void setPlayUrl(String playUrl) {
         this.playUrl = playUrl;
+    }
+
+    public boolean isOutsideMovie() {
+        return outsideMovie;
+    }
+
+    public void setOutsideMovie(boolean outsideMovie) {
+        this.outsideMovie = outsideMovie;
     }
 }

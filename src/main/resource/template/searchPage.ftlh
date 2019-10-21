@@ -4,6 +4,7 @@
         <input type="hidden" name="serviceName" value="${serviceName}"/>
         <input type="hidden" name="queryCondition">
         <input type="hidden" name="popupSelectValueResult">
+        <input type="hidden" name="downloadFileName">
         <#if formElementHiddens??>
             <#list formElementHiddens as formElementHidden>
                 <input type="hidden" name="${formElementHidden.name}" value="${formElementHidden.value}">

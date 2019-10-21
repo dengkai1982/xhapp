@@ -104,11 +104,9 @@ public class CurriculumAction extends SuperAction {
     @PostMapping("/addCouseBuyVolume")
     public void addCouseBuyVolume(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
         String courseId=interactive.getStringParameter("courseId","");
-        courseService.addBrowseVolume(courseId);
+        //courseService.addBrowseVolume(courseId);
         interactive.writeUTF8Text(getSuccessMessage().build());
     }
-
-
 
     /**
      * 根据ID获取课程信息

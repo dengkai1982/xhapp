@@ -43,6 +43,8 @@ public class AlreadyCourseServiceImpl extends InjectDao<AlreadyCourse> implement
         alreadyCourse.setCreateTime(new Date());
         alreadyCourse.setCourse(course);
         alreadyCourse.setOwner(account);
+        alreadyCourse.setFreeCourse(true);
+        alreadyCourse.setPrice(0);
         saveObject(alreadyCourse);
         courseService.addBuyVolume(course.getEntityId());
     }

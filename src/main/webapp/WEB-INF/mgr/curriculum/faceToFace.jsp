@@ -13,6 +13,7 @@
             <div class="btn-toolbar pull-right">
                 <c:if test="${requestScope.hasData}">
                     <a href="#" class="btn btn-link querybox-toggle" id="show_or_hide_search"><i class="icon-search icon"></i> 搜索</a>
+                    <a href='javascript:void(0)' id="exportTableToExcel" title="面授预约表" class="btn btn-link"><i class="icon-import muted"> </i> 导出数据表</a>
                 </c:if>
             </div>
         </div>

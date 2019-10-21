@@ -101,6 +101,17 @@
                 $this.parents(".buyerPrivileges").find("input[name='memberShipPrice']").removeAttr("disabled");
             }
         });
+        outsideMovieChange();
+        $("#outsideMovie").change(function(){
+            outsideMovieChange();
+        })
+    }
+    function outsideMovieChange(){
+        if($("#outsideMovie").val()=="true"){
+            $("#playUrl").removeAttr("disabled");
+        }else{
+            $("#playUrl").attr("disabled","disabled");
+        }
     }
     function beforeEditFormCommit($form){
         var buyerPrivileges=new Array();

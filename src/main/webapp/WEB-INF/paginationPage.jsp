@@ -62,6 +62,9 @@
             <button class="btn btn-sm btn-primary" id="toPageButton" style="height: 26px; margin-top: -4px" type="button">转到</button>
             <input type="hidden" name="pagination_pager_current" value="${pagination.currentPage}"/>
             <script type="text/javascript">
+                $("#exportTableToExcel").click(function(){
+                    exportExcelTable($(this).attr("title"));
+                });
                 function setPaginationCurrentPage(page){
                     $("input[name='pagination_pager_current']").val(page);
                 }
@@ -123,7 +126,12 @@
                     $(".icon-refresh").addClass("icon-spin").css("color","#929292");
                     reflashPageData();
                 });
-
+                function exportExcelTable(fileName){
+                    $("#query_search_from input[name='downloadFileName']").val(fileName);
+                    var action=$("#query_search_from").attr("action");
+                    $("#query_search_from").attr("action",manager+"/access/exportTableToExcel"+suffix).submit();
+                    $("#query_search_from").attr("action",action);
+                }
                 function reflashPageData(){
                     var myDataGrid =$('#remoteDataGrid').data('zui.datagrid');
                     myDataGrid.renderLoading('正在努力获取数据...');

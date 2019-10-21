@@ -1,9 +1,12 @@
 package kaiyi.app.xhapp.controller.mgr;
 
 import kaiyi.app.xhapp.controller.mgr.enums.FlowType;
+import kaiyi.app.xhapp.controller.mgr.enums.ReportType;
+import kaiyi.app.xhapp.entity.pojo.CourseSaleStatistics;
 import kaiyi.app.xhapp.entity.pojo.FlowStatisticsPojo;
 import kaiyi.app.xhapp.service.FlowStatisticsCount;
 import kaiyi.app.xhapp.service.access.AccountRechargeService;
+import kaiyi.app.xhapp.service.curriculum.CourseOrderService;
 import kaiyi.app.xhapp.service.curriculum.PaymentNotifyService;
 import kaiyi.app.xhapp.service.log.AmountFlowService;
 import kaiyi.app.xhapp.service.log.CourseBrowseService;
@@ -12,6 +15,7 @@ import kaiyi.app.xhapp.service.log.TeamJoinNoteService;
 import kaiyi.puer.commons.access.AccessControl;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.JavaDataTyper;
+import kaiyi.puer.commons.time.DateTimeUtil;
 import kaiyi.puer.db.orm.CustomQueryExpress;
 import kaiyi.puer.db.orm.DatabaseQuery;
 import kaiyi.puer.db.query.LinkQueryExpress;
@@ -29,6 +33,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -49,6 +56,8 @@ public class DataStatisticsController extends ManagerController{
     private PaymentNotifyService paymentNotifyService;
     @Resource
     private AccountRechargeService accountRechargeService;
+    @Resource
+    private CourseOrderService courseOrderService;
     @RequestMapping("/flow")
     @AccessControl(name = "系统流水", weight = 8.1f, code = rootPath+ "/flow", parent = rootPath)
     public String statisticsFlow(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
@@ -87,9 +96,36 @@ public class DataStatisticsController extends ManagerController{
     }
 
     @RequestMapping("/order")
-    @AccessControl(name = "销量统计", weight = 8.2f, code = rootPath+ "/order", parent = rootPath)
+    @AccessControl(name = "报表统计", weight = 8.2f, code = rootPath+ "/order", parent = rootPath)
     public String statisticsOrder(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
-        return "order";
+        String prefixPath=rootPath+"/order";
+        ReportType orderType=interactive.getEnumParameterByOrdinal(ReportType.class,
+                "reportType",ReportType.COURSE);
+        StreamCollection<ChosenElement> orderTypeChosen=ChosenElement.build(ReportType.values(), c->{
+            return c.getValue().equals(orderType.getValue());
+        });
+        String backUrl="";
+        DynamicGridInfo dynamicGridInfo=new DynamicGridInfo(false,DynamicGridInfo.OperMenuType.none);
+        dynamicGridInfo.setClassName("noneOperTable");
+        if(orderType.equals(ReportType.COURSE)){
+            backUrl="/course";
+        }
+        interactive.setRequestAttribute("orderTypeChosen",orderTypeChosen);
+        return prefixPath+backUrl;
+    }
+
+    //课程统计
+    @RequestMapping("/courseStatistics")
+    public void courseStatistics(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+        Date startTime=interactive.getDateParameter("startTime",sdf);
+        Date endTime=interactive.getDateParameter("endTime",sdf);
+        CourseSaleStatistics courseSaleStatistics=courseOrderService.courseSaleStatistics(startTime,endTime);
+        Map<String,Object> data=new HashMap<>();
+        data.put("courseSaleStatistics",courseSaleStatistics);
+        String html=getH5UIService().writeTemplate("courseStatistics.ftlh",data);
+        System.out.println(html);
+        interactive.writeUTF8Text(html);
     }
 
     @RequestMapping("/memberAmountFlowCount")

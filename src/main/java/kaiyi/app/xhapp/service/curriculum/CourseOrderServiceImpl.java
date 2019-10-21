@@ -10,6 +10,7 @@ import kaiyi.app.xhapp.entity.distribution.RoyaltySettlement;
 import kaiyi.app.xhapp.entity.log.AmountFlow;
 import kaiyi.app.xhapp.entity.log.enums.BorrowLend;
 import kaiyi.app.xhapp.entity.log.enums.TradeCourse;
+import kaiyi.app.xhapp.entity.pojo.CourseSaleStatistics;
 import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
 import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.app.xhapp.service.access.AccountService;
@@ -24,6 +25,7 @@ import kaiyi.puer.db.query.ContainQueryExpress;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.persistence.Query;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -118,6 +120,8 @@ public class CourseOrderServiceImpl extends InjectDao<CourseOrder> implements Co
                 alreadyCourse.setCreateTime(date);
                 alreadyCourse.setCourse(orderItem.getCourse());
                 alreadyCourse.setOwner(courseOrder.getAccount());
+                alreadyCourse.setPrice(courseOrder.getAmount());
+                alreadyCourse.setFreeCourse(false);
                 alreadyCourseService.saveObject(alreadyCourse);
                 courseService.addBuyVolume(courseOrder.getEntityId());
             }
@@ -254,6 +258,99 @@ public class CourseOrderServiceImpl extends InjectDao<CourseOrder> implements Co
             order.setStatus(CourseOrderStatus.DELETED);
             updateObject(order);
         }
+    }
+
+    @Override
+    public CourseSaleStatistics courseSaleStatistics(Date startTime, Date endTime) {
+        String alreadyCourseSql="select o.freeCourse,sum(o.price),count(o.freeCourse) from "+getEntityName(AlreadyCourse.class)
+                +" o where o.entityId is not null ";
+        String orderStatusSql="select o.status,count(o.status) from "+getEntityName(CourseOrder.class)
+                +" o where o.entityId is not null";
+        String capitalTypeSql="select o.capitalType,count(o.capitalType),sum(o.amount) from "+getEntityName(CourseOrder.class)
+                +" o  where o.status=:status ";
+        if(Objects.nonNull(startTime)){
+            DateTimeUtil.setStartDay(startTime);
+            alreadyCourseSql+=" and o.createTime>=:startTime ";
+            orderStatusSql+=" and o.orderTime>=:startTime ";
+            capitalTypeSql+=" and o.orderTime>=:startTime ";
+        }
+        if(Objects.nonNull(endTime)){
+            DateTimeUtil.setStartDay(endTime);
+            alreadyCourseSql+=" and o.createTime<=:endTime";
+            orderStatusSql+=" and o.orderTime<=:endTime";
+            capitalTypeSql+=" and o.orderTime<=:endTime ";
+        }
+        alreadyCourseSql+=" group by o.freeCourse";
+        orderStatusSql+=" group by o.status";
+        capitalTypeSql+=" group by o.capitalType";
+        Query alreadyCourseQuery=em.createQuery(alreadyCourseSql);
+        Query orderStatusQuery=em.createQuery(orderStatusSql);
+        Query capitalTypeQuery=em.createQuery(capitalTypeSql);
+        capitalTypeQuery.setParameter("status",CourseOrderStatus.PAYMENTED);
+        if(Objects.nonNull(startTime)){
+            alreadyCourseQuery.setParameter("startTime",startTime);
+            orderStatusQuery.setParameter("startTime",startTime);
+            capitalTypeQuery.setParameter("startTime",startTime);
+        }
+        if(Objects.nonNull(endTime)){
+            alreadyCourseQuery.setParameter("startTime",endTime);
+            orderStatusQuery.setParameter("startTime",endTime);
+            capitalTypeQuery.setParameter("startTime",endTime);
+        }
+        CourseSaleStatistics statistics=new CourseSaleStatistics();
+        List<Object[]> results=alreadyCourseQuery.getResultList();
+        int courseTotal=0;
+        for(Object[] result:results){
+            boolean freeCourse=(boolean)result[0];
+            //Currency currency=Currency.noDecimalBuild(Long.valueOf(result[1].toString()),2);
+            int number=Integer.valueOf(result[2].toString());
+            courseTotal+=number;
+            if(freeCourse){
+                statistics.setCourseFreeTotal(number);
+            }else{
+                statistics.setCourseNotFreeTotal(number);
+            }
+        }
+        statistics.setCourseTotal(courseTotal);
+        results=orderStatusQuery.getResultList();
+        int orderTotalNumber=0;
+        for(Object[] result:results){
+            CourseOrderStatus status=(CourseOrderStatus)result[0];
+            Integer number=Integer.valueOf(result[1].toString());
+            orderTotalNumber+=number;
+            if(status.equals(CourseOrderStatus.PAYMENTED)){
+                statistics.setPaymentNumber(number);
+            }else if(status.equals(CourseOrderStatus.DELETED)){
+                statistics.setDeleteNumber(number);
+            }else{
+                statistics.setWaitPaymentNumber(number);
+            }
+            System.out.println(result);
+        }
+        statistics.setOrderTotalNumber(orderTotalNumber);
+        results=capitalTypeQuery.getResultList();
+        Currency orderAmount=Currency.build(0,2);
+        int orderTotal=0;
+        for(Object[] result:results){
+            CapitalType capitalType=(CapitalType)result[0];
+            Integer number=Integer.parseInt(result[1].toString());
+            Currency currency=Currency.noDecimalBuild(Long.valueOf(result[2].toString()),2);
+            orderAmount.add(currency);
+            orderTotal+=number;
+            if(capitalType.equals(CapitalType.CASH)){
+                statistics.setUseCashTotal(number);
+                statistics.setUseCashAmount(currency.toString());
+            }else if(capitalType.equals(CapitalType.INTEGRAL)){
+                statistics.setUseIntegralTotal(number);
+                statistics.setUseIntegralAmount(currency.toString());
+            }else{
+                statistics.setUseGoldTotal(number);
+                statistics.setUseGoldAmount(currency.toString());
+            }
+        }
+        statistics.setOrderTotal(orderTotal);
+        statistics.setOrderAmount(orderAmount.toString());
+        return statistics;
     }
 
 

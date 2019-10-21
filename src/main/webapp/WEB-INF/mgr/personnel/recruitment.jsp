@@ -13,11 +13,19 @@
             <div class="btn-toolbar pull-right">
                 <c:if test="${requestScope.hasData}">
                     <a href="#" class="btn btn-link querybox-toggle" id="show_or_hide_search"><i class="icon-search icon"></i> 搜索</a>
+                    <a href='javascript:void(0)' id="exportTableToExcel" title="招聘信息表" class="btn btn-link"><i class="icon-import muted"> </i> 导出数据表</a>
                 </c:if>
-                <a href="#" id="batchInfoUpper" class="btn btn-secondary">批量发布</a>
-                <a href="#" id="batchUnInfoUpper" class="btn btn-secondary">批量取消发布</a>
-                <a href="#" id="batchRecommend" class="btn btn-secondary">批量推荐</a>
-                <a href="#" id="batchUnRecommend" class="btn btn-secondary">批量取消推荐</a>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                        批量操作 <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu pull-right" role="menu">
+                        <li><a href="#" id="batchInfoUpper">批量发布</a></li>
+                        <li><a href="#" id="batchUnInfoUpper">批量取消发布</a></li>
+                        <li><a href="#" id="batchRecommend">批量推荐</a></li>
+                        <li><a href="#" id="batchUnRecommend">批量取消推荐</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
         <c:if test="${requestScope.hasData}">

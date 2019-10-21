@@ -3,6 +3,7 @@ package kaiyi.app.xhapp.service.curriculum;
 import kaiyi.app.xhapp.entity.access.enums.CapitalType;
 import kaiyi.app.xhapp.entity.curriculum.CourseOrder;
 import kaiyi.app.xhapp.entity.curriculum.PaymentNotify;
+import kaiyi.app.xhapp.entity.pojo.CourseSaleStatistics;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.Currency;
 import kaiyi.puer.db.orm.DatabaseQuery;
@@ -41,4 +42,12 @@ public interface CourseOrderService extends DatabaseQuery<CourseOrder> {
      * @param entityId
      */
     void deleteOrderById(String entityId);
+
+    /**
+     * 课程订单统计
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    CourseSaleStatistics courseSaleStatistics(Date startTime,Date endTime);
 }

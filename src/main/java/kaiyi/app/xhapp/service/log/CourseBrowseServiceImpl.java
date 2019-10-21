@@ -34,7 +34,13 @@ public class CourseBrowseServiceImpl extends InjectDao<CourseBrowse> implements 
         if(Objects.isNull(account)||Objects.isNull(course)){
             throw ServiceExceptionDefine.entityNotExist;
         }
-        QueryExpress query=new CompareQueryExpress("account",Compare.EQUAL,account);
+        CourseBrowse browse=new CourseBrowse();
+        browse.setAccount(account);
+        browse.setCourse(course);
+        browse.setCreateTime(new Date());
+        courseService.addBrowseVolume(courseId);
+        saveObject(browse);
+        /*QueryExpress query=new CompareQueryExpress("account",Compare.EQUAL,account);
         query=new LinkQueryExpress(query,LINK.AND,new CompareQueryExpress("course",Compare.EQUAL,course));
         CourseBrowse browse=signleQuery(query);
         if(Objects.nonNull(browse)){
@@ -46,7 +52,7 @@ public class CourseBrowseServiceImpl extends InjectDao<CourseBrowse> implements 
             browse.setCourse(course);
             browse.setCreateTime(new Date());
             saveObject(browse);
-        }
+        }*/
     }
     @Override
     public OrderBy getDefaultOrderBy(String prefix) {
