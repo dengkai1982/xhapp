@@ -3,7 +3,6 @@ package kaiyi.app.xhapp.service.curriculum;
 import kaiyi.app.xhapp.entity.curriculum.PaymentNotify;
 import kaiyi.app.xhapp.entity.pojo.FlowStatisticsPojo;
 import kaiyi.app.xhapp.service.InjectDao;
-import kaiyi.puer.commons.data.Currency;
 import kaiyi.puer.db.query.OrderBy;
 import kaiyi.puer.db.query.QueryExpress;
 import org.springframework.stereotype.Service;

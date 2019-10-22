@@ -5,8 +5,6 @@ import kaiyi.puer.db.orm.DatabaseOperator;
 import kaiyi.puer.db.orm.DatabaseQuery;
 import kaiyi.puer.db.orm.ServiceException;
 
-import javax.sound.midi.ShortMessage;
-
 /**
  * 短信验证码服务
  *

@@ -1,15 +1,13 @@
 package kaiyi.app.xhapp.service.examination;
+
 import kaiyi.app.xhapp.entity.examination.Question;
-import kaiyi.app.xhapp.entity.examination.QuestionCategory;
 import kaiyi.puer.commons.collection.StreamArray;
-import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.poi.ExcelData;
 import kaiyi.puer.db.orm.DatabaseFastOper;
 import kaiyi.puer.db.orm.DatabaseOperator;
 import kaiyi.puer.db.orm.DatabaseQuery;
 import kaiyi.puer.db.orm.ServiceException;
 import kaiyi.puer.h5ui.controller.H5PageQueryExpress;
-import kaiyi.puer.web.service.EntityQueryService;
 
 import java.util.List;
 

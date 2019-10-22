@@ -7,7 +7,6 @@ import kaiyi.puer.h5ui.annotations.PageEntity;
 import kaiyi.puer.h5ui.annotations.PageField;
 
 import javax.persistence.Entity;
-import java.beans.Transient;
 @Entity(name=MenuTooltip.TABLE_NAME)
 @PageEntity(showName = "菜单气泡提示",entityName = "menuTooltip",serviceName = "menuTooltipService")
 public class MenuTooltip extends AbstractEntity {

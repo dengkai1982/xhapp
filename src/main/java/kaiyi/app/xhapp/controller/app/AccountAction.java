@@ -32,7 +32,6 @@ import java.util.Objects;
 @RequestMapping(AccountAction.rootPath)
 public class AccountAction extends SuperAction {
     public static final String rootPath=PREFIX+"/account";
-
     @Resource
     private AccountService accountService;
     @Resource
@@ -41,10 +40,6 @@ public class AccountAction extends SuperAction {
     private ConfigureService configureService;
     @Resource
     private TeamJoinNoteService teamJoinNoteService;
-    @Resource
-    private AmountFlowService amountFlowService;
-
-
     /**
      * 获取个人分享二维码
      * recommendId: 个人账户ID

@@ -8,12 +8,7 @@ import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.app.xhapp.service.access.AccountService;
 import kaiyi.app.xhapp.service.curriculum.CourseService;
 import kaiyi.puer.db.orm.ServiceException;
-import kaiyi.puer.db.query.CompareQueryExpress;
-import kaiyi.puer.db.query.CompareQueryExpress.Compare;
-import kaiyi.puer.db.query.LinkQueryExpress;
-import kaiyi.puer.db.query.LinkQueryExpress.LINK;
 import kaiyi.puer.db.query.OrderBy;
-import kaiyi.puer.db.query.QueryExpress;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

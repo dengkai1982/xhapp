@@ -1,7 +1,6 @@
 package kaiyi.app.xhapp.service.examination;
 
 import kaiyi.app.xhapp.ServiceExceptionDefine;
-import kaiyi.app.xhapp.controller.mgr.QuestionController;
 import kaiyi.app.xhapp.entity.examination.*;
 import kaiyi.app.xhapp.entity.examination.enums.QuestionType;
 import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;

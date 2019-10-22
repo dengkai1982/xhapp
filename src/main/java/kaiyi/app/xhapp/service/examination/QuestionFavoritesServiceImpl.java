@@ -3,7 +3,6 @@ package kaiyi.app.xhapp.service.examination;
 import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.app.xhapp.entity.examination.ExamChoiceAnswer;
 import kaiyi.app.xhapp.entity.examination.ExamQuestionItem;
-import kaiyi.app.xhapp.entity.examination.Question;
 import kaiyi.app.xhapp.entity.examination.QuestionFavorites;
 import kaiyi.app.xhapp.entity.examination.enums.QuestionType;
 import kaiyi.app.xhapp.service.CustomerPaginationJson;

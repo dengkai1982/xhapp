@@ -4,7 +4,6 @@ import kaiyi.app.xhapp.entity.access.enums.MemberShip;
 import kaiyi.app.xhapp.entity.curriculum.Category;
 import kaiyi.app.xhapp.entity.curriculum.Course;
 import kaiyi.app.xhapp.entity.curriculum.CourseBuyerPrivilege;
-import kaiyi.app.xhapp.entity.log.CourseBrowse;
 import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.JavaDataTyper;

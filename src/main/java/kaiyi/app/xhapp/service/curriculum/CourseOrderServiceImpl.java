@@ -17,8 +17,6 @@ import kaiyi.app.xhapp.service.access.AccountService;
 import kaiyi.app.xhapp.service.pub.ConfigureService;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.Currency;
-import kaiyi.puer.commons.time.ChangeCalendar;
-import kaiyi.puer.commons.time.DateTimeRange;
 import kaiyi.puer.commons.time.DateTimeUtil;
 import kaiyi.puer.db.orm.ServiceException;
 import kaiyi.puer.db.query.ContainQueryExpress;
@@ -26,8 +24,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.persistence.Query;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 @Service("courseOrderService")
 public class CourseOrderServiceImpl extends InjectDao<CourseOrder> implements CourseOrderService {

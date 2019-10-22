@@ -2,15 +2,11 @@ package kaiyi.app.xhapp.entity.examination;
 
 import kaiyi.app.xhapp.entity.AbstractEntity;
 import kaiyi.app.xhapp.entity.access.Account;
-import kaiyi.app.xhapp.entity.curriculum.Course;
-import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.data.IDate;
 import kaiyi.puer.h5ui.annotations.FieldReference;
 import kaiyi.puer.h5ui.annotations.FieldType;
 import kaiyi.puer.h5ui.annotations.PageEntity;
 import kaiyi.puer.h5ui.annotations.PageField;
-import kaiyi.puer.h5ui.json.H5UIJsonValuePolicy;
-import kaiyi.puer.json.JsonValuePolicy;
 
 import javax.persistence.*;
 import java.util.Date;

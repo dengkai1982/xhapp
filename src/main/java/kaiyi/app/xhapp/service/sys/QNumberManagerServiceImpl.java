@@ -5,11 +5,9 @@ import kaiyi.app.xhapp.entity.sys.enums.CustomerType;
 import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.db.query.CompareQueryExpress;
-import kaiyi.puer.db.query.ContainQueryExpress;
-import kaiyi.puer.db.query.QueryExpress;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Random;
 
 @Service("qNumberManagerService")
 public class QNumberManagerServiceImpl extends InjectDao<QNumberManager> implements QNumberManagerService {
