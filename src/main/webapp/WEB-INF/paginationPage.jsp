@@ -181,6 +181,8 @@
                         }
                     });
                     $("#query_search_from input[name='queryCondition']").val(JSON.stringify(searchCondition));
+                    localStorage.removeItem("queryBox");
+                    localStorage.setItem("queryBox",JSON.stringify(searchCondition));
                     reflashPageData();
                 });
                 function createPagination(result){

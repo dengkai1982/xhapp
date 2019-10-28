@@ -1,10 +1,13 @@
 package kaiyi.app.xhapp.service.jobs;
 
 import kaiyi.app.xhapp.entity.jobs.Enterprise;
+import kaiyi.app.xhapp.entity.pojo.JobStatisticsPojo;
 import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.db.orm.DatabaseFastOper;
 import kaiyi.puer.db.orm.DatabaseOperator;
 import kaiyi.puer.db.orm.DatabaseQuery;
+
+import java.util.Date;
 
 public interface EnterpriseService extends DatabaseFastOper<Enterprise>,DatabaseOperator<Enterprise>,
         DatabaseQuery<Enterprise> {
@@ -38,4 +41,10 @@ public interface EnterpriseService extends DatabaseFastOper<Enterprise>,Database
      * @param frozen
      */
     void batchFrozen(StreamArray<String> entityIdArray, boolean frozen);
+
+    /**
+     * 人才库信息统计
+     * @return
+     */
+    JobStatisticsPojo jobStatistics(Date startTime, Date endTime);
 }

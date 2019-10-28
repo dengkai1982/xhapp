@@ -13,7 +13,6 @@
             <div class="btn-toolbar pull-right">
                 <c:if test="${requestScope.hasData}">
                     <a href="#" class="btn btn-link querybox-toggle" id="show_or_hide_search"><i class="icon-search icon"></i> 搜索</a>
-                    <a href='javascript:void(0)' id="exportTableToExcel" title="支付付款记录" class="btn btn-link"><i class="icon-import muted"> </i> 导出数据表</a>
                 </c:if>
             </div>
         </div>
@@ -48,13 +47,13 @@
         ${requestScope.tableScript}
         </c:if>
     }
-    function dataLoadSuccess(query){
+    /*function dataLoadSuccess(query){
         var searchForm=$("#query_search_from").formToJson();
         postJSON("${managerPath}/statistics/paymentNoteFlowCount${suffix}", searchForm, "正在处理请稍后", function (result) {
             var flowStatistics=result.flowStatistics;
             $(".extar_oper_container").html("累计发生金额:<span class='text-red'>"+flowStatistics.totalAmount+"</span>");
         })
-    }
+    }*/
 </script>
 </body>
 </html>

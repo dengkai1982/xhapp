@@ -13,6 +13,26 @@ public enum ReportType implements H5ChosenInterface {
         public String getHexColor() {
             return "#ea644a";
         }
+    },
+    JOB{
+        @Override
+        public String toString() {
+            return "人才信息一览";
+        }
+        @Override
+        public String getHexColor() {
+            return "#009944";
+        }
+    },
+    RESUME_AND_RECRUITMENT_CATEGORY{
+        @Override
+        public String toString() {
+            return "简历招聘";
+        }
+        @Override
+        public String getHexColor() {
+            return "#009944";
+        }
     };
     @Override
     public String[] getSearchValues() {

@@ -66,6 +66,16 @@ public enum FlowType implements H5ChosenInterface {
         public String getHexColor() {
             return "#f1a325";
         }
+    },
+    PERFORMANCE_COMMISSION{
+        @Override
+        public String toString() {
+            return "销量提成记录";
+        }
+        @Override
+        public String getHexColor() {
+            return "#f1a325";
+        }
     };
     @Override
     public String[] getSearchValues() {

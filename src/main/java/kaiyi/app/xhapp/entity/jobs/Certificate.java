@@ -19,6 +19,9 @@ public class Certificate extends AbstractEntity {
     private String name;
     @PageField(label = "期望价值")
     private String expect;
+    @IDate
+    @PageField(label = "提交时间",type = FieldType.DATETIME)
+    private Date createTime;
     @PageField(label = "永久有效",type = FieldType.BOOLEAN)
     @FieldBoolean(values={"是","否"})
     private boolean forever;
@@ -93,5 +96,13 @@ public class Certificate extends AbstractEntity {
 
     public void setForever(boolean forever) {
         this.forever = forever;
+    }
+    @Temporal(TemporalType.TIMESTAMP)
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 }

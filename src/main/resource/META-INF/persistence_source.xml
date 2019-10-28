@@ -64,6 +64,7 @@
     <class>kaiyi.app.xhapp.entity.examination.SimulationCategory</class>
     <class>kaiyi.app.xhapp.entity.examination.QuestionFavorites</class>
     <class>kaiyi.app.xhapp.entity.log.MenuTooltip</class>
+    <class>kaiyi.app.xhapp.entity.log.PerformanceCommission</class>
 	  <properties>
          <property name="hibernate.dialect" value="kaiyi.puer.db.MySQL5DialectUseInnoDB"/>
          <property name="hibernate.max_fetch_depth" value="3"/>

@@ -16,6 +16,7 @@ import kaiyi.app.xhapp.service.curriculum.*;
 import kaiyi.app.xhapp.service.pub.ConfigureService;
 import kaiyi.puer.commons.access.AccessControl;
 import kaiyi.puer.commons.collection.StreamCollection;
+import kaiyi.puer.commons.data.JavaDataTyper;
 import kaiyi.puer.commons.data.StringEditor;
 import kaiyi.puer.db.orm.ORMException;
 import kaiyi.puer.db.orm.ServiceException;
@@ -24,6 +25,7 @@ import kaiyi.puer.db.query.NullQueryExpress;
 import kaiyi.puer.db.query.OrderBy;
 import kaiyi.puer.db.query.QueryExpress;
 import kaiyi.puer.h5ui.bean.DynamicGridInfo;
+import kaiyi.puer.h5ui.entity.DocumentStorageEvent;
 import kaiyi.puer.json.JsonCreator;
 import kaiyi.puer.json.creator.JsonMessageCreator;
 import kaiyi.puer.json.creator.MapJsonCreator;
@@ -38,6 +40,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Map;
 
 @Controller
 @RequestMapping(CurriculumController.rootPath)
@@ -103,7 +106,11 @@ public class CurriculumController extends ManagerController{
     }
     @PostMapping("/teacher/commit")
     public void teacherCommit(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
-        JsonMessageCreator msg=executeNewOrUpdate(interactive,studentService,configureService.getStringValue(ConfigureItem.DOC_SAVE_PATH));
+        Map<String, JavaDataTyper> params=interactive.getRequestParameterMap();
+        String saveFileHex= DocumentStorageEvent.storageHexFileToPath(configureService.getStringValue(ConfigureItem.DOC_SAVE_PATH),
+                params.get("photo").stringValue());
+        params.put("photo",new JavaDataTyper(saveFileHex));
+        JsonMessageCreator msg=executeNewOrUpdate(interactive,studentService,params);
         interactive.writeUTF8Text(msg.build());
     }
 

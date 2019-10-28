@@ -2,11 +2,13 @@ package kaiyi.app.xhapp.entity.jobs;
 
 import kaiyi.app.xhapp.entity.AbstractEntity;
 import kaiyi.app.xhapp.entity.access.Account;
+import kaiyi.puer.commons.data.IDate;
 import kaiyi.puer.commons.validate.NotEmpty;
 import kaiyi.puer.h5ui.annotations.*;
 
 import javax.persistence.*;
 import java.lang.reflect.Field;
+import java.util.Date;
 import java.util.Objects;
 
 @Entity(name=Enterprise.TABLE_NAME)
@@ -19,6 +21,9 @@ public class Enterprise extends AbstractEntity {
     @PageField(label = "企业Logo",type = FieldType.DOCUMENT,showSearch = false,showForm = false,showDetail = false,tableLength = 140)
     @FieldDocument
     private String logoImage;
+    @IDate
+    @PageField(label = "创建时间",type = FieldType.DATETIME,tableLength = 160)
+    private Date createTime;
     @PageField(label = "推荐企业",type = FieldType.BOOLEAN,tableLength = 120)
     @FieldBoolean(values = {"是","否"})
     private boolean recommend;
@@ -155,5 +160,14 @@ public class Enterprise extends AbstractEntity {
 
     public void setFrozen(boolean frozen) {
         this.frozen = frozen;
+    }
+
+    @Temporal(TemporalType.TIMESTAMP)
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 }

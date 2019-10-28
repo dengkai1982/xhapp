@@ -36,14 +36,16 @@ public class DayTimer {
             Date currentDate=new Date();
             File[] files=file.listFiles();
             for(File f:files){
-                long lastModifyed=f.lastModified();
-                Date fileDate=new Date(lastModifyed);
-                long day=DateTimeUtil.getDifference(fileDate,currentDate,DateTimeUtil.Type.day);
-                if(day>=2){
-                    logger.info(()->{
-                        return "删除临时上传的文件,文件:"+f.getAbsolutePath();
-                    });
-                    f.delete();
+                if(f.isFile()){
+                    long lastModifyed=f.lastModified();
+                    Date fileDate=new Date(lastModifyed);
+                    long day=DateTimeUtil.getDifference(fileDate,currentDate,DateTimeUtil.Type.day);
+                    if(day>=2){
+                        logger.info(()->{
+                            return "删除临时上传的文件,文件:"+f.getAbsolutePath();
+                        });
+                        f.delete();
+                    }
                 }
             }
         }

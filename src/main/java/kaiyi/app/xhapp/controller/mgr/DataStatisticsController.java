@@ -4,14 +4,15 @@ import kaiyi.app.xhapp.controller.mgr.enums.FlowType;
 import kaiyi.app.xhapp.controller.mgr.enums.ReportType;
 import kaiyi.app.xhapp.entity.pojo.CourseSaleStatistics;
 import kaiyi.app.xhapp.entity.pojo.FlowStatisticsPojo;
+import kaiyi.app.xhapp.entity.pojo.JobStatisticsPojo;
+import kaiyi.app.xhapp.entity.pojo.ResumeAndRecruitment;
 import kaiyi.app.xhapp.service.FlowStatisticsCount;
 import kaiyi.app.xhapp.service.access.AccountRechargeService;
 import kaiyi.app.xhapp.service.curriculum.CourseOrderService;
 import kaiyi.app.xhapp.service.curriculum.PaymentNotifyService;
-import kaiyi.app.xhapp.service.log.AmountFlowService;
-import kaiyi.app.xhapp.service.log.CourseBrowseService;
-import kaiyi.app.xhapp.service.log.ShortMessageSenderNoteService;
-import kaiyi.app.xhapp.service.log.TeamJoinNoteService;
+import kaiyi.app.xhapp.service.jobs.EnterpriseService;
+import kaiyi.app.xhapp.service.jobs.ResumeService;
+import kaiyi.app.xhapp.service.log.*;
 import kaiyi.puer.commons.access.AccessControl;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.JavaDataTyper;
@@ -57,6 +58,12 @@ public class DataStatisticsController extends ManagerController{
     private AccountRechargeService accountRechargeService;
     @Resource
     private CourseOrderService courseOrderService;
+    @Resource
+    private EnterpriseService enterpriseService;
+    @Resource
+    private ResumeService resumeService;
+    @Resource
+    private PerformanceCommissionService performanceCommissionService;
     @RequestMapping("/flow")
     @AccessControl(name = "系统流水", weight = 8.1f, code = rootPath+ "/flow", parent = rootPath)
     public String statisticsFlow(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
@@ -87,6 +94,9 @@ public class DataStatisticsController extends ManagerController{
         }else if(flowType.equals(FlowType.ACCOUNT_RECHARGE)){
             databaseQuery=accountRechargeService;
             backUrl="/accountRecharge";
+        }else if(flowType.equals(FlowType.PERFORMANCE_COMMISSION)){
+            databaseQuery=performanceCommissionService;
+            backUrl="/performanceCommission";
         }
         setDefaultPage(interactive,rootPath+"/fow");
         mainTablePage(interactive,databaseQuery,null,null, dynamicGridInfo);
@@ -106,13 +116,31 @@ public class DataStatisticsController extends ManagerController{
         String backUrl="";
         DynamicGridInfo dynamicGridInfo=new DynamicGridInfo(false,DynamicGridInfo.OperMenuType.none);
         dynamicGridInfo.setClassName("noneOperTable");
+        backUrl="/dataRangeStatistics";
         if(orderType.equals(ReportType.COURSE)){
-            backUrl="/course";
+            interactive.setRequestAttribute("queryUrl","courseStatistics");
+        }else if(orderType.equals(ReportType.JOB)){
+            interactive.setRequestAttribute("queryUrl","jobStatistics");
+        }else if(orderType.equals(ReportType.RESUME_AND_RECRUITMENT_CATEGORY)){
+            interactive.setRequestAttribute("queryUrl","resumeAndRecruitment");;
         }
         interactive.setRequestAttribute("orderTypeChosen",orderTypeChosen);
         return prefixPath+backUrl;
     }
+    //简历与招聘
 
+    @RequestMapping("/resumeAndRecruitment")
+    public void resumeAndRecruitment(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+        Date startTime=interactive.getDateParameter("startTime",sdf);
+        Date endTime=interactive.getDateParameter("endTime",sdf);
+        ResumeAndRecruitment resumeAndRecruitment=resumeService.resumeAndRecruitment(startTime,endTime);
+        Map<String,Object> data=new HashMap<>();
+        data.put("resume",resumeAndRecruitment.getResume());
+        data.put("recruitment",resumeAndRecruitment.getRecruitment());
+        String html=getH5UIService().writeTemplate("resumeAndRecruitment.ftlh",data);
+        interactive.writeUTF8Text(html);
+    }
     //课程统计
     @RequestMapping("/courseStatistics")
     public void courseStatistics(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
@@ -123,7 +151,18 @@ public class DataStatisticsController extends ManagerController{
         Map<String,Object> data=new HashMap<>();
         data.put("courseSaleStatistics",courseSaleStatistics);
         String html=getH5UIService().writeTemplate("courseStatistics.ftlh",data);
-        System.out.println(html);
+        interactive.writeUTF8Text(html);
+    }
+    //人才信息一览
+    @RequestMapping("/jobStatistics")
+    public void jobStatistics(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+        Date startTime=interactive.getDateParameter("startTime",sdf);
+        Date endTime=interactive.getDateParameter("endTime",sdf);
+        JobStatisticsPojo jobStatistics=enterpriseService.jobStatistics(startTime,endTime);
+        Map<String,Object> data=new HashMap<>();
+        data.put("jobStatistics",jobStatistics);
+        String html=getH5UIService().writeTemplate("jobStatistics.ftlh",data);
         interactive.writeUTF8Text(html);
     }
 

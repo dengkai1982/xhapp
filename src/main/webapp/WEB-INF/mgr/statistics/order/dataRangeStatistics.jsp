@@ -50,7 +50,7 @@
             var endTime = $("input[name='endTime']").val();
             $("#queryResult").empty();
             $.ajax({
-                url:"${managerPath}/statistics/courseStatistics${suffix}",
+                url:"${managerPath}/statistics/${requestScope.queryUrl}${suffix}",
                 type:"GET", //GET
                 async:true,    //或false,是否异步
                 data:{

@@ -1,10 +1,13 @@
 package kaiyi.app.xhapp.service.jobs;
 
 import kaiyi.app.xhapp.entity.jobs.Resume;
+import kaiyi.app.xhapp.entity.pojo.ResumeAndRecruitment;
 import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.db.orm.DatabaseFastOper;
 import kaiyi.puer.db.orm.DatabaseOperator;
 import kaiyi.puer.db.orm.DatabaseQuery;
+
+import java.util.Date;
 
 public interface ResumeService extends DatabaseOperator<Resume>, DatabaseFastOper<Resume>, DatabaseQuery<Resume> {
 
@@ -28,4 +31,6 @@ public interface ResumeService extends DatabaseOperator<Resume>, DatabaseFastOpe
      * @param frozen
      */
     void batchFrozen(StreamArray<String> entityIdArray, boolean frozen);
+
+    ResumeAndRecruitment resumeAndRecruitment(Date startTime, Date endTime);
 }

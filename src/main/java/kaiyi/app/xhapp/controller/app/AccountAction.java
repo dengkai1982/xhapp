@@ -1,5 +1,11 @@
 package kaiyi.app.xhapp.controller.app;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
 import kaiyi.app.xhapp.service.access.AccountService;
@@ -9,6 +15,7 @@ import kaiyi.app.xhapp.service.log.TeamJoinNoteService;
 import kaiyi.app.xhapp.service.pub.ConfigureService;
 import kaiyi.puer.commons.image.QrCodeImage;
 import kaiyi.puer.commons.image.SimpleImage;
+import kaiyi.puer.commons.utils.CoderUtil;
 import kaiyi.puer.db.orm.ServiceException;
 import kaiyi.puer.json.creator.JsonMessageCreator;
 import kaiyi.puer.json.creator.MutilJsonCreator;
@@ -20,10 +27,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.annotation.Resource;
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -48,7 +57,7 @@ public class AccountAction extends SuperAction {
      */
     @RequestMapping("/generatorShareQRCode")
     public void generatorShareQRCode(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
-        String recommendId=interactive.getStringParameter("recommendId","");
+        /*String recommendId=interactive.getStringParameter("recommendId","");
         Map<String, Object> params=new HashMap<>();
         params.put("recommendId",recommendId);
         String url=ServletUtils.getRequestHostContainerProtolAndPort(interactive.getHttpServletRequest());
@@ -64,8 +73,66 @@ public class AccountAction extends SuperAction {
         sim.water(image,180,685);
         //SimpleImage sim=new SimpleImage(image,"png");
         sim.write(response.getOutputStream());
-        qrCodeImage.writeTo(response.getOutputStream(),"png");
+        qrCodeImage.writeTo(response.getOutputStream(),"png");*/
+        shareTo(interactive,response,400,400,180,685,"bg.jpg");
     }
+    //获取课程分享二维码
+    @RequestMapping("/generatorShareCourse")
+    public void generatorShareCourse(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        shareTo(interactive,response,160,160,585,1173,"share_course.png");
+    }
+    //获取试题分享二维码
+    @RequestMapping("/generatorShareQuestion")
+    public void generatorShareQuestion(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+        shareTo(interactive,response,180,180,453,1125,"share_question.png");
+    }
+    private void shareTo(WebInteractive interactive, HttpServletResponse response,int width,int height,int waterLeft,int waterRight,
+                         String imageName) throws IOException {
+        String recommendId=interactive.getStringParameter("recommendId","");
+        Map<String, Object> params=new HashMap<>();
+        params.put("recommendId",recommendId);
+        String url=ServletUtils.getRequestHostContainerProtolAndPort(interactive.getHttpServletRequest());
+        url+=interactive.generatorRequestUrl(rootPath+"/shareRegistPage",params);
+        //QrCodeImage qrCodeImage=new QrCodeImage(url);
+        //qrCodeImage.encode(width,height);
+        BufferedImage image=createQRCode(url,width,height);//qrCodeImage.getCodeImage();
+        String realPath=interactive.getHttpServletRequest().getServletContext().getRealPath("/");
+        File logoFile=new File(realPath+"/image/logo.png");
+        image=QrCodeImage.encodeImgLogo(image,logoFile.toURI().toURL());
+        File bgFile=new File(realPath+"/images/"+imageName);
+        SimpleImage sim=new SimpleImage(bgFile);
+        sim.water(image,waterLeft,waterRight);
+        sim.write(response.getOutputStream());
+        //ImageIO.write(,"png",response.getOutputStream());
+        //qrCodeImage.writeTo(response.getOutputStream(),"png");
+    }
+
+    private BufferedImage createQRCode(String content,int width,int height){
+        BufferedImage barCodeImage=null;
+        try {
+
+            Map<EncodeHintType, Object> hints = new HashMap<EncodeHintType, Object>();
+            hints.put(EncodeHintType.CHARACTER_SET, CoderUtil.charset.toString());
+            // 设置QR二维码的纠错级别——这里选择最高H级别
+            hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
+            hints.put(EncodeHintType.MARGIN, 0);
+            BitMatrix bitMatrix = new MultiFormatWriter().encode(content,
+                    BarcodeFormat.QR_CODE, width, height, hints);// 生成矩阵
+            barCodeImage = new BufferedImage(bitMatrix.getWidth(),  bitMatrix.getHeight(),
+                    BufferedImage.TYPE_INT_ARGB);
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    barCodeImage.setRGB(x, y, bitMatrix.get(x, y) ? 0xff000000 : 0xFFFFFFFF);
+                }
+            }
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+        return barCodeImage;
+    }
+
     /**
      * 分享注册页面
      * @param interactive

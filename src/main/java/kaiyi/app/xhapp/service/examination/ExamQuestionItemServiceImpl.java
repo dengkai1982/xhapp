@@ -17,6 +17,7 @@ import kaiyi.puer.json.creator.JsonBuilder;
 import kaiyi.puer.json.creator.ObjectJsonCreator;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.Objects;
 
 @Service("examQuestionItemService")
@@ -28,6 +29,7 @@ public class ExamQuestionItemServiceImpl extends InjectDao<ExamQuestionItem> imp
             questionItem.setResultAnswer(answer);
             questionItem.setFinished(true);
             questionItem.setResult(questionItem.getStandardAnswer().equalsIgnoreCase(answer));
+            questionItem.setFinishTime(new Date());
             updateObject(questionItem);
         }
         return questionItem;

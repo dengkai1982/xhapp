@@ -5,52 +5,64 @@ import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.app.xhapp.entity.examination.enums.QuestionType;
 import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.collection.StreamCollection;
+import kaiyi.puer.commons.data.IDate;
 import kaiyi.puer.commons.validate.Max;
 import kaiyi.puer.commons.validate.Min;
 import kaiyi.puer.h5ui.annotations.*;
 
 import javax.persistence.*;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 @Entity(name= ExamQuestionItem.TABLE_NAME)
-@PageEntity(showName = "考试试题项",entityName = "examQuestionItem",serviceName = "examQuestionItemService")
+@PageEntity(showName = "考试试题",entityName = "examQuestionItem",serviceName = "examQuestionItemService")
 public class ExamQuestionItem extends AbstractEntity {
-
     public static final String TABLE_NAME="exam_question_item";
     private static final long serialVersionUID = -8189415348554828536L;
-    @PageField(label = "所属考试名称",type = FieldType.REFERENCE)
+    @PageField(label = "所属考试名称",type = FieldType.REFERENCE,tableLength = 160,showTable = false)
     @FieldReference(fieldName = "name")
     private ExamQuestion examQuestion;
     @PageField(label = "试题题目",type = FieldType.AREATEXT,formColumnLength = 3,tableLength = 500)
     private String detail;
-    @PageField(label = "题目类型",type = FieldType.CHOSEN)
+    @IDate
+    @PageField(label = "创建时间",type = FieldType.DATETIME,tableLength = 160)
+    private Date createTime;
+    @PageField(label = "题目类型",type = FieldType.CHOSEN,tableLength = 120)
     @FieldChosen
     private QuestionType questionType;
-    @PageField(label = "显示权重",type = FieldType.NUMBER)
+    @PageField(label = "显示权重",type = FieldType.NUMBER,tableLength = 120)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int weight;
     @Min(val = 1,hint = "问题分值最少需要指定1分")
     @Max(val = 99,hint = "问题分值不能超过99分")
-    @PageField(label = "问题分值",type = FieldType.NUMBER)
+    @PageField(label = "问题分值",type = FieldType.NUMBER,tableLength = 120)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int score;
-    @PageField(label = "问题解析",type = FieldType.AREATEXT,formColumnLength = 3,tableLength = 500)
+    @PageField(label = "试题分类",tableLength = 140)
+    private String category;
+    @PageField(label = "模拟考试分类",tableLength = 140)
+    private String simulationCategory;
+    @PageField(label = "考点归属",tableLength = 140)
+    private String ascriptionType;
+    @PageField(label = "问题解析",type = FieldType.AREATEXT,formColumnLength = 3,tableLength = 500,showTable = false,showQuery = false)
     private String analysis;
-    @PageField(label = "参考答案",type = FieldType.CHOSEN,tableLength = 300,showForm = false,showQuery = false,showSearch = false)
+    @PageField(label = "参考答案",tableLength = 300,showForm = false,showQuery = false)
     private String standardAnswer ;
-    @PageField(label = "回答答案",type = FieldType.CHOSEN,tableLength = 300,showForm = false,showQuery = false,showSearch = false)
+    @PageField(label = "回答答案",tableLength = 300,showForm = false,showQuery = false)
     private String resultAnswer;
-    @PageField(label = "答题结果",type = FieldType.BOOLEAN)
+    @PageField(label = "答题结果",type = FieldType.BOOLEAN,tableLength = 120)
     @FieldBoolean(values = {"正确","错误"})
     private boolean result;
-
-    @PageField(label = "完成答题",type = FieldType.BOOLEAN)
+    @PageField(label = "完成答题",type = FieldType.BOOLEAN,tableLength = 160)
     @FieldBoolean(values = {"已完成","未完成"})
     private boolean finished;
-    @PageField(label = "所有人",type = FieldType.REFERENCE)
-    @FieldReference(fieldName = "phone")
+    @IDate
+    @PageField(label = "完成时间",type = FieldType.DATETIME,tableLength = 160)
+    private Date finishTime;
+    @PageField(label = "答题人",type = FieldType.REFERENCE,tableLength = 120)
+    @FieldReference(fieldName = "showAccountName")
     private Account owner;
 
 
@@ -58,7 +70,7 @@ public class ExamQuestionItem extends AbstractEntity {
 
     @Override
     public StreamArray<String> filterField() {
-        return new StreamArray<>(new String[]{"examQuestion","owner"});
+        return new StreamArray<>(new String[]{"examQuestion","choiceAnswers"});
     }
 
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.LAZY)
@@ -162,7 +174,7 @@ public class ExamQuestionItem extends AbstractEntity {
     public void setFinished(boolean finished) {
         this.finished = finished;
     }
-    @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
     @JoinColumn(name="owner")
     public Account getOwner() {
         return owner;
@@ -172,5 +184,43 @@ public class ExamQuestionItem extends AbstractEntity {
         this.owner = owner;
     }
 
+    public String getCategory() {
+        return category;
+    }
 
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getSimulationCategory() {
+        return simulationCategory;
+    }
+
+    public void setSimulationCategory(String simulationCategory) {
+        this.simulationCategory = simulationCategory;
+    }
+
+    public String getAscriptionType() {
+        return ascriptionType;
+    }
+
+    public void setAscriptionType(String ascriptionType) {
+        this.ascriptionType = ascriptionType;
+    }
+    @Temporal(TemporalType.TIMESTAMP)
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+    @Temporal(TemporalType.TIMESTAMP)
+    public Date getFinishTime() {
+        return finishTime;
+    }
+
+    public void setFinishTime(Date finishTime) {
+        this.finishTime = finishTime;
+    }
 }

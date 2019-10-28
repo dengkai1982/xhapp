@@ -14,6 +14,7 @@ import kaiyi.app.xhapp.entity.pojo.CourseSaleStatistics;
 import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
 import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.app.xhapp.service.access.AccountService;
+import kaiyi.app.xhapp.service.log.PerformanceCommissionService;
 import kaiyi.app.xhapp.service.pub.ConfigureService;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.Currency;
@@ -39,6 +40,8 @@ public class CourseOrderServiceImpl extends InjectDao<CourseOrder> implements Co
     private AlreadyCourseService alreadyCourseService;
     @Resource
     private ConfigureService configureService;
+    @Resource
+    private PerformanceCommissionService performanceCommissionService;
     @Override
     public CourseOrder generatorOrder(StreamCollection<String> courseIdStream, String accountId, CapitalType capitalType)throws ServiceException {
         String orderId=randomIdentifier();
@@ -127,6 +130,8 @@ public class CourseOrderServiceImpl extends InjectDao<CourseOrder> implements Co
             Account recommend1=account.getRecommend();
             account.addingPersonSaleAmount(saleAmount);
             accountService.updateObject(account);
+            performanceCommissionService.saveNode(account,courseOrder.getOrderId(),false,TradeCourse.SETTLEMENT_ROYALTY,
+                    courseOrder.getAmount(),0,0);
             Currency amount=Currency.noDecimalBuild(courseOrder.getAmount(),2);
             int royalty=0;
             if(Objects.nonNull(recommend1)){
@@ -137,6 +142,8 @@ public class CourseOrderServiceImpl extends InjectDao<CourseOrder> implements Co
                             TradeCourse.SETTLEMENT_ROYALTY,royalty);
                     recommend1.addingTeamSaleAmount(saleAmount);
                     accountService.updateObject(recommend1);
+                    performanceCommissionService.saveNode(recommend1,courseOrder.getOrderId(),true,TradeCourse.SETTLEMENT_ROYALTY,
+                            courseOrder.getAmount(),commissionRate1,royalty);
                 }
                 Account recommend2=recommend1.getRecommend();
                 if(Objects.nonNull(recommend2)){
@@ -147,6 +154,8 @@ public class CourseOrderServiceImpl extends InjectDao<CourseOrder> implements Co
                                 TradeCourse.SETTLEMENT_ROYALTY,royalty);
                         recommend2.addingTeamSaleAmount(saleAmount);
                         accountService.updateObject(recommend2);
+                        performanceCommissionService.saveNode(recommend2,courseOrder.getOrderId(),true,TradeCourse.SETTLEMENT_ROYALTY,
+                                courseOrder.getAmount(),commissionRate2,royalty);
                     }
                 }
 
@@ -158,6 +167,8 @@ public class CourseOrderServiceImpl extends InjectDao<CourseOrder> implements Co
                 royalty=Currency.computerPercentage(insideRate,amount.doubleValue()).getNoDecimalPointToInteger();
                 accountService.grantRoyalty(insideMember.getEntityId(),courseOrder.getOrderId(),
                         TradeCourse.INSIDE_SETTLEMENT_ROYALTY,royalty);
+                performanceCommissionService.saveNode(insideMember,courseOrder.getOrderId(),true,TradeCourse.INSIDE_SETTLEMENT_ROYALTY,
+                        courseOrder.getAmount(),insideRate,royalty);
                 accountService.updateObject(insideMember);
             }
         }
@@ -271,7 +282,7 @@ public class CourseOrderServiceImpl extends InjectDao<CourseOrder> implements Co
             capitalTypeSql+=" and o.orderTime>=:startTime ";
         }
         if(Objects.nonNull(endTime)){
-            DateTimeUtil.setStartDay(endTime);
+            DateTimeUtil.setEndDay(endTime);
             alreadyCourseSql+=" and o.createTime<=:endTime";
             orderStatusSql+=" and o.orderTime<=:endTime";
             capitalTypeSql+=" and o.orderTime<=:endTime ";
@@ -289,9 +300,9 @@ public class CourseOrderServiceImpl extends InjectDao<CourseOrder> implements Co
             capitalTypeQuery.setParameter("startTime",startTime);
         }
         if(Objects.nonNull(endTime)){
-            alreadyCourseQuery.setParameter("startTime",endTime);
-            orderStatusQuery.setParameter("startTime",endTime);
-            capitalTypeQuery.setParameter("startTime",endTime);
+            alreadyCourseQuery.setParameter("endTime",endTime);
+            orderStatusQuery.setParameter("endTime",endTime);
+            capitalTypeQuery.setParameter("endTime",endTime);
         }
         CourseSaleStatistics statistics=new CourseSaleStatistics();
         List<Object[]> results=alreadyCourseQuery.getResultList();

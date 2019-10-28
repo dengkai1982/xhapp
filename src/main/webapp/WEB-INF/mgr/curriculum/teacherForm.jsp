@@ -90,7 +90,7 @@
         $(".uploader-files").css("display","none");
         $("#deleteImage").click(function(){
             confirmOper("警告","确实要删除选中的照片?",function(){
-                $(".photo_container img").attr("src","/img/default_header.png");
+                $(".photo_container img").attr("src","${contextPath}/img/default_header.png");
                 //$("input[name='imagePath']").val("");
 
             })

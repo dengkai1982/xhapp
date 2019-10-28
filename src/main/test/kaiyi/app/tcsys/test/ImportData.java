@@ -10,6 +10,7 @@ import com.aliyuncs.exceptions.ClientException;
 import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.app.xhapp.entity.examination.Question;
 import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
+import kaiyi.app.xhapp.executor.DayTimer;
 import kaiyi.app.xhapp.service.AliyunVodHelper;
 import kaiyi.app.xhapp.service.access.AccountService;
 import kaiyi.app.xhapp.service.access.VisitorRoleService;
@@ -65,7 +66,11 @@ public class ImportData {
             sel=new SpringSelector(ctx);
         }
     }
-
+    @Test
+    public void clearPath(){
+        DayTimer dayTimer=sel.getBean(DayTimer.class);
+        dayTimer.dispose();
+    }
     @Test
     public void questionFav(){
         QuestionFavoritesService favoritesService=sel.getBean(QuestionFavoritesService.class);

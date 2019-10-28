@@ -12,52 +12,49 @@ import java.util.Date;
 import java.util.Set;
 
 @Entity(name= ExamQuestion.TABLE_NAME)
-@PageEntity(showName = "考试试题",entityName = "examQuestion",serviceName = "examQuestionService")
+@PageEntity(showName = "再答考试",entityName = "examQuestion",serviceName = "examQuestionService")
 public class ExamQuestion extends AbstractEntity {
     private static final long serialVersionUID = 1629387960711915781L;
     public static final String TABLE_NAME="exam_question";
-    @PageField(label = "试卷名称")
+    @PageField(label = "考试名称",tableLength = 200)
     private String name;
-    @PageField(label = "用户账户",type = FieldType.REFERENCE,showForm = false,
-            showTable = false,showQuery = false,showDetail = false,showSearch = false)
+    @PageField(label = "考试账户",type = FieldType.REFERENCE)
     @FieldReference(fieldName = "showAccountName")
     private Account account;
     @IDate
-    @PageField(label = "创建时间",type = FieldType.DATETIME)
+    @PageField(label = "创建时间",type = FieldType.DATETIME,tableLength = 160)
     private Date createTime;
-    @PageField(label = "单选题数量",type = FieldType.NUMBER)
+    @PageField(label = "考试类别",type = FieldType.CHOSEN,tableLength = 140)
+    @FieldChosen(filterNames = {"COURSE","QUESTION"})
+    private ResourceType resourceType;
+    @PageField(label = "单选题数量",type = FieldType.NUMBER,tableLength = 120)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int singleChoiceNumber;
-    @PageField(label = "多选题数量",type = FieldType.NUMBER)
+    @PageField(label = "多选题数量",type = FieldType.NUMBER,tableLength = 120)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int multipleChoiceNumber;
-    @PageField(label = "问答题数量",type = FieldType.NUMBER)
+    @PageField(label = "问答题数量",type = FieldType.NUMBER,tableLength = 120)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int questionsAndAnswersNumber;
-    @PageField(label = "完成数量",type = FieldType.NUMBER)
+    @PageField(label = "完成数量",type = FieldType.NUMBER,tableLength = 120)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int finishNumber;
-
-    @PageField(label = "总分",type = FieldType.NUMBER)
+    @PageField(label = "总分",type = FieldType.NUMBER,tableLength = 120)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int totalScore;
-    @PageField(label = "得分",type = FieldType.NUMBER)
+    @PageField(label = "得分",type = FieldType.NUMBER,tableLength = 120)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int score;
-    @PageField(label = "全部完成",type = FieldType.BOOLEAN)
+    @PageField(label = "全部完成",type = FieldType.BOOLEAN,tableLength = 120)
     @FieldBoolean(values = {"已完成","未完成"})
     private boolean finished;
-    @PageField(label = "考试类别",type = FieldType.CHOSEN)
-    @FieldChosen
-    private ResourceType resourceType;
-    @PageField(label = "参考ID")
     private String referenceId;
 
     private Set<ExamQuestionItem> questionItems;
 
     @Override
     public StreamArray<String> filterField() {
-        return new StreamArray<>(new String[]{"questionItems"});
+        return new StreamArray<>(new String[]{"questionItems","referenceId"});
     }
 
     public ExamQuestion() {

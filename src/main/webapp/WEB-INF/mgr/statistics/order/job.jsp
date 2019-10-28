@@ -50,7 +50,7 @@
             var endTime = $("input[name='endTime']").val();
             $("#queryResult").empty();
             $.ajax({
-                url:"${managerPath}/statistics/courseStatistics${suffix}",
+                url:"${managerPath}/statistics/jobStatistics${suffix}",
                 type:"GET", //GET
                 async:true,    //或false,是否异步
                 data:{
@@ -60,7 +60,7 @@
                 timeout:5000,
                 dataType:"TEXT",
                 success:function(data,textStatus,xhr){
-                    $("#queryResult").html(data);
+                    $("#queryResult").empty().html(data);
                 }
             })
         })

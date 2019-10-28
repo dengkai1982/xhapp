@@ -5,11 +5,13 @@ import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.app.xhapp.entity.access.AccountRecharge;
 import kaiyi.app.xhapp.entity.access.enums.MemberShip;
 import kaiyi.app.xhapp.entity.curriculum.CourseOrder;
+import kaiyi.app.xhapp.entity.log.PerformanceCommission;
 import kaiyi.app.xhapp.entity.log.enums.AmountType;
 import kaiyi.app.xhapp.entity.log.enums.BorrowLend;
 import kaiyi.app.xhapp.entity.log.enums.TradeCourse;
 import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.app.xhapp.service.log.AmountFlowService;
+import kaiyi.app.xhapp.service.log.PerformanceCommissionService;
 import kaiyi.app.xhapp.service.log.ShortMessageSenderNoteService;
 import kaiyi.app.xhapp.service.pub.ConfigureService;
 import kaiyi.puer.commons.collection.StreamCollection;
@@ -37,6 +39,8 @@ public class AccountServiceImpl extends InjectDao<Account> implements AccountSer
     private AmountFlowService amountFlowService;
     @Resource
     private ConfigureService configureService;
+    @Resource
+    private PerformanceCommissionService performanceCommissionService;
     @Override
     public Account register(String phone, String password,String validateCode,String recommendId) throws ServiceException {
         if(!shortMessageSenderNoteService.validateCode(phone,validateCode)){

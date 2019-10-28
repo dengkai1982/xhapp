@@ -336,6 +336,8 @@ $(document).ready(function(){
         var theme=$(this).attr("data-value");
         selectTheme(theme);
     });
+
+    //localStorage.removeItem("queryBox");
     if(functionExist("pageReady")){
         pageReady($(this));
     }

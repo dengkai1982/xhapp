@@ -16,10 +16,7 @@ import kaiyi.puer.db.query.QueryExpress;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 @Service("examQuestionService")
 public class ExamQuestionServiceImpl extends InjectDao<ExamQuestion> implements ExamQuestionService {
@@ -77,6 +74,16 @@ public class ExamQuestionServiceImpl extends InjectDao<ExamQuestion> implements 
         item.setStandardAnswer(question.getAnswer());
         item.setWeight(weight);
         item.setOwner(owner);
+        item.setCreateTime(new Date());
+        if(Objects.nonNull(question.getCategory())){
+            item.setCategory(question.getCategory().getName());
+        }
+        if(Objects.nonNull(question.getSimulationCategory())){
+            item.setSimulationCategory(question.getSimulationCategory().getName());
+        }
+        if(Objects.nonNull(question.getAscriptionType())){
+            item.setAscriptionType(question.getAscriptionType().toString());
+        }
         Set<ChoiceAnswer> choiceAnswers = question.getChoiceAnswers();
         Set<ExamChoiceAnswer> examChoiceAnswers=new HashSet<>();
         for(ChoiceAnswer answer:choiceAnswers){

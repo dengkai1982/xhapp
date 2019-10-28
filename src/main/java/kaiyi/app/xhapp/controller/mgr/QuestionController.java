@@ -3,10 +3,7 @@ package kaiyi.app.xhapp.controller.mgr;
 
 import kaiyi.app.xhapp.entity.examination.*;
 import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
-import kaiyi.app.xhapp.service.examination.QuestionCategoryService;
-import kaiyi.app.xhapp.service.examination.QuestionService;
-import kaiyi.app.xhapp.service.examination.SimulationCategoryService;
-import kaiyi.app.xhapp.service.examination.TestPagerService;
+import kaiyi.app.xhapp.service.examination.*;
 import kaiyi.app.xhapp.service.pub.ConfigureService;
 import kaiyi.puer.commons.access.AccessControl;
 import kaiyi.puer.commons.collection.StreamArray;
@@ -54,6 +51,11 @@ public class QuestionController extends ManagerController {
     private ConfigureService configureService;
     @Resource
     private SimulationCategoryService simulationCategoryService;
+    @Resource
+    private ExamQuestionService examQuestionService;
+    @Resource
+    private ExamQuestionItemService examQuestionItemService;
+
     @RequestMapping("/question")
     @AccessControl(name = "试题库", weight = 5.1f, detail = "管理试题库内容", code = rootPath+ "/question", parent = rootPath)
     public String question(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
@@ -81,8 +83,7 @@ public class QuestionController extends ManagerController {
     }
     @RequestMapping("/question/detail")
     @AccessControl(name = "试题详情", weight = 5.13f, detail = "试题详情",
-            code = rootPath+ "/question/detail" +
-                    "", parent = rootPath+"/question")
+            code = rootPath+ "/question/detail", parent = rootPath+"/question")
     public String questionDetail(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
         detailPage(interactive,questionService,3);
         setDefaultPage(interactive,rootPath+"/question");
@@ -455,5 +456,43 @@ public class QuestionController extends ManagerController {
         interactive.setRequestAttribute("referenceQueryId",interactive.getStringParameter("referenceQueryId",""));
         interactive.setRequestAttribute("treeData",treeData);
         return rootPath+"/simulationCategoryQuery";
+    }
+
+    @RequestMapping("/examQuestion")
+    @AccessControl(name = "再答考试", weight = 5.5f, detail = "进行中的考试内容", code = rootPath+ "/examQuestion", parent = rootPath)
+    public String examQuestion(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        setDefaultPage(interactive,rootPath+"/examQuestion");
+        mainTablePage(interactive,examQuestionService,null,null,
+                new DynamicGridInfo(false,DynamicGridInfo.OperMenuType.popup));
+        return rootPath+"/examQuestion";
+    }
+    @RequestMapping("/examQuestion/detail")
+    @AccessControl(name = "试题详情", weight = 5.51f, detail = "试题详情",
+            code = rootPath+ "/examQuestion/detail", parent = rootPath+"/examQuestion",defaultAuthor = true)
+    public String examQuestionDetail(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        ExamQuestion question=detailPage(interactive,examQuestionService,3);
+        QueryExpress queryExpress=new CompareQueryExpress("examQuestion", CompareQueryExpress.Compare.EQUAL,question);
+        StreamCollection<ExamQuestionItem> items=examQuestionItemService.getEntitys(queryExpress);
+        interactive.setRequestAttribute("items",items);
+        setDefaultPage(interactive,rootPath+"/examQuestion");
+        return rootPath+"/examQuestionDetail";
+    }
+
+    @RequestMapping("/examQuestionItem")
+    @AccessControl(name = "考试试题", weight = 5.6f, detail = "正在进行考试的试题", code = rootPath+ "/examQuestionItem", parent = rootPath)
+    public String examQuestionItem(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        setDefaultPage(interactive,rootPath+"/examQuestionItem");
+        mainTablePage(interactive,examQuestionItemService,null,null,
+                new DynamicGridInfo(false,DynamicGridInfo.OperMenuType.none));
+        return rootPath+"/examQuestionItem";
+    }
+
+    @RequestMapping("/examQuestionItem/detail")
+    @AccessControl(name = "考试试题详情", weight = 5.61f, detail = "试题详情",
+            code = rootPath+ "/examQuestionItem/detail", parent = rootPath+"/examQuestionItem",defaultAuthor = true)
+    public String examQuestionItemDetail(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        detailPage(interactive,examQuestionItemService,3);
+        setDefaultPage(interactive,rootPath+"/examQuestionItem");
+        return rootPath+"/examQuestionItemDetail";
     }
 }

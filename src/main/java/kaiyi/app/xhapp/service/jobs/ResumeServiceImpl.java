@@ -1,13 +1,12 @@
 package kaiyi.app.xhapp.service.jobs;
 
-import kaiyi.app.xhapp.entity.jobs.ConcernResume;
-import kaiyi.app.xhapp.entity.jobs.Position;
-import kaiyi.app.xhapp.entity.jobs.Resume;
-import kaiyi.app.xhapp.entity.jobs.WorkExperience;
+import kaiyi.app.xhapp.entity.jobs.*;
+import kaiyi.app.xhapp.entity.pojo.ResumeAndRecruitment;
 import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.JavaDataTyper;
+import kaiyi.puer.commons.time.DateTimeUtil;
 import kaiyi.puer.db.orm.ServiceException;
 import kaiyi.puer.db.query.ContainQueryExpress;
 import kaiyi.puer.db.query.LinkQueryExpress;
@@ -15,9 +14,8 @@ import kaiyi.puer.db.query.QueryExpress;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.Map;
-import java.util.Objects;
+import javax.persistence.Query;
+import java.util.*;
 
 @Service("resumeService")
 public class ResumeServiceImpl extends InjectDao<Resume> implements ResumeService {
@@ -91,5 +89,49 @@ public class ResumeServiceImpl extends InjectDao<Resume> implements ResumeServic
                 .setParameter("infoUpper",!frozen)
                 .setParameter("entityIdArray",positions.toList()).executeUpdate();
 
+    }
+
+    @Override
+    public ResumeAndRecruitment resumeAndRecruitment(Date startTime, Date endTime) {
+        String resumeSql="select p.name ,count(r.position) from "+Resume.TABLE_NAME+" r,"+Position.TABLE_NAME
+                +" p where r.position=p.entityId";
+        String recruitmentSql="select p.name ,count(r.position) from "+ Recruitment.TABLE_NAME +" r,"+Position.TABLE_NAME
+                +" p where r.position=p.entityId ";
+        if(Objects.nonNull(startTime)) {
+            DateTimeUtil.setStartDay(startTime);
+            resumeSql+=" and r.createTime>=:startTime";
+            recruitmentSql+=" and r.publishTime>=:startTime";
+        }
+        if(Objects.nonNull(endTime)){
+            DateTimeUtil.setEndDay(endTime);
+            resumeSql+=" and r.createTime<=:endTime";
+            recruitmentSql+=" and r.publishTime<=:endTime";
+        }
+        resumeSql+=" group by r.position";
+        recruitmentSql+=" group by r.position";
+        Query resumeQuery=em.createNativeQuery(resumeSql);
+        Query recruitmentQuery=em.createNativeQuery(recruitmentSql);
+        if(Objects.nonNull(startTime)) {
+            resumeQuery.setParameter("startTime",startTime);
+            recruitmentQuery.setParameter("startTime",startTime);
+        }
+        if(Objects.nonNull(endTime)){
+            resumeQuery.setParameter("endTime",endTime);
+            recruitmentQuery.setParameter("endTime",endTime);
+        }
+        ResumeAndRecruitment pojo=new ResumeAndRecruitment();
+        Map<String,Integer> resumeMap=new HashMap<>();
+        Map<String,Integer> recruitmentMap=new HashMap<>();
+        pojo.setResume(resumeMap);
+        pojo.setRecruitment(recruitmentMap);
+        List<Object[]> results=resumeQuery.getResultList();
+        for(Object[] result:results){
+            resumeMap.put(result[0].toString(),Integer.parseInt(result[1].toString()));
+        }
+        results=recruitmentQuery.getResultList();
+        for(Object[] result:results){
+            recruitmentMap.put(result[0].toString(),Integer.parseInt(result[1].toString()));
+        }
+        return pojo;
     }
 }

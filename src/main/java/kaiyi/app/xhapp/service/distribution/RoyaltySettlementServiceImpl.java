@@ -8,6 +8,7 @@ import kaiyi.app.xhapp.entity.log.enums.TradeCourse;
 import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.app.xhapp.service.access.AccountService;
 import kaiyi.app.xhapp.service.access.VisitorUserService;
+import kaiyi.app.xhapp.service.log.PerformanceCommissionService;
 import kaiyi.app.xhapp.service.pub.ConfigureService;
 import kaiyi.puer.commons.data.Currency;
 import kaiyi.puer.commons.data.JavaDataTyper;
@@ -31,7 +32,8 @@ public class RoyaltySettlementServiceImpl extends InjectDao<RoyaltySettlement> i
     @Resource
     private VisitorUserService visitorUserService;
     @Resource
-    private ConfigureService configureService;
+    private PerformanceCommissionService performanceCommissionService;
+
     @Override
     protected void objectBeforePersistHandler(RoyaltySettlement royaltySettlement, Map<String, JavaDataTyper> params) throws ServiceException {
         royaltySettlement.setCreateTime(new Date());
@@ -61,16 +63,23 @@ public class RoyaltySettlementServiceImpl extends InjectDao<RoyaltySettlement> i
             accountService.updateObject(account);
             Account recommend=royaltySettlement.getRecommend1();
             String orderId=royaltySettlement.getOrderId();
+            performanceCommissionService.saveNode(account,orderId,false,TradeCourse.MANUAL_CACULATION,
+                    price,0,0);
             if(Objects.nonNull(recommend)&&!recommend.isInsideMember()){
-                accountService.grantRoyalty(recommend.getEntityId(),orderId,TradeCourse.MANUAL_CACULATION,royaltySettlement.getLevel1Amount());
+                accountService.grantRoyalty(recommend.getEntityId(),orderId,TradeCourse.MANUAL_CACULATION,
+                        royaltySettlement.getLevel1Amount());
                 recommend.addingTeamSaleAmount(price);
                 accountService.updateObject(recommend);
+                performanceCommissionService.saveNode(recommend,orderId,true,TradeCourse.MANUAL_CACULATION,
+                        price,royaltySettlement.getRoyaltyType().getFirstRate(),royaltySettlement.getLevel1Amount());
             }
             recommend=royaltySettlement.getRecommend2();
             if(Objects.nonNull(recommend)&&!recommend.isInsideMember()){
                 accountService.grantRoyalty(recommend.getEntityId(),orderId,TradeCourse.MANUAL_CACULATION,royaltySettlement.getLevel2Amount());
                 recommend.addingTeamSaleAmount(price);
                 accountService.updateObject(recommend);
+                performanceCommissionService.saveNode(recommend,orderId,true,TradeCourse.MANUAL_CACULATION,
+                        price,royaltySettlement.getRoyaltyType().getSecondRate(),royaltySettlement.getLevel2Amount());
             }
             updateObject(royaltySettlement);
             recommend=royaltySettlement.getInsideMember();
@@ -78,6 +87,8 @@ public class RoyaltySettlementServiceImpl extends InjectDao<RoyaltySettlement> i
                 accountService.grantRoyalty(recommend.getEntityId(),orderId,
                         TradeCourse.INSIDE_MANUAL_CACULATION,royaltySettlement.getInsideAmount());
                 accountService.updateObject(recommend);
+                performanceCommissionService.saveNode(recommend,orderId,true,TradeCourse.INSIDE_MANUAL_CACULATION,
+                        price,royaltySettlement.getRoyaltyType().getInsideMemberRate(),royaltySettlement.getInsideAmount());
             }
             //内部员工结算
             /*Account insideMember=accountService.findParentInsideMember(account.getEntityId());
