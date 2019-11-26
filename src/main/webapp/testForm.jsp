@@ -9,16 +9,21 @@
     <h1>测试</h1>
     <script src="${contextPath}/js/app.js" type="text/javascript"></script>
     <script type="text/javascript">
-        queryDataOfOrderBySetUrl("${contextPath}/app/query/pagination${suffix}","questionFavoritesService",
+        queryDataOfOrderBySetUrl("${contextPath}/app/query/pagination${suffix}","examQuestionService",
             [{
-                field:"question",
-                condition:"0",
-                value:"15689496813820040"
-            },{
                 field:"account",
                 condition:"0",
-                value:"15688503905390085",
-                link:LINK_AND
+                value:"15728382341210094"
+            },{
+                field:"resourceType",
+                condition:"0",
+                value:"2",
+                link:"0"
+            },{
+                field:"referenceId",
+                condition:"0",
+                value:"15676710999355077",
+                link:"0"
             }],0,100,"createTime","ase",function(d){
                 console.log(d);
             })

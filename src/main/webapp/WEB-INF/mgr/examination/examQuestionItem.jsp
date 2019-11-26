@@ -99,9 +99,17 @@
         })
     }
     function customDataConvertCell(valueType,dataValue,cell, dataGrid){
-        if(cell.colIndex==0){
+        if(cell.colIndex==1){
             var dv=HTMLDecode(dataValue);
             return "<a title='"+dv+"'>"+dv+"</dv>";
+        }else if(cell.colIndex==3){
+            if(dataValue=="SingleChoice"){
+                return "单选题"
+            }else if(dataValue=="QuestionsAndAnswers"){
+                return "问答题"
+            }else{
+                return "多选题"
+            }
         }
     }
     function createMenuItems(dataId,dataRow,data){

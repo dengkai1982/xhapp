@@ -2,6 +2,7 @@ package kaiyi.app.xhapp.service.examination;
 
 import kaiyi.app.xhapp.ServiceExceptionDefine;
 import kaiyi.app.xhapp.entity.examination.*;
+import kaiyi.app.xhapp.entity.examination.enums.AscriptionType;
 import kaiyi.app.xhapp.entity.examination.enums.QuestionType;
 import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
 import kaiyi.app.xhapp.service.InjectDao;
@@ -106,21 +107,28 @@ public class QuestionServiceImpl extends InjectDao<Question> implements Question
         /*if(Objects.isNull(categories)){
             throw ServiceExceptionDefine.categoryError;
         }*/
-        String typeName=line.get(3).getData().stringValue();
+        String ascriptionType=line.get(3).getData().stringValue();
+        AscriptionType type=AscriptionType.getByName(ascriptionType);
+        if(Objects.isNull(type)){
+            throw ServiceExceptionDefine.questionType;
+        }
+
+        String typeName=line.get(4).getData().stringValue();
         QuestionType questionType=QuestionType.getByName(typeName);
         if(Objects.isNull(questionType)){
             throw ServiceExceptionDefine.questionType;
         }
-        int score=line.get(4).getData().integerValue(0);
+        int score=line.get(5).getData().integerValue(0);
         question.setDetail(detail);
         question.setCategory(questionCategory);
         question.setQuestionType(questionType);
         question.setScore(score);
         question.setEnable(true);
+        question.setAscriptionType(type);
         question.setSimulationCategory(simulationCategory);
         question.setUpdateTime(new Date());
-        String analysis=line.get(5).getData().stringValue();
-        String answer=line.get(6).getData().stringValue();
+        String analysis=line.get(6).getData().stringValue();
+        String answer=line.get(7).getData().stringValue();
         if(analysis.equalsIgnoreCase("0")){
             analysis="";
         }
@@ -131,8 +139,8 @@ public class QuestionServiceImpl extends InjectDao<Question> implements Question
         question.setAnswer(answer);
         if(!question.getQuestionType().equals(QuestionType.QuestionsAndAnswers)){
             question.setChoiceAnswers(new HashSet<>());
-            String optionName=line.get(7).getData().stringValue();
-            String detailValue=line.get(8).getData().stringValue();
+            String optionName=line.get(8).getData().stringValue();
+            String detailValue=line.get(9).getData().stringValue();
             parseChoiceAnswer(question,optionName,detailValue);
         }
         return question;

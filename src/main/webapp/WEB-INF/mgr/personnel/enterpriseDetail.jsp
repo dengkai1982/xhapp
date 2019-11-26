@@ -18,9 +18,16 @@
                     <%@include file="/WEB-INF/mgr/access/entityDetail.jsp"%>
                 </div>
                 <div class="detail-title">营业执照<span class="icon icon-caret-down"></span></div>
-                <div class="detail-content">
-                    <img src="${managerPath}/access/accessStorageFile${suffix}?hex=${entity.licensePhoto}" style="height:300px;">
-                </div>
+                <c:choose>
+                    <c:when test="${empty entity.licensePhoto}">
+                        未上传
+                    </c:when>
+                    <c:otherwise>
+                        <div class="detail-content">
+                            <img src="${managerPath}/access/accessStorageFile${suffix}?hex=${entity.licensePhoto}" style="height:300px;">
+                        </div>
+                    </c:otherwise>
+                </c:choose>
                 <%@include file="/WEB-INF/mgr/access/detailPageButton.jsp"%>
             </div>
         </div>

@@ -1,5 +1,7 @@
 package kaiyi.app.xhapp.service.jobs;
 
+import kaiyi.app.xhapp.ServiceExceptionDefine;
+import kaiyi.app.xhapp.entity.access.Account;
 import kaiyi.app.xhapp.entity.jobs.*;
 import kaiyi.app.xhapp.entity.pojo.JobStatisticsPojo;
 import kaiyi.app.xhapp.service.InjectDao;
@@ -29,15 +31,39 @@ public class EnterpriseServiceImpl extends InjectDao<Enterprise> implements Ente
     private VisitorMenuService visitorMenuService;
     @Override
     protected void objectBeforePersistHandler(Enterprise enterprise, Map<String, JavaDataTyper> params) throws ServiceException {
+        checkEnterpriseExist(enterprise);
         String menuId="/mgr/personnel/enterprise";
         enterprise.setCreateTime(new Date());
         String parentId=visitorMenuService.findForPrimary(menuId).getParent().getEntityId();
         menuTooltipService.addMenuNotice(parentId);
         menuTooltipService.addMenuNotice(menuId);
+
+    }
+
+
+
+    private void checkEnterpriseExist(Enterprise enterprise) throws ServiceException {
+        Account owner=enterprise.getOwner();
+        String code=enterprise.getCode();
+        QueryExpress query=new CompareQueryExpress("owner", CompareQueryExpress.Compare.EQUAL,owner);
+        query=new LinkQueryExpress(query, LinkQueryExpress.LINK.AND,new CompareQueryExpress("code", CompareQueryExpress.Compare.EQUAL,code));
+        if(exist(query)){
+            throw ServiceExceptionDefine.enterpriseExist;
+        }
     }
 
     @Override
     protected void objectBeforeUpdateHandler(Enterprise enterprise, Map<String, JavaDataTyper> data) throws ServiceException {
+        Account owner=enterprise.getOwner();
+        String code=enterprise.getCode();
+        QueryExpress query=new CompareQueryExpress("owner", CompareQueryExpress.Compare.EQUAL,owner);
+        query=new LinkQueryExpress(query, LinkQueryExpress.LINK.AND,new CompareQueryExpress("code", CompareQueryExpress.Compare.EQUAL,code));
+        StreamCollection<Enterprise> exists=getEntitys(query);
+        for(Enterprise exist:exists){
+            if(!exist.getEntityId().equals(enterprise.getEntityId())){
+                throw ServiceExceptionDefine.enterpriseExist;
+            }
+        }
         enterprise.setVerifyed(false);
     }
 

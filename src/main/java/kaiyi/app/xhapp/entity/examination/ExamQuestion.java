@@ -48,6 +48,7 @@ public class ExamQuestion extends AbstractEntity {
     @PageField(label = "全部完成",type = FieldType.BOOLEAN,tableLength = 120)
     @FieldBoolean(values = {"已完成","未完成"})
     private boolean finished;
+    @PageField(label = "参考ID",showTable = false,showForm = false,showQuery = false,showDetail = false,showSearch = false)
     private String referenceId;
 
     private Set<ExamQuestionItem> questionItems;

@@ -11,6 +11,7 @@ import kaiyi.app.xhapp.service.AliyunVodHelper;
 import kaiyi.app.xhapp.service.SMSSender;
 import kaiyi.puer.commons.data.Currency;
 import kaiyi.puer.commons.utils.CoderUtil;
+import kaiyi.puer.commons.validate.VariableVerifyUtils;
 import kaiyi.puer.crypt.key.KeyGeneratorUtils;
 import kaiyi.puer.http.HttpException;
 import kaiyi.puer.json.creator.MapJsonCreator;
@@ -21,6 +22,12 @@ import java.security.KeyPair;
 import java.util.List;
 
 public class test2 {
+    @Test
+    public void mobileCheck(){
+        System.out.println(VariableVerifyUtils.mobileValidate("19940717119"));
+        System.out.println(VariableVerifyUtils.mobileValidate("18681330155"));
+
+    }
     @Test
     public void computerPercentage(){
         System.out.println(CoderUtil.hexToString("2f7573722f6c6f63616c2f6e67696e782f68746d6c2f646f63732f323031392f31302f32352f65636664326363356231373630346262626531326365336434653836313132372e6a7067","utf-8"));

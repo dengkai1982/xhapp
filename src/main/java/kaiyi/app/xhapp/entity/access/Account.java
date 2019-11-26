@@ -33,7 +33,7 @@ public class Account extends AbstractEntity {
     private boolean insideMember;
     @PageField(label = "员工姓名",tableLength = 140)
     private String memberName;
-    @PageField(label = "登录密码",showSearch = false,showTable = false,showDetail = false)
+    @PageField(label = "登录密码",showSearch = false,showTable = false,showDetail = false,export = false)
     private String password;
     @IDate
     @PageField(label = "注册时间",type = FieldType.DATETIME,tableLength = 160)
@@ -47,7 +47,7 @@ public class Account extends AbstractEntity {
     @PageField(label = "团队人数",type = FieldType.NUMBER,showForm = false,tableLength = 120)
     @FieldNumber(type = FieldNumber.TYPE.INT)
     private int teamNumber;
-    @PageField(label = "用户头像",type=FieldType.DOCUMENT,showSearch = false,showDetail = false)
+    @PageField(label = "用户头像",type=FieldType.DOCUMENT,showSearch = false,showDetail = false,export = false)
     @FieldDocument
     private String headerImage;
     @PageField(label = "签名",tableLength = 200,showSearch = false,showTable = false)

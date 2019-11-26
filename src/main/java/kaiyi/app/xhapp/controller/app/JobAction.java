@@ -124,9 +124,11 @@ public class JobAction extends SuperAction {
         AtomicReference<Enterprise> reference=new AtomicReference<>();
         JsonMessageCreator msg=executeNewOrUpdate(interactive,enterpriseService,interactive.getRequestParameterMap(),docSavePath,
                 reference);
-        Enterprise enterprise=reference.get();
-        sendInsideMessage(interactive,"有新的企业加入,企业名称:"+enterprise.getEnterpriseName(),
-                ManagerController.prefix+"/personnel/enterprise",enterprise.getEntityId());
+        if(msg.getCode().equals(JsonMessageCreator.SUCCESS)){
+            Enterprise enterprise=reference.get();
+            sendInsideMessage(interactive,"有新的企业加入,企业名称:"+enterprise.getEnterpriseName(),
+                    ManagerController.prefix+"/personnel/enterprise",enterprise.getEntityId());
+        }
         interactive.writeUTF8Text(msg.build());
     }
 

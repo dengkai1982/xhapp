@@ -4,12 +4,14 @@ import kaiyi.app.xhapp.entity.access.VisitorMenu;
 import kaiyi.app.xhapp.entity.access.VisitorUser;
 import kaiyi.app.xhapp.entity.log.MenuTooltip;
 import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
+import kaiyi.app.xhapp.service.CustomerPaginationJson;
 import kaiyi.app.xhapp.service.access.VisitorUserService;
 import kaiyi.app.xhapp.service.log.MenuTooltipService;
 import kaiyi.app.xhapp.service.pub.ConfigureService;
 import kaiyi.puer.commons.collection.Cascadeable;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.StringEditor;
+import kaiyi.puer.db.Pagination;
 import kaiyi.puer.db.orm.CustomQueryExpress;
 import kaiyi.puer.db.orm.DatabaseQuery;
 import kaiyi.puer.db.orm.ServiceException;
@@ -17,9 +19,7 @@ import kaiyi.puer.db.query.CompareQueryExpress;
 import kaiyi.puer.db.query.QueryExpress;
 import kaiyi.puer.h5ui.bean.DynamicGridInfo;
 import kaiyi.puer.h5ui.service.DocumentService;
-import kaiyi.puer.json.creator.CollectionJsonCreator;
-import kaiyi.puer.json.creator.JsonMessageCreator;
-import kaiyi.puer.json.creator.MutilJsonCreator;
+import kaiyi.puer.json.creator.*;
 import kaiyi.puer.web.elements.FormElementHidden;
 import kaiyi.puer.web.service.EntityQueryService;
 import kaiyi.puer.web.servlet.ServletUtils;
@@ -168,6 +168,24 @@ public class AccessController extends ManagerController {
             query=defaultQuery(interactive,databaseQuery,query);
             executeConditionQuery(interactive,databaseQuery,query);
         }
+    }
+    @Override
+    protected void executeConditionQuery(WebInteractive interactive,
+                                         DatabaseQuery<? extends JsonBuilder> databaseQuery,
+                                         QueryExpress query) {
+        executeConditionQuery(interactive,databaseQuery,query,pagination->{
+            ObjectJsonCreator<Pagination> creator=null;
+            if(databaseQuery instanceof CustomerPaginationJson){
+                creator=((CustomerPaginationJson)databaseQuery).getCustomerCreator(pagination);
+            }else{
+                creator=getDefaultObjectCreator(pagination);
+            }
+            try {
+                interactive.writeUTF8Text(creator.build());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
     //弹出多选框
     @RequestMapping("/popupMultipleChoose")

@@ -19,7 +19,7 @@ public class DayTimer {
     @Resource
     private AccountService accountService;
     public void dispose(){
-        clearTempFile();
+        //clearTempFile();
         int day=Integer.parseInt(DateTimeUtil.getCurrentDay());
         if(day==1){
             accountService.monthClear();

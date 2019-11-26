@@ -115,7 +115,7 @@ public class ImportData {
     @Test
     public void excelImport() throws IOException {
         QuestionService questionService=sel.getBean(QuestionService.class);
-        File file=new File("/Users/dengkai/金红/daoru/27.xls");
+        File file=new File("/Users/dengkai/Documents/鑫鸿app/最新导入/导入/二级建造师(机电工程)考前模拟题及答案解析.xls");
         AtomicReference<Question> questionReference=new AtomicReference<>();
         //StreamCollection<QuestionCategory> categories=categoryService.getEntitys();
         if(Objects.nonNull(file)&&file.exists()){

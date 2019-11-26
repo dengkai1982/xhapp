@@ -84,7 +84,28 @@
                     });
                 })
             }
-        }]
+        },{
+            label:"重置密码",
+            onClick:function(){
+                confirmOper("消息","确实要重置选中的用户的密码为[123456]?",function(){
+                    postJSON("${managerPath}/account/visitorUser/resetPasswd${suffix}",{
+                        entityId:dataId
+                    },"正在执行,请稍后...",function(result){
+                        if(result.code==SUCCESS){
+                            bootbox.alert({
+                                title:"消息",
+                                message: "重置用户密码成功,点击确认返回",
+                                callback: function () {
+                                    reflashPageData();
+                                }
+                            })
+                        }else{
+                            showMessage(result.msg,1500);
+                        }
+                    });
+                })
+            }
+        }];
         checkPrivilege(items);
         return items;
     };

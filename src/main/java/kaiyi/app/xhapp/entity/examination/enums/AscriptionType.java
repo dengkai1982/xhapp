@@ -76,9 +76,9 @@ public enum AscriptionType implements H5ChosenInterface {
         return getSearchValues().toString();
     }
 
-    public static final  QuestionType getByName(String name){
-        QuestionType[] types=QuestionType.values();
-        for(QuestionType type:types){
+    public static final  AscriptionType getByName(String name){
+        AscriptionType[] types=AscriptionType.values();
+        for(AscriptionType type:types){
             if(type.getValue().equals(name)){
                 return type;
             }

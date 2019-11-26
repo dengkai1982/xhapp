@@ -70,7 +70,7 @@ public class ExamQuestionItem extends AbstractEntity {
 
     @Override
     public StreamArray<String> filterField() {
-        return new StreamArray<>(new String[]{"examQuestion","choiceAnswers"});
+        return new StreamArray<>(new String[]{"examQuestion"});
     }
 
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.LAZY)

@@ -91,5 +91,7 @@ public class ServiceExceptionDefine {
             ServiceException.CODE_FAIL,"问答题数量不足");
     public static final ServiceException multipleQuestionNumberError=new ServiceException(
             ServiceException.CODE_FAIL,"多选题数量不足");
+    public static final ServiceException enterpriseExist=new ServiceException(
+            ServiceException.CODE_FAIL,"相同编码的企业存在");
 
 }
