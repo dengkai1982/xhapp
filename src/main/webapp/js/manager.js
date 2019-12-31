@@ -279,7 +279,7 @@ function postJSON(url, data, loadingMsg, handler,timeout) {
         type: "POST", //GET
         async: true,    //或false,是否异步
         data: data,
-        timeout:timeout?timeout:6000,
+        timeout:timeout?timeout:600000,
         dataType: "JSON",
         success: function (result, textStatus, xhr) {
             hideBlock();

@@ -82,6 +82,14 @@
         checkPrivilege(items);
         return items;
     };
+    function customDataConvertCell(valueType,dataValue,cell, dataGrid){
+        if(cell.colIndex==1){
+            return cell.config.data.commentator.showAccountName
+        }else if(cell.colIndex==2){
+            return cell.config.data.course.name
+        }
+        return null
+    }
 </script>
 </body>
 </html>

@@ -103,8 +103,9 @@ public class QuestionController extends ManagerController {
     public void questionBatchDelete(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
         StreamArray<String> entityIdArray=interactive.getStringStreamArray("entityIdArray",",");
         entityIdArray.forEachByOrder((i,d)->{
-            questionService.deleteById(d);
+            questionService.deleteById(d,false);
         });
+        testPagerService.updateNumber();
         interactive.writeUTF8Text(getSuccessMessage().build());
     }
 
@@ -113,7 +114,7 @@ public class QuestionController extends ManagerController {
             code = rootPath+ "/question/delete", parent = rootPath+"/question")
     public void questionDelete(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
         String entityId=interactive.getStringParameter("entityId","");
-        questionService.deleteById(entityId);
+        questionService.deleteById(entityId,true);
         interactive.writeUTF8Text(getSuccessMessage().build());
     }
 

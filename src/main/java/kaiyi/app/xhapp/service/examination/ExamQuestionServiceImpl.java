@@ -35,9 +35,16 @@ public class ExamQuestionServiceImpl extends InjectDao<ExamQuestion> implements 
     private ExamQuestionItemService examQuestionItemService;
     @Resource
     private SimulationCategoryService simulationCategoryService;
+    @Resource
+    private TestPagerQuestionService testPagerQuestionService;
     @Override
     public ExamQuestion generatorByTestPager(String accountId, String testPagerId) throws ServiceException {
         TestPager testPager=testPagerService.findForPrimary(testPagerId);
+        Integer count=testPagerQuestionService.count(new CompareQueryExpress("testPager", CompareQueryExpress.Compare.EQUAL,
+                testPager));
+        if(count<=0){
+            throw ServiceExceptionDefine.userNotQuestion;
+        }
         Account account=accountService.findForPrimary(accountId);
         if(Objects.isNull(account)||Objects.isNull(testPager)){
             throw ServiceExceptionDefine.entityNotExist;

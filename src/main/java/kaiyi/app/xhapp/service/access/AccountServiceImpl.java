@@ -42,7 +42,7 @@ public class AccountServiceImpl extends InjectDao<Account> implements AccountSer
     @Resource
     private PerformanceCommissionService performanceCommissionService;
     @Override
-    public Account register(String phone, String password,String validateCode,String recommendId) throws ServiceException {
+    public Account register(String phone, String password,String validateCode,String recommendId,String device) throws ServiceException {
         if(!shortMessageSenderNoteService.validateCode(phone,validateCode)){
             throw ServiceExceptionDefine.validateCodeError;
         }
@@ -59,6 +59,7 @@ public class AccountServiceImpl extends InjectDao<Account> implements AccountSer
         account=new Account();
         account.setPhone(phone);
         account.setRegisterTime(new Date());
+        account.setDevice(device);
         account.setMemberShip(MemberShip.normal);
         account.setPassword(applicationService.cipherToString(password));
         account.setNickName("职猿"+phone.substring(7,phone.length()));

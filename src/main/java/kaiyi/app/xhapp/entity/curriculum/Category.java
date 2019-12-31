@@ -26,7 +26,7 @@ public class Category extends AbstractEntity implements Cascadeable,Comparable<C
     @FieldNumber(type = FieldNumber.TYPE.FLOAT)
     private Float weight;
     @PageField(label = "上级类别",type = FieldType.REFERENCE)
-    @FieldReference(fieldName = "name")
+    @FieldReference(fieldName = "name",only = false)
     private Category parent;
     private Set<Category> children;
     private int level;

@@ -3,6 +3,7 @@ package kaiyi.app.xhapp.controller.mgr;
 import kaiyi.app.xhapp.entity.access.*;
 import kaiyi.app.xhapp.entity.access.enums.MemberShip;
 import kaiyi.app.xhapp.service.access.*;
+import kaiyi.app.xhapp.service.log.LoginLogService;
 import kaiyi.puer.commons.access.AccessControl;
 import kaiyi.puer.commons.collection.Cascadeable;
 import kaiyi.puer.commons.collection.ProcessCascadeEachHandler;
@@ -42,7 +43,8 @@ public class AccountController extends ManagerController {
     private AccountService accountService;
     @Resource
     private InsideNoticeService insideNoticeService;
-
+    @Resource
+    private LoginLogService loginLogService;
     @RequestMapping("/insideNotice")
     @AccessControl(name = "消息管理", weight = 1.1f, detail = "管理系统消息", code = rootPath+ "/insideNotice", parent = rootPath)
     public String insideNotice(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
@@ -327,5 +329,13 @@ public class AccountController extends ManagerController {
         accountService.setMemberName(entityId,memberName);
         interactive.writeUTF8Text(getSuccessMessage().build());
     }
-
+    @RequestMapping("/loginLog")
+    @AccessControl(name = "登录日志", weight = 1.5f, detail = "查看登录日志", code = rootPath
+            + "/loginLog", parent = rootPath)
+    public String loginLog(@IWebInteractive WebInteractive interactive, HttpServletResponse response){
+        setDefaultPage(interactive,rootPath+"/loginLog");
+        mainTablePage(interactive,loginLogService,null,null,
+                new DynamicGridInfo(false,DynamicGridInfo.OperMenuType.none));
+        return rootPath+"/loginLog";
+    }
 }

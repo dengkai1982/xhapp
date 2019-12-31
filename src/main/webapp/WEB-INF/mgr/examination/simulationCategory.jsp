@@ -70,6 +70,17 @@
         checkPrivilege(items);
         return items;
     };
+    function customDataConvertCell(valueType,dataValue,cell, dataGrid){
+        if(cell.colIndex==4){
+            if(cell.config.data.parent){
+                return cell.config.data.parent.name
+            }else{
+                return "无上级"
+            }
+
+        }
+        return null
+    }
 </script>
 </body>
 </html>

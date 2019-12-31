@@ -11,7 +11,8 @@ public class ServiceExceptionDefine {
             ServiceException.CODE_FAIL,"角色不存在");
     public static final ServiceException userNotExist=new ServiceException(
             ServiceException.CODE_FAIL,"账户不存在");
-
+    public static final ServiceException userNotQuestion=new ServiceException(
+            ServiceException.CODE_FAIL,"试卷下没有试题");
     public static final ServiceException phoneNumberExist=new ServiceException(
             ServiceException.CODE_FAIL,"手机号码已注册");
     public static final ServiceException phoneFormatError=new ServiceException(

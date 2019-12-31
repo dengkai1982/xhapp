@@ -241,5 +241,11 @@ public enum ConfigureItem {
 		public String toString() {
 			return "当前IOS版本";
 		}
+	},
+	SECURITY_IP{
+		@Override
+		public String toString() {
+			return "安全IP地址";
+		}
 	}
 }

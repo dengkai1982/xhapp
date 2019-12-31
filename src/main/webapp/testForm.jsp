@@ -9,22 +9,10 @@
     <h1>测试</h1>
     <script src="${contextPath}/js/app.js" type="text/javascript"></script>
     <script type="text/javascript">
-        queryDataOfOrderBySetUrl("${contextPath}/app/query/pagination${suffix}","examQuestionService",
-            [{
-                field:"account",
-                condition:"0",
-                value:"15728382341210094"
-            },{
-                field:"resourceType",
-                condition:"0",
-                value:"2",
-                link:"0"
-            },{
-                field:"referenceId",
-                condition:"0",
-                value:"15676710999355077",
-                link:"0"
-            }],0,100,"createTime","ase",function(d){
+        queryDataOfOrderBySetUrl("${contextPath}/app/query/pagination${suffix}","enterpriseService",
+            [
+                {"field":"owner","condition":"0","value":"15730948722993035"}]
+            ,0,100,"entityId","ase",function(d){
                 console.log(d);
             })
     </script>

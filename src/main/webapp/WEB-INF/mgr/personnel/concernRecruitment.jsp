@@ -53,7 +53,12 @@
         return items;
     };
     function customDataConvertCell(valueType,dataValue,cell, dataGrid){
-        return null;
+        console.log(cell)
+        if(cell.colIndex==1){
+            return cell.config.data.account.nickName
+        }else if(cell.colIndex==3){
+            return cell.config.data.recruitment.positionName
+        }
     }
 </script>
 </body>

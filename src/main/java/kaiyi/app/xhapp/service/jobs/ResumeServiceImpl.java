@@ -54,6 +54,10 @@ public class ResumeServiceImpl extends InjectDao<Resume> implements ResumeServic
         Resume resume=findForPrimary(entityId);
         if(Objects.nonNull(resume)){
             resume.setInfoUpper(!resume.isInfoUpper());
+            if(!resume.isInfoUpper()){
+                em.createQuery("delete from "+getEntityName(ConcernResume.class)+" o " +
+                        "where o.resume=:resume").setParameter("resume",resume).executeUpdate();
+            }
         }
     }
 
@@ -70,13 +74,15 @@ public class ResumeServiceImpl extends InjectDao<Resume> implements ResumeServic
 
     @Override
     public void batchInfoUpper(StreamArray<String> entityIdArray, boolean infoUpper) {
-        StreamCollection<String> positions=new StreamCollection<>();
+        StreamCollection<String> entityIdStream=new StreamCollection<>();
         entityIdArray.forEach(h->{
-            positions.add(h);
+            entityIdStream.add(h);
         });
         em.createQuery("update "+getEntityName(entityClass)+" o set o.infoUpper=:infoUpper where " +
                 "o.entityId in(:entityIdArray)").setParameter("infoUpper",infoUpper)
-                .setParameter("entityIdArray",positions.toList()).executeUpdate();
+                .setParameter("entityIdArray",entityIdStream.toList()).executeUpdate();
+        em.createQuery("delete from "+getEntityName(ConcernResume.class)+" o " +
+                "where o.resume in(:resume)").setParameter("resume",entityIdStream.toList()).executeUpdate();
     }
     @Override
     public void batchFrozen(StreamArray<String> entityIdArray, boolean frozen) {

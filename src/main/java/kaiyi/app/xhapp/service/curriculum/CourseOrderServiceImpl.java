@@ -69,7 +69,7 @@ public class CourseOrderServiceImpl extends InjectDao<CourseOrder> implements Co
             orderItem.setEntityId(randomIdentifier());
             orderItem.setOrderTime(now);
             orderItem.setPrice(course.computerCoursePrice(account));
-            orderItem.setCourseOrderStatus(CourseOrderStatus.WAIT_PAYMENT);
+            orderItem.setStatus(CourseOrderStatus.WAIT_PAYMENT);
             price+=orderItem.getPrice();
             items.add(orderItem);
         }

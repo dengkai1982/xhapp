@@ -53,6 +53,17 @@
         ${requestScope.tableScript}
         </c:if>
     }
+    function customDataConvertCell(valueType,dataValue,cell, dataGrid){
+        if(cell.colIndex==4){
+            if(cell.config.data.parent){
+                return cell.config.data.parent.name
+            }else{
+                return "无上级"
+            }
+
+        }
+        return null
+    }
     function createMenuItems(dataId,dataRow,data){
         var items = [{
             url:"${managerPath}/examination/questionCategory${suffix}?pageNumber=${requestScope.pageNumber}&parent="+dataId+"&${paginationCurrentPage}="+getPaginationCurrentPage(),

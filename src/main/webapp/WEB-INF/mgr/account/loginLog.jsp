@@ -13,7 +13,6 @@
             <div class="btn-toolbar pull-right">
                 <c:if test="${requestScope.hasData}">
                     <a href="#" class="btn btn-link querybox-toggle" id="show_or_hide_search"><i class="icon-search icon"></i> 搜索</a>
-                    <a href='javascript:void(0)' id="exportTableToExcel" title="简历关注表" class="btn btn-link"><i class="icon-import muted"> </i> 导出数据表</a>
                 </c:if>
             </div>
         </div>
@@ -30,6 +29,7 @@
                     <div class="table-empty-tip">
                         <p>
                             <span class="text-muted">抱歉,展示没有任何数据。</span>
+                            <span class="text-muted">您现在可以 </span>
                         </p>
                     </div>
                 </c:otherwise>
@@ -43,22 +43,6 @@
         <c:if test="${requestScope.hasData}">
         ${requestScope.tableScript}
         </c:if>
-    }
-    function createMenuItems(dataId,dataRow,data){
-        var items = [{
-            url:"${contextPath}${webPage.detailEntityPage}${suffix}?entityId="+dataId+"&${paginationCurrentPage}="+getPaginationCurrentPage(),
-            label:"查看详情"
-        }];
-        checkPrivilege(items);
-        return items;
-    };
-    function customDataConvertCell(valueType,dataValue,cell, dataGrid){
-        console.log(cell)
-        if(cell.colIndex==1){
-            return cell.config.data.resume.name
-        }else if(cell.colIndex==3){
-            return cell.config.data.enterprise.enterpriseName
-        }
     }
 </script>
 </body>

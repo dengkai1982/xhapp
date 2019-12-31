@@ -15,10 +15,10 @@ public class CourseProblem extends AbstractEntity {
     public static final String TABLE_NAME="course_problem";
     private static final long serialVersionUID = -4278346481297773802L;
     @PageField(label = "提交人",type = FieldType.REFERENCE,tableLength = 120)
-    @FieldReference(fieldName = "showAccountName")
+    @FieldReference(fieldName = "showAccountName",only=false)
     private Account submitter;
     @PageField(label = "课程名称",type = FieldType.REFERENCE,tableLength = 200)
-    @FieldReference(fieldName = "name")
+    @FieldReference(fieldName = "name",only = false)
     private Course course;
     @IDate
     @PageField(label = "提交时间",type = FieldType.DATETIME,tableLength = 160)

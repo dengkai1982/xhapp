@@ -69,9 +69,20 @@
                 </fieldset>
                 <fieldset>
                     <legend>提现限制</legend>
-                    <label for="LIMIT_WITHDRAW_AMOUNT" class="col-sm-1">提成金额上限</label>
-                    <div class="col-sm-2">
-                        <input type="number" class="form-control" id="LIMIT_WITHDRAW_AMOUNT" value="${configure['LIMIT_WITHDRAW_AMOUNT']}" name="LIMIT_WITHDRAW_AMOUNT" placeholder="请填写提成金额上限">
+                    <div class="form-group">
+                        <label for="LIMIT_WITHDRAW_AMOUNT" class="col-sm-1">提现金额上限</label>
+                        <div class="col-sm-2">
+                            <input type="number" class="form-control" id="LIMIT_WITHDRAW_AMOUNT" value="${configure['LIMIT_WITHDRAW_AMOUNT']}" name="LIMIT_WITHDRAW_AMOUNT" placeholder="请填写提成金额上限">
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend>安全登录IP设置，多个IP请用;号分割</legend>
+                    <div class="form-group">
+                        <label for="SECURITY_IP" class="col-sm-1">IP地址</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="SECURITY_IP" value="${configure['SECURITY_IP']}" name="SECURITY_IP" placeholder="请填写安全IP,多个IP用;号分割,例如10.0.0.1;10.2.1.1">
+                        </div>
                     </div>
                 </fieldset>
                 <fieldset>

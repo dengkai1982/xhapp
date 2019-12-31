@@ -8,6 +8,7 @@ import kaiyi.puer.commons.validate.NotEmpty;
 import kaiyi.puer.h5ui.annotations.*;
 
 import javax.persistence.*;
+import java.lang.reflect.Field;
 import java.util.*;
 
 @Entity(name=Position.TABLE_NAME)
@@ -153,5 +154,13 @@ public class Position extends AbstractEntity implements Cascadeable,Comparable<P
 
     public void setWeight(float weight) {
         this.weight = weight;
+    }
+
+    @Override
+    public <T> String convertToJson(T entity, Field field, Object data) {
+        if(Objects.nonNull(data)){
+            return data.toString();
+        }
+        return super.convertToJson(entity, field, data);
     }
 }

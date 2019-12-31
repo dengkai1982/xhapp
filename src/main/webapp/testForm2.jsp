@@ -16,10 +16,12 @@
     &nbsp;课：<input type="submit" name="subimt"><br>
 </form>
 --%>
-<form action="${contextPath}/app/examination/generatorExamQuestionBySimulationCategory${suffix}" method="post">
-    &nbsp;categoryId：<input type="text" name="categoryId"/><br>
-    &nbsp;accountId：<input type="text" name="accountId"/><br>
-    &nbsp;课：<input type="submit" name="subimt"><br>
+<form action="${contextPath}/app/account/resetAccountPassword${suffix}" method="post">
+    <input type="hidden" name="phone" value="13350106164"/>
+    <input type="hidden" name="validateCode" value="902120"/>
+    <input type="hidden" name="password" value="abcd1234"/>
+    <input type="hidden" name="confirm_password" value="abcd1234"/>
+    <input type="submit" name="subimt"><br>
 </form>
 </body>
 </html>

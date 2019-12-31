@@ -14,6 +14,7 @@ import kaiyi.puer.web.servlet.UploadFileInfo;
 import kaiyi.puer.web.servlet.WebInteractive;
 
 import javax.persistence.MappedSuperclass;
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;

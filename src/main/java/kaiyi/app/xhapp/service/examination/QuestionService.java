@@ -27,7 +27,7 @@ public interface QuestionService extends DatabaseQuery<Question>, DatabaseFastOp
      * 根据ID进行删除
      * @param entityId
      */
-    void deleteById(String entityId);
+    void deleteById(String entityId,boolean update);
 
     /**
      * 启用或停用试题

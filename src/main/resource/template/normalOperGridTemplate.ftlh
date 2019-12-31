@@ -49,6 +49,7 @@ $('#remoteDataGrid').datagrid({
             //如果存在构建字段方法,createPagination方法在paginationPage中
             var pagination=createPagination(result);
             setPagination(pagination);
+            console.log(pagination);
             return pagination;
         },
         cache:false

@@ -6,6 +6,5 @@ import org.springframework.stereotype.Service;
 
 @Service("testPagerQuestionService")
 public class TestPagerQuestionServiceImpl extends InjectDao<TestPagerQuestion> implements TestPagerQuestionService {
-    
 
 }

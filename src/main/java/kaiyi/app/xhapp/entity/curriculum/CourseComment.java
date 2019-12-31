@@ -15,10 +15,10 @@ public class CourseComment extends AbstractEntity {
     public static final String TABLE_NAME="course_comment";
     private static final long serialVersionUID = 8869194154150782526L;
     @PageField(label = "评论人",type = FieldType.REFERENCE,tableLength = 140)
-    @FieldReference(fieldName = "showAccountName")
+    @FieldReference(fieldName = "showAccountName",only = false)
     private Account commentator;
     @PageField(label = "课程名称",type = FieldType.REFERENCE,tableLength = 200)
-    @FieldReference(fieldName = "name")
+    @FieldReference(fieldName = "name",only = false)
     private Course course;
     @PageField(label = "课程评分",type = FieldType.NUMBER,tableLength = 120)
     @FieldNumber(type = FieldNumber.TYPE.INT)

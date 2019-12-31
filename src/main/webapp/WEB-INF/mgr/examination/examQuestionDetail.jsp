@@ -18,12 +18,12 @@
                 </div>
                 <div class="detail-title">试题项<span class="icon icon-caret-down"></span></div>
                 <div class="detail-content">
-                    <table class="table table-bordered">
+                    <table  class="table table-bordered">
                         <thead>
                         <tr>
-                            <th>试题题目</th>
-                            <th style="width:200px;">类型</th>
-                            <th style="width:200px;">分值</th>
+                            <th style="width:300px;">试题题目</th>
+                            <th style="width:80px;">类型</th>
+                            <th style="width:80px;">分值</th>
                             <th style="width:200px;">分类</th>
                             <th style="width:200px;">模拟分类</th>
                             <th style="width:200px;">考点</th>
@@ -35,7 +35,7 @@
                         <tbody>
                         <c:forEach items="${requestScope.items}" var="item">
                             <tr>
-                                <td>${item.detail}</td>
+                                <td><htmlc:src value="${item.detail}"></htmlc:src></td>
                                 <td>${item.questionType.value}</td>
                                 <td>${item.score}</td>
                                 <td>${item.category}</td>
@@ -57,7 +57,6 @@
 <%@include file="/WEB-INF/footerPage.jsp"%>
 <script type="text/javascript">
     function pageReady(doc) {
-
     }
 </script>
 </body>

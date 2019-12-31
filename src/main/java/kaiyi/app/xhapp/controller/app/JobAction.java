@@ -141,7 +141,7 @@ public class JobAction extends SuperAction {
      * @throws IOException
      */
     @PostMapping("/concernResume")
-    public void concernCertificate(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
+    public void concernResume(@IWebInteractive WebInteractive interactive, HttpServletResponse response) throws IOException {
         AtomicReference<ConcernResume> reference=new AtomicReference<>();
         JsonMessageCreator msg=executeNewOrUpdate(interactive,concernResumeService,interactive.getRequestParameterMap(),
                 null,reference);

@@ -10,6 +10,7 @@ import com.aliyuncs.vod.model.v20170321.GetPlayInfoResponse;
 import kaiyi.app.xhapp.service.AliyunVodHelper;
 import kaiyi.app.xhapp.service.SMSSender;
 import kaiyi.puer.commons.data.Currency;
+import kaiyi.puer.commons.data.StringEditor;
 import kaiyi.puer.commons.utils.CoderUtil;
 import kaiyi.puer.commons.validate.VariableVerifyUtils;
 import kaiyi.puer.crypt.key.KeyGeneratorUtils;
@@ -22,6 +23,16 @@ import java.security.KeyPair;
 import java.util.List;
 
 public class test2 {
+    @Test
+    public void testContainer(){
+        System.out.println(container("10.9.22.3"));
+
+    }
+
+    private boolean container(String str){
+        String s="10.9.2.3,10.8.2.4";
+        return s.contains(str);
+    }
     @Test
     public void mobileCheck(){
         System.out.println(VariableVerifyUtils.mobileValidate("19940717119"));

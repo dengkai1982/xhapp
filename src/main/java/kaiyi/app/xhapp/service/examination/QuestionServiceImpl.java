@@ -42,6 +42,8 @@ public class QuestionServiceImpl extends InjectDao<Question> implements Question
     private QuestionCategoryService questionCategoryService;
     @Resource
     private SimulationCategoryService simulationCategoryService;
+    @Resource
+    private TestPagerService testPagerService;
 
     @Override
     public void deleteChoiceAnswer(String choiceAnswerId) {
@@ -65,10 +67,11 @@ public class QuestionServiceImpl extends InjectDao<Question> implements Question
             em.createNativeQuery("delete from choice_answer where question="+question.toString()).executeUpdate();
             em.createNativeQuery("delete from question where entityId="+question.toString()).executeUpdate();
         }
+        testPagerService.updateNumber();
     }
 
     @Override
-    public void deleteById(String entityId) {
+    public void deleteById(String entityId,boolean update) {
         Question question=new Question();
         question.setEntityId(entityId);
         /*em.createQuery("delete from "+getEntityName(QuestionFavorites.class)+" o where o.question=:question")
@@ -80,6 +83,9 @@ public class QuestionServiceImpl extends InjectDao<Question> implements Question
                 +" o where o.question=:question").setParameter("question",question)
                 .executeUpdate();
         deleteForPrimary(entityId);
+        if(update){
+            testPagerService.updateNumber();
+        }
     }
 
     @Override
@@ -169,8 +175,8 @@ public class QuestionServiceImpl extends InjectDao<Question> implements Question
 
     @Override
     public void parseChoiceAnswer(Question question,List<ExcelData> line) throws ServiceException {
-        String optionName=line.get(7).getData().stringValue();
-        String detailValue=line.get(8).getData().stringValue();
+        String optionName=line.get(8).getData().stringValue();
+        String detailValue=line.get(9).getData().stringValue();
         parseChoiceAnswer(question,optionName,detailValue);
     }
 
@@ -195,11 +201,13 @@ public class QuestionServiceImpl extends InjectDao<Question> implements Question
     @Override
     protected void objectBeforePersistHandler(Question question, Map<String, JavaDataTyper> params) throws ServiceException {
         question.setEnable(true);
+        question.setUpdateTime(new Date());
         updateChoiceAnswer(question,params);
     }
 
     @Override
     protected void objectBeforeUpdateHandler(Question question, Map<String, JavaDataTyper> params) throws ServiceException {
+        question.setUpdateTime(new Date());
         updateChoiceAnswer(question,params);
     }
 

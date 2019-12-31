@@ -18,7 +18,7 @@
 >
     <aop:aspectj-autoproxy/>
     <context:component-scan base-package="kaiyi.app.xhapp.service.*"/>
-    <!---->
+
     <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
         <property name="url" value="jdbc:mysql:///xhapp?serverTimezone=Hongkong&amp;useUnicode=true&amp;characterEncoding=UTF-8&amp;useSSL=false"/>
@@ -64,7 +64,7 @@
         <property name="accessCompile" ref="accessCompile"/>
         <property name="executerQueue" ref="executerQueue"/>
         <property name="threadExecuterQueue" ref="threadExecuterQueue"/>
-        <property name="scanAccessMenu" value="false"/>
+        <property name="scanAccessMenu" value="true"/>
         <property name="accessPackage">
             <list>
                 <value>kaiyi.app.xhapp.controller</value>

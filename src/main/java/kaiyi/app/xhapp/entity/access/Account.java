@@ -38,6 +38,8 @@ public class Account extends AbstractEntity {
     @IDate
     @PageField(label = "注册时间",type = FieldType.DATETIME,tableLength = 160)
     private Date registerTime;
+    @PageField(label = "设备类型",tableLength = 120)
+    private String device;
     @PageField(label = "会员等级",type = FieldType.CHOSEN,tableLength = 100)
     @FieldChosen
     private MemberShip memberShip;
@@ -108,6 +110,7 @@ public class Account extends AbstractEntity {
             showQuery = false,showSearch = false,tableLength = 140)
     @FieldReference(fieldName = "showAccountName")
     private Account parentInsideAccount;
+
 
 
     private String showAccountName;
@@ -361,5 +364,13 @@ public class Account extends AbstractEntity {
 
     public void setMemberName(String memberName) {
         this.memberName = memberName;
+    }
+
+    public String getDevice() {
+        return device;
+    }
+
+    public void setDevice(String device) {
+        this.device = device;
     }
 }

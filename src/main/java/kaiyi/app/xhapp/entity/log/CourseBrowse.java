@@ -23,7 +23,7 @@ public class CourseBrowse extends AbstractEntity {
     public static final String TABLE_NAME="course_browse";
     private static final long serialVersionUID = -359300686052405693L;
     @PageField(label = "浏览用户",type = FieldType.REFERENCE)
-    @FieldReference(fieldName = "phone")
+    @FieldReference(fieldName = "showAccountName")
     private Account account;
     @PageField(label = "课程名称",type = FieldType.REFERENCE)
     @FieldReference(fieldName = "name")

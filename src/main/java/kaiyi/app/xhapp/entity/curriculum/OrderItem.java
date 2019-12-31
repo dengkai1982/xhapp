@@ -33,7 +33,7 @@ public class OrderItem extends AbstractEntity {
     private Account account;
     @PageField(label = "订单状态",type = FieldType.CHOSEN)
     @FieldChosen
-    private CourseOrderStatus courseOrderStatus;
+    private CourseOrderStatus status;
     @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
     @JoinColumn(name="courseOrder")
     public CourseOrder getCourseOrder() {
@@ -78,11 +78,11 @@ public class OrderItem extends AbstractEntity {
         this.account = account;
     }
     @Enumerated(EnumType.STRING)
-    public CourseOrderStatus getCourseOrderStatus() {
-        return courseOrderStatus;
+    public CourseOrderStatus getStatus() {
+        return status;
     }
 
-    public void setCourseOrderStatus(CourseOrderStatus courseOrderStatus) {
-        this.courseOrderStatus = courseOrderStatus;
+    public void setStatus(CourseOrderStatus status) {
+        this.status = status;
     }
 }

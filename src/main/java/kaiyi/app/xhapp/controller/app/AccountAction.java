@@ -13,6 +13,7 @@ import kaiyi.app.xhapp.service.log.AmountFlowService;
 import kaiyi.app.xhapp.service.log.ShortMessageSenderNoteService;
 import kaiyi.app.xhapp.service.log.TeamJoinNoteService;
 import kaiyi.app.xhapp.service.pub.ConfigureService;
+import kaiyi.puer.commons.data.StringEditor;
 import kaiyi.puer.commons.image.QrCodeImage;
 import kaiyi.puer.commons.image.SimpleImage;
 import kaiyi.puer.commons.utils.CoderUtil;
@@ -201,12 +202,16 @@ public class AccountAction extends SuperAction {
         String phone=interactive.getStringParameter("phone","");
         String password=interactive.getStringParameter("password","");
         String recommendId=interactive.getStringParameter("recommendId","");
+        String device=interactive.getStringParameter("device","");
         //短信验证码
         String validateCode=interactive.getStringParameter("validateCode","");
         JsonMessageCreator jmc=getSuccessMessage();
         try {
             //TODO 要求鑫鸿提供一个默认上级
-            Account account=accountService.register(phone,password,validateCode,recommendId);
+            if(StringEditor.isEmpty(device)){
+                device="ios";
+            }
+            Account account=accountService.register(phone,password,validateCode,recommendId,device);
             Account recommend=account.getRecommend();
             if(Objects.nonNull(recommend)){
                 teamJoinNoteService.saveNote(recommend,account);
@@ -259,6 +264,7 @@ public class AccountAction extends SuperAction {
                 catchServiceException(jmc,e);
             }
         }
+        //2019-12-25
         interactive.writeUTF8Text(jmc.build());
     }
     /**
@@ -301,7 +307,4 @@ public class AccountAction extends SuperAction {
         }
         interactive.writeUTF8Text(mutilJsonCreator.build());
     }
-
-
-
 }

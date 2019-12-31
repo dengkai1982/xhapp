@@ -31,4 +31,6 @@ public interface TestPagerService extends DatabaseQuery<TestPager> , DatabaseFas
      */
     void changeEnable(String entityId);
 
+    void updateNumber();
+
 }

@@ -6,6 +6,7 @@ import kaiyi.puer.commons.collection.StreamArray;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.validate.NotEmpty;
 import kaiyi.puer.h5ui.annotations.*;
+import kaiyi.puer.h5ui.json.IReferenceJsonValuePolicy;
 
 import javax.persistence.*;
 import java.util.*;
@@ -28,7 +29,7 @@ public class SimulationCategory extends AbstractEntity implements Cascadeable,Co
     @FieldNumber(type = FieldNumber.TYPE.FLOAT)
     private Float weight;
     @PageField(label = "上级类别",type = FieldType.REFERENCE,showForm = false)
-    @FieldReference(fieldName = "name")
+    @FieldReference(fieldName = "name",only = false)
     private SimulationCategory parent;
     private Set<SimulationCategory> children;
     @PageField(label = "层级",type = FieldType.NUMBER,showForm = false,
@@ -172,4 +173,5 @@ public class SimulationCategory extends AbstractEntity implements Cascadeable,Co
     public void setAnswerNumber(int answerNumber) {
         this.answerNumber = answerNumber;
     }
+
 }

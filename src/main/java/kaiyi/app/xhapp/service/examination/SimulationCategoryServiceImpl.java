@@ -1,16 +1,23 @@
 package kaiyi.app.xhapp.service.examination;
 
 import kaiyi.app.xhapp.entity.examination.SimulationCategory;
+import kaiyi.app.xhapp.service.CustomerPaginationJson;
 import kaiyi.app.xhapp.service.InjectDao;
+import kaiyi.puer.commons.bean.BeanSyntacticSugar;
 import kaiyi.puer.commons.collection.Cascadeable;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.JavaDataTyper;
+import kaiyi.puer.db.Pagination;
 import kaiyi.puer.db.orm.ServiceException;
 import kaiyi.puer.db.query.*;
 import kaiyi.puer.h5ui.service.H5UIService;
+import kaiyi.puer.json.DefaultJsonValuePolicy;
+import kaiyi.puer.json.JsonCreator;
 import kaiyi.puer.json.JsonFieldReplacePolicy;
 import kaiyi.puer.json.JsonValuePolicy;
 import kaiyi.puer.json.creator.CollectionJsonCreator;
+import kaiyi.puer.json.creator.JsonBuilder;
+import kaiyi.puer.json.creator.ObjectJsonCreator;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

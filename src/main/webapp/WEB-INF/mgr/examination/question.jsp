@@ -152,7 +152,7 @@
                 }else{
                     showMessage(result.msg,1500);
                 }
-            });
+            },600000);
         })
         /*$("input[data-service-name='questionCategoryService']").removeClass("popupSingleChoose").click(function(){
             console.log("clock")
@@ -219,7 +219,7 @@
                         }else{
                             showMessage(result.msg,1500);
                         }
-                    });
+                    },60000);
                 })
             }
         }];

@@ -9,9 +9,11 @@ import kaiyi.app.xhapp.service.InjectDao;
 import kaiyi.puer.commons.collection.StreamCollection;
 import kaiyi.puer.commons.data.JavaDataTyper;
 import kaiyi.puer.db.orm.ServiceException;
+import kaiyi.puer.db.query.CompareQueryExpress;
 import kaiyi.puer.db.query.ContainQueryExpress;
 import kaiyi.puer.db.query.LinkQueryExpress;
 import kaiyi.puer.db.query.QueryExpress;
+import kaiyi.puer.h5ui.service.ApplicationService;
 import kaiyi.puer.json.JsonParserException;
 import kaiyi.puer.json.JsonUtils;
 import kaiyi.puer.json.parse.ArrayJsonParser;
@@ -27,11 +29,13 @@ public class TestPagerServiceImpl extends InjectDao<TestPager> implements TestPa
     private QuestionCategoryService questionCategoryService;
     @Resource
     private QuestionService questionService;
+    @Resource
+    private TestPagerQuestionService testPagerQuestionService;
+
     @Override
     protected void objectBeforeUpdateHandler(TestPager testPager, Map<String, JavaDataTyper> params) throws ServiceException {
         parseTestPagerQuestion(testPager,params);
         setTestPagerNumber(testPager);
-
     }
     @Override
     protected void objectBeforePersistHandler(TestPager testPager, Map<String, JavaDataTyper> params) throws ServiceException {
@@ -41,7 +45,11 @@ public class TestPagerServiceImpl extends InjectDao<TestPager> implements TestPa
     }
 
     private void setTestPagerNumber(TestPager testPager){
-        Set<TestPagerQuestion> questions = testPager.getTestPagerQuestions();
+        StreamCollection<TestPagerQuestion> questions=new StreamCollection<>(testPager.getTestPagerQuestions());
+        if(StreamCollection.assertEmpty(questions)){
+            questions=testPagerQuestionService.getEntitys(new CompareQueryExpress("testPager", CompareQueryExpress.Compare.EQUAL,
+                    testPager));
+        }
         List<String> questionIdList=new ArrayList<>();
         for(TestPagerQuestion question:questions){
             questionIdList.add(question.getQuestion().getEntityId());
@@ -116,6 +124,7 @@ public class TestPagerServiceImpl extends InjectDao<TestPager> implements TestPa
         testPager.setEntityId(testPagerId);
         em.createQuery("delete from "+getEntityName(TestPagerQuestion.class)+" o where " +
                 "o.testPager=:testPager").setParameter("testPager",testPager).executeUpdate();
+        //updateNumber();
     }
 
     @Override
@@ -126,6 +135,15 @@ public class TestPagerServiceImpl extends InjectDao<TestPager> implements TestPa
             updateObject(testPager);
         }
     }
+
+    @Override
+    public void updateNumber() {
+        StreamCollection<TestPager> testPagers=getEntitys();
+        testPagers.forEachByOrder((idx,page)->{
+            setTestPagerNumber(page);
+        });
+    }
+
     @Override
     public QueryExpress getCustomerQuery(Map<String, JavaDataTyper> params) {
         QueryExpress query = super.getCustomerQuery(params);

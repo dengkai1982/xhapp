@@ -26,7 +26,7 @@ public class QuestionCategory extends AbstractEntity implements Cascadeable,Comp
     @FieldNumber(type = FieldNumber.TYPE.FLOAT)
     private Float weight;
     @PageField(label = "上级类别",type = FieldType.REFERENCE,showForm = false)
-    @FieldReference(fieldName = "name")
+    @FieldReference(fieldName = "name",only = false)
     private QuestionCategory parent;
     private Set<QuestionCategory> children;
     @PageField(label = "层级",type = FieldType.NUMBER,showForm = false,

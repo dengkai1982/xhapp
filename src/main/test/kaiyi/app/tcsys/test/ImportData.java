@@ -8,6 +8,7 @@ import com.alipay.api.request.AlipayTradeWapPayRequest;
 import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.exceptions.ClientException;
 import kaiyi.app.xhapp.entity.access.Account;
+import kaiyi.app.xhapp.entity.examination.ExamQuestion;
 import kaiyi.app.xhapp.entity.examination.Question;
 import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
 import kaiyi.app.xhapp.executor.DayTimer;
@@ -17,6 +18,7 @@ import kaiyi.app.xhapp.service.access.VisitorRoleService;
 import kaiyi.app.xhapp.service.access.VisitorUserService;
 import kaiyi.app.xhapp.service.curriculum.CategoryService;
 import kaiyi.app.xhapp.service.curriculum.CourseOrderService;
+import kaiyi.app.xhapp.service.examination.ExamQuestionItemService;
 import kaiyi.app.xhapp.service.examination.ExamQuestionService;
 import kaiyi.app.xhapp.service.examination.QuestionFavoritesService;
 import kaiyi.app.xhapp.service.examination.QuestionService;
@@ -33,6 +35,7 @@ import kaiyi.puer.commons.utils.CoderUtil;
 import kaiyi.puer.crypt.cipher.CipherOperator;
 import kaiyi.puer.crypt.cipher.RSACipher;
 import kaiyi.puer.db.orm.ServiceException;
+import kaiyi.puer.db.query.CompareQueryExpress;
 import kaiyi.puer.h5ui.service.ApplicationService;
 import kaiyi.puer.http.HttpException;
 import kaiyi.puer.http.HttpResponse;
@@ -66,6 +69,25 @@ public class ImportData {
             sel=new SpringSelector(ctx);
         }
     }
+
+    @Test
+    public void test1(){
+        ExamQuestionService examQuestionService=sel.getBean(ExamQuestionService.class);
+        ExamQuestionItemService examQuestionItemService=sel.getBean(ExamQuestionItemService.class);
+        StreamCollection<ExamQuestion> examQuestions=examQuestionService.getEntitys();
+        StreamCollection<ExamQuestion> zero=new StreamCollection<>();
+        examQuestions.forEachByOrder((idx,examQuestion)->{
+            int count=examQuestionItemService.count(new CompareQueryExpress("examQuestion", CompareQueryExpress.Compare.EQUAL,examQuestion));
+            if(count<=0){
+                zero.add(examQuestion);
+            }
+        });
+        String entityIdArray=zero.joinString(m->{
+            return m.getEntityId();
+        },"','");
+        System.out.println(entityIdArray);
+    }
+
     @Test
     public void clearPath(){
         DayTimer dayTimer=sel.getBean(DayTimer.class);
@@ -115,7 +137,7 @@ public class ImportData {
     @Test
     public void excelImport() throws IOException {
         QuestionService questionService=sel.getBean(QuestionService.class);
-        File file=new File("/Users/dengkai/Documents/鑫鸿app/最新导入/导入/二级建造师(机电工程)考前模拟题及答案解析.xls");
+        File file=new File("/Users/dengkai/Documents/鑫鸿app/二建2016/水利2016.xls");
         AtomicReference<Question> questionReference=new AtomicReference<>();
         //StreamCollection<QuestionCategory> categories=categoryService.getEntitys();
         if(Objects.nonNull(file)&&file.exists()){

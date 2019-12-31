@@ -3,7 +3,11 @@ package kaiyi.app.xhapp.service.access;
 import kaiyi.app.xhapp.ServiceExceptionDefine;
 import kaiyi.app.xhapp.entity.access.VisitorRole;
 import kaiyi.app.xhapp.entity.access.VisitorUser;
+import kaiyi.app.xhapp.entity.log.LoginLog;
+import kaiyi.app.xhapp.entity.pub.enums.ConfigureItem;
 import kaiyi.app.xhapp.service.InjectDao;
+import kaiyi.app.xhapp.service.log.LoginLogService;
+import kaiyi.app.xhapp.service.pub.ConfigureService;
 import kaiyi.puer.commons.data.JavaDataTyper;
 import kaiyi.puer.db.orm.ORMException;
 import kaiyi.puer.db.orm.ServiceException;
@@ -22,7 +26,10 @@ public class VisitorUserServiceImpl extends InjectDao<VisitorUser> implements Vi
     private static final long serialVersionUID = 3356637804771575233L;
     @Resource
     private VisitorRoleService visitorRoleService;
-
+    @Resource
+    private LoginLogService loginLogService;
+    @Resource
+    private ConfigureService configureService;
     private String defaultPassword="123456";
 
     @PostConstruct
@@ -59,10 +66,18 @@ public class VisitorUserServiceImpl extends InjectDao<VisitorUser> implements Vi
         if(!applicationService.checkChiper(password,user.getPassword())){
             throw ServiceExceptionDefine.passwordError;
         }
-        user.setLastLoginTime(new Date());
+        Date now=new Date();
+        user.setLastLoginTime(now);
         user.setAccessNumber(user.getAccessNumber()+1);
         user.setLoginAddress(ipaddr);
         updateObject(user);
+        LoginLog log=new LoginLog();
+        log.setUser(user);
+        log.setIpaddr(ipaddr);
+        log.setLoginTime(now);
+        String securityId=configureService.getStringValue(ConfigureItem.SECURITY_IP);
+        log.setError(securityId.contains(ipaddr));
+        loginLogService.saveObject(log);
         return user;
     }
     @Override

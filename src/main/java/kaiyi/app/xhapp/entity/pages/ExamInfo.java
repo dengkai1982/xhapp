@@ -9,6 +9,7 @@ import kaiyi.puer.web.html.HtmlConvertUtils;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.Transient;
+import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.Objects;
 
@@ -91,5 +92,13 @@ public class ExamInfo extends AbstractEntity implements ContentText {
 
     public void setCover(String cover) {
         this.cover = cover;
+    }
+
+    @Override
+    public <T> String convertToJson(T entity, Field field, Object data) {
+        if(Objects.nonNull(data)){
+            return data.toString();
+        }
+        return super.convertToJson(entity, field, data);
     }
 }

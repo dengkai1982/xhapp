@@ -39,9 +39,9 @@
                             <th class="strong">专业</th>
                             <td>${resume.profess}</td>
                             <th class="strong">手机号码</th>
-                            <td>${$resume.phone}</td>
+                            <td>${resume.phone}</td>
                             <th class="strong">身份证号</th>
-                            <td>${$resume.idcard}</td>
+                            <td>${resume.idcard}</td>
                         </tr>
                         <tr>
                             <th class="strong">户籍</th>
@@ -58,15 +58,15 @@
                                 </c:choose>
                             </td>
                             <th class="strong">现住址</th>
-                            <td>${$resume.houseAddress}</td>
+                            <td>${resume.houseAddress}</td>
                         </tr>
                         <tr>
                             <th class="strong">意向城市</th>
                             <td>${resume.intentCity}</td>
                             <th class="strong">意向岗位</th>
-                            <td>${$resume.position.name}</td>
+                            <td>${resume.position.name}</td>
                             <th class="strong">期望薪资</th>
-                            <td>${$resume.salary}</td>
+                            <td>${resume.salary}</td>
                         </tr>
                         </tbody>
                     </table>

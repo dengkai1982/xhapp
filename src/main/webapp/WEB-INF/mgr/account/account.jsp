@@ -147,9 +147,9 @@
         }
         var active="";
         if(data.active.ordinal=="true"){
-            active="解锁会员";
-        }else{
             active="冻结会员";
+        }else{
+            active="解锁会员";
         }
         items.push({
             label:insideMember,

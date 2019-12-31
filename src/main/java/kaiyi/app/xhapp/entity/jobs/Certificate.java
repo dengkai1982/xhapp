@@ -7,7 +7,9 @@ import kaiyi.puer.commons.validate.NotEmpty;
 import kaiyi.puer.h5ui.annotations.*;
 
 import javax.persistence.*;
+import java.lang.reflect.Field;
 import java.util.Date;
+import java.util.Objects;
 
 @Entity(name=Certificate.TABLE_NAME)
 @PageEntity(showName = "个人证书",entityName = "certificate",serviceName = "certificateService")
@@ -17,7 +19,7 @@ public class Certificate extends AbstractEntity {
     @NotEmpty(hint = "证书名称必须填写")
     @PageField(label = "证书名称")
     private String name;
-    @PageField(label = "期望价值")
+    @PageField(label = "期望价值(单价)")
     private String expect;
     @IDate
     @PageField(label = "提交时间",type = FieldType.DATETIME)
@@ -105,4 +107,13 @@ public class Certificate extends AbstractEntity {
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
+
+    @Override
+    public <T> String convertToJson(T entity, Field field, Object data) {
+        if(field.getName().equals("photo")&& Objects.nonNull(data)){
+            return data.toString();
+        }
+        return super.convertToJson(entity, field, data);
+    }
+
 }
