@@ -13,7 +13,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <aspectj.version>1.7.3</aspectj.version>
-    <spring.version>5.1.0.RELEASE</spring.version>
+    <spring.version>5.2.22.RELEASE</spring.version>
     <kaiyi.puer.version>3.0.Final</kaiyi.puer.version>
     <org.hibernate.version>5.2.11.Final</org.hibernate.version>
     <javax.validation.version>2.0.0.Final</javax.validation.version>
